@@ -7,15 +7,15 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=packages/admin-panel",
+    "dev": "npm run dev --workspace=packages/admindash",
     "dev:website": "npm run dev --workspace=packages/website",
     "dev:functions": "npm run serve --workspace=packages/functions",
     "build": "npm run build --workspaces --if-present",
-    "build:admin": "npm run build --workspace=packages/admin-panel",
+    "build:admin": "npm run build --workspace=packages/admindash",
     "build:website": "npm run build --workspace=packages/website",
     "deploy": "npm run build && firebase deploy",
-    "deploy:admin": "npm run build:admin && firebase deploy --only hosting:yanbrain-admin",
-    "deploy:website": "npm run build:website && firebase deploy --only hosting:yanbrain-main",
+    "deploy:admin": "npm run build:admin && firebase deploy --only hosting:yanbrain-admindash",
+    "deploy:website": "npm run build:website && firebase deploy --only hosting:yanbrainserver",
     "deploy:functions": "firebase deploy --only functions",
     "deploy:all": "npm run build && firebase deploy --only hosting,functions",
     "lint": "npm run lint --workspaces --if-present"

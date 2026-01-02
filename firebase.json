@@ -42,8 +42,8 @@
       ]
     },
     {
-      "site": "yanbrain-admin",
-      "public": "packages/admin-panel/out",
+      "site": "yanbrain-admindash",
+      "public": "packages/admindash/out",
       "ignore": [
         "firebase.json",
         "**/.*",

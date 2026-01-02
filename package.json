@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=packages/admindash",
+    "dev:admin": "npm run dev --workspace=packages/admindash",
     "dev:website": "npm run dev --workspace=packages/website",
     "dev:functions": "npm run serve --workspace=packages/functions",
     "build": "npm run build --workspaces --if-present",
@@ -17,7 +17,6 @@
     "deploy:admin": "npm run build:admin && firebase deploy --only hosting:yanbrain-admindash",
     "deploy:website": "npm run build:website && firebase deploy --only hosting:yanbrainserver",
     "deploy:functions": "firebase deploy --only functions",
-    "deploy:all": "npm run build && firebase deploy --only hosting,functions",
     "lint": "npm run lint --workspaces --if-present"
   },
   "keywords": [

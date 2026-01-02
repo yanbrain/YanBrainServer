@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+}
+
+::-webkit-scrollbar-track {
+    background: hsl(0 0% 16%);
+    border-radius: 10px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb {
+    background: hsl(0 0% 33%);
+    border-radius: 10px;
+    border: 3px solid hsl(0 0% 16%);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: hsl(27 96% 46%);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: hsl(27 96% 52%);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(0 0% 33%) hsl(0 0% 16%);
+}

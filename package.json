@@ -1,0 +1,24 @@
+{
+  "name": "yanbrain-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=packages/admin-panel",
+    "dev:functions": "npm run serve --workspace=packages/functions",
+    "build": "npm run build --workspaces --if-present",
+    "deploy:functions": "firebase deploy --only functions",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "keywords": [
+    "firebase",
+    "license-management",
+    "saas",
+    "nextjs"
+  ],
+  "author": "YanBrain",
+  "license": "UNLICENSED"
+}

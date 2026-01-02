@@ -1,0 +1,19 @@
+{
+  "name": "@yanplay/shared",
+  "version": "1.0.0",
+  "description": "Shared types, constants, and utilities for YanPlay backend",
+  "main": "src/index.ts",
+  "scripts": {
+    "lint": "echo 'Linting shared package...'"
+  },
+  "keywords": [
+    "shared",
+    "types",
+    "constants"
+  ],
+  "author": "YanPlay",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "clsx": "^2.1.1"
+  }
+}

@@ -4,7 +4,7 @@ import { Navigation } from '@/components/layout/Navigation'
 import { Footer } from '@/components/layout/Footer'
 import { WhatsAppButton } from '@/components/layout/WhatsAppButton'
 import { SITE_CONFIG } from '@/config/site'
-import '@yanbrain/shared/globals.css'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 

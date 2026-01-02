@@ -7,14 +7,16 @@ admin.initializeApp();
 
 const app = express();
 
-// Configure CORS - Add your production domains here
+// Configure CORS - Production and development domains
 const corsOptions = {
     origin: [
+        // Production domains
+        'https://yanbrain.com',
+        'https://www.yanbrain.com',
+        'https://admin.yanbrain.com',
+        // Local development
         'http://localhost:3000',
         'http://localhost:3001',
-        // Add your production domains:
-        // 'https://your-admin-panel-domain.com',
-        // 'https://your-production-domain.com',
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],

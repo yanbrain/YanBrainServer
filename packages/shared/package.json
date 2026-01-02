@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Shared types, constants, and utilities for YanBrain backend",
   "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./globals.css": "./src/styles/globals.css"
+  },
   "scripts": {
     "lint": "echo 'Linting shared package...'"
   },

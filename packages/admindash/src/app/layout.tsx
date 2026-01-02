@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { SessionProvider } from '@/components/session-provider'
 import { ProtectedRoute } from '@/components/protected-route'
-import './globals.css'
+import '@yanbrain/shared/globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 

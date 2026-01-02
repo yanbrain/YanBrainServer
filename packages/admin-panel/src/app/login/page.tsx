@@ -1,15 +1,14 @@
 'use client'
 
 import { Suspense, useState } from 'react'
-import { signIn } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { sendPasswordResetEmail } from 'firebase/auth'
+import { auth } from '@/lib/firebase-client'
+import { useAuth } from '@/lib/auth-context'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-
-// Disable static generation for this page
-export const dynamic = 'force-dynamic'
 
 function LoginForm() {
     const [email, setEmail] = useState('')
@@ -19,8 +18,7 @@ function LoginForm() {
     const [resetEmail, setResetEmail] = useState('')
     const [resetLoading, setResetLoading] = useState(false)
     const router = useRouter()
-    const searchParams = useSearchParams()
-    const error = searchParams.get('error')
+    const { signIn } = useAuth()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -33,36 +31,21 @@ function LoginForm() {
         setLoading(true)
 
         try {
-            console.log('Attempting login with:', email)
-
-            const result = await signIn('credentials', {
-                email,
-                password,
-                redirect: false,
-            })
-
-            console.log('Login result:', result)
-
-            if (result?.error) {
-                console.error('Login error:', result.error)
-
-                if (result.error.includes('Invalid email or password')) {
-                    toast.error('Invalid email or password')
-                } else if (result.error.includes('Not authorized as admin')) {
-                    toast.error('You do not have admin access')
-                } else {
-                    toast.error(result.error)
-                }
-            } else if (result?.ok) {
-                toast.success('Logged in successfully')
-                router.push('/users')
-                router.refresh()
-            } else {
-                toast.error('An unexpected error occurred')
-            }
+            await signIn(email, password)
+            toast.success('Logged in successfully')
+            router.push('/users')
         } catch (error: any) {
-            console.error('Login exception:', error)
-            toast.error(error.message || 'Failed to log in')
+            console.error('Login error:', error)
+
+            if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                toast.error('Invalid email or password')
+            } else if (error.message?.includes('admin access')) {
+                toast.error('You do not have admin access')
+            } else if (error.code === 'auth/too-many-requests') {
+                toast.error('Too many failed login attempts. Please try again later.')
+            } else {
+                toast.error(error.message || 'Failed to log in')
+            }
         } finally {
             setLoading(false)
         }
@@ -79,16 +62,6 @@ function LoginForm() {
         setResetLoading(true)
 
         try {
-            // Dynamically import Firebase auth to avoid build-time errors
-            const { sendPasswordResetEmail } = await import('firebase/auth')
-            const { auth } = await import('@/lib/firebase-client') as { auth: any }
-
-            if (!auth) {
-                toast.error('Password reset is not available at this time')
-                setResetLoading(false)
-                return
-            }
-
             await sendPasswordResetEmail(auth, resetEmail)
             toast.success('Password reset email sent! Check your inbox.')
             setShowForgotPassword(false)
@@ -108,11 +81,6 @@ function LoginForm() {
         } finally {
             setResetLoading(false)
         }
-    }
-
-    // Show error from URL if redirected with error
-    if (error && !loading) {
-        toast.error('Authentication failed. Please log in again.')
     }
 
     if (showForgotPassword) {

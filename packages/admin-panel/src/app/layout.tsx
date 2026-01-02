@@ -2,13 +2,14 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { SessionProvider } from '@/components/session-provider'
+import { ProtectedRoute } from '@/components/protected-route'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
     title: 'Admin Panel',
-    description: 'YanPlay Admin Dashboard',
+    description: 'YanBrain Admin Dashboard',
 }
 
 export default function RootLayout({
@@ -20,7 +21,9 @@ export default function RootLayout({
         <html lang="en" className="dark">
         <body className={inter.className}>
         <SessionProvider>
-            {children}
+            <ProtectedRoute>
+                {children}
+            </ProtectedRoute>
             <Toaster position="bottom-right" />
         </SessionProvider>
         </body>

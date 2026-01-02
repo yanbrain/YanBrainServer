@@ -2,23 +2,13 @@ import { initializeApp, getApps } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 
 const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '',
+    authDomain: `${process.env.FIREBASE_PROJECT_ID || 'yanbrainserver'}.firebaseapp.com`,
+    projectId: process.env.FIREBASE_PROJECT_ID || 'yanbrainserver',
 }
 
-// Only initialize if we have the required config
-let app
-let auth
+// Initialize Firebase
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+const auth = getAuth(app)
 
-if (firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId) {
-    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
-    auth = getAuth(app)
-} else {
-    // Create dummy auth object for build time
-    console.warn('Firebase config not found - Firebase features will be disabled')
-    app = null as any
-    auth = null as any
-}
-
-export { auth }
+export { auth, app }

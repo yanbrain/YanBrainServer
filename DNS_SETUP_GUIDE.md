@@ -34,7 +34,7 @@ firebase hosting:sites:create yanbrain-admin
 
 **Note:** If these site names are taken, you can use alternatives like:
 - `yanbrain-website-main`
-- `yanbrain-admin-panel`
+- `yanbrain-admindash`
 
 Just make sure to update the `site` values in `firebase.json` to match.
 

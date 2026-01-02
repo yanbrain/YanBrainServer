@@ -7,6 +7,7 @@ import { auth } from '@/lib/firebase-client'
 
 export default function UsersPage() {
     const [users, setUsers] = useState<User[]>([])
+    const [token, setToken] = useState<string>('')
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -19,11 +20,13 @@ export default function UsersPage() {
                     return
                 }
 
-                const token = await user.getIdToken()
+                const idToken = await user.getIdToken()
+                setToken(idToken)
+
                 const response = await fetch(`${CLOUD_FUNCTIONS_URL}/users?limit=1000`, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `Bearer ${idToken}`,
                     },
                 })
 
@@ -53,5 +56,5 @@ export default function UsersPage() {
         )
     }
 
-    return <AdminPanel initialUsers={users} />
+    return <AdminPanel users={users} token={token} />
 }

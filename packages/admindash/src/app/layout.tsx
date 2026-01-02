@@ -1,11 +1,15 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+// import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { SessionProvider } from '@/components/session-provider'
 import { ProtectedRoute } from '@/components/protected-route'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+// const inter = Inter({
+//   subsets: ['latin'],
+//   fallback: ['system-ui', 'arial', 'sans-serif'],
+//   display: 'swap',
+// })
 
 export const metadata: Metadata = {
     title: 'Admin Panel',
@@ -19,7 +23,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="dark">
-        <body className={inter.className}>
+        <body className="font-sans">
         <SessionProvider>
             <ProtectedRoute>
                 {children}

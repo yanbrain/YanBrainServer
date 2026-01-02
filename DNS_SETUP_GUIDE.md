@@ -7,7 +7,7 @@ This guide will walk you through connecting your Namecheap domain to Firebase Ho
 You will set up:
 - **yanbrain.com** → Main website (packages/website)
 - **www.yanbrain.com** → Redirects to main website
-- **admin.yanbrain.com** → Admin panel (packages/admin-panel)
+- **admin.yanbrain.com** → Admin dashboard (packages/admindash)
 
 ---
 
@@ -212,9 +212,9 @@ Once SSL is active, Firebase automatically redirects HTTP to HTTPS.
 
 Before deploying, you **MUST** fill in your environment variables.
 
-### 6.1 Admin Panel
+### 6.1 Admin Dashboard
 
-Edit `packages/admin-panel/.env.production`:
+Edit `packages/admindash/.env.production`:
 
 ```bash
 # Generate a random secret (32+ characters)
@@ -254,7 +254,7 @@ npm run deploy
 **OR** Deploy individually:
 
 ```bash
-# Deploy only admin panel
+# Deploy only admin dashboard
 npm run deploy:admin
 
 # Deploy only website
@@ -269,7 +269,7 @@ npm run deploy:functions
 After deployment, visit:
 - https://yanbrain.com (should load your website)
 - https://www.yanbrain.com (should redirect to yanbrain.com)
-- https://admin.yanbrain.com (should load admin panel)
+- https://admin.yanbrain.com (should load admin dashboard)
 
 ---
 
@@ -327,7 +327,7 @@ nslookup yanbrain.com 8.8.8.8
 - Verify `firebase.json` has correct site names
 - Re-run: `npm run build && npm run deploy`
 
-### Admin Panel Login Not Working
+### Admin Dashboard Login Not Working
 
 **Reasons:**
 - NEXTAUTH_URL still points to localhost
@@ -365,7 +365,7 @@ TXT     admin    [Firebase verification code]
 ```bash
 npm run build              # Build all packages
 npm run deploy             # Deploy everything
-npm run deploy:admin       # Deploy only admin panel
+npm run deploy:admin       # Deploy only admin dashboard
 npm run deploy:website     # Deploy only website
 npm run deploy:functions   # Deploy only Cloud Functions
 ```

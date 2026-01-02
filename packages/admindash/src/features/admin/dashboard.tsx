@@ -13,12 +13,12 @@ import { User } from '@yanbrain/shared'
 import { suspendUser, unsuspendUser } from '@/lib/api-client'
 import { toast } from 'sonner'
 
-interface AdminPanelProps {
+interface DashboardProps {
     users: User[]
     token: string
 }
 
-export function AdminPanel({ users, token }: AdminPanelProps) {
+export function Dashboard({ users, token }: DashboardProps) {
     const router = useRouter()
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)

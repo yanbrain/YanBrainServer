@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { AdminPanel } from '@/features/admin/admin-panel'
+import { Dashboard } from '@/features/admin/dashboard'
 import { User, CLOUD_FUNCTIONS_URL } from '@yanbrain/shared'
 import { auth } from '@/lib/firebase-client'
 
@@ -56,5 +56,5 @@ export default function UsersPage() {
         )
     }
 
-    return <AdminPanel users={users} token={token} />
+    return <Dashboard users={users} token={token} />
 }

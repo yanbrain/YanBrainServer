@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { CLOUD_FUNCTIONS_URL } from '@yanplay/shared'
+import { CLOUD_FUNCTIONS_URL } from '@yanbrain/shared'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 

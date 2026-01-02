@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { GrantLicenseDialog } from './grant-license-dialog'
 import { revokeLicense } from '@/server/actions/licenses'
-import { UserLicenses, PRODUCTS } from '@yanplay/shared'
+import { UserLicenses, PRODUCTS } from '@yanbrain/shared'
 import { getDaysUntil, formatDate } from '@/lib/utils'
 import { toast } from 'sonner'
 

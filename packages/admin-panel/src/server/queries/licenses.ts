@@ -1,5 +1,5 @@
 const CLOUD_FUNCTIONS_BASE_URL = process.env.NEXT_PUBLIC_CLOUD_FUNCTIONS_URL ||
-    'https://us-central1-yan-play.cloudfunctions.net/api'
+    'https://us-central1-yanbrain.cloudfunctions.net/api'
 
 export interface License {
     isActive: boolean

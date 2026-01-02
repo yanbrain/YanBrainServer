@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { LicenseGrid } from './license-grid'
-import { UserLicenses, CLOUD_FUNCTIONS_URL } from '@yanplay/shared'
+import { UserLicenses, CLOUD_FUNCTIONS_URL } from '@yanbrain/shared'
 
 interface LicensePanelProps {
     userId: string

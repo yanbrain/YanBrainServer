@@ -1,5 +1,5 @@
 import { transactionsCollection } from '../firebase'
-import { Transaction } from '@yanplay/shared'
+import { Transaction } from '@yanbrain/shared'
 
 export async function getUserTransactions(userId: string): Promise<Transaction[]> {
     try {

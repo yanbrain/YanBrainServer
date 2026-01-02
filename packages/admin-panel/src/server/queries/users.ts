@@ -1,4 +1,4 @@
-import { User, UserDetails, UserLicenses, CLOUD_FUNCTIONS_URL } from '@yanplay/shared'
+import { User, UserDetails, UserLicenses, CLOUD_FUNCTIONS_URL } from '@yanbrain/shared'
 
 function convertTimestamp(timestamp: any): string | null {
     if (!timestamp) return null

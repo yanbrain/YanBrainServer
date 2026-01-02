@@ -2,7 +2,7 @@
 
 import { CheckCircle, XCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Transaction, TRANSACTION_TYPES } from '@yanplay/shared'
+import { Transaction, TRANSACTION_TYPES } from '@yanbrain/shared'
 import { formatDate } from '@/lib/utils'
 
 interface TransactionListProps {

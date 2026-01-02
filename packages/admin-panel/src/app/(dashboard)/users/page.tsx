@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { AdminPanel } from '@/features/admin/admin-panel'
-import { User, CLOUD_FUNCTIONS_URL } from '@yanplay/shared'
+import { User, CLOUD_FUNCTIONS_URL } from '@yanbrain/shared'
 
 export const revalidate = 0
 

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { PRODUCTS } from '@yanplay/shared'
+import { PRODUCTS } from '@yanbrain/shared'
 import { grantLicense } from '@/server/actions/licenses'
 import { toast } from 'sonner'
 

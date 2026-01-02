@@ -1,7 +1,7 @@
 {
-  "name": "@yanplay/functions",
+  "name": "@yanbrain/functions",
   "version": "1.0.0",
-  "description": "Firebase Cloud Functions for YanPlay",
+  "description": "Firebase Cloud Functions for YanBrain",
   "main": "src/index.js",
   "engines": {
     "node": "22"

@@ -9,7 +9,7 @@ import { UserTable } from '@/features/users/user-table'
 import { LicensePanel } from '@/features/licenses/license-panel'
 import { TransactionPanel } from '@/features/transactions/transaction-panel'
 import { CreateUserDialog } from '@/features/users/create-user-dialog'
-import { User } from '@yanplay/shared'
+import { User } from '@yanbrain/shared'
 import { suspendUser, unsuspendUser } from '@/server/actions/users'
 import { toast } from 'sonner'
 

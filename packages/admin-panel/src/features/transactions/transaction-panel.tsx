@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { TransactionList } from './transaction-list'
-import { Transaction, CLOUD_FUNCTIONS_URL } from '@yanplay/shared'
+import { Transaction, CLOUD_FUNCTIONS_URL } from '@yanbrain/shared'
 
 interface TransactionPanelProps {
     userId: string

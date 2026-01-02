@@ -45,7 +45,7 @@ Just make sure to update the `site` values in `firebase.json` to match.
 ### 2.1 Go to Firebase Console
 
 1. Visit https://console.firebase.google.com/
-2. Select your project: **yan-play**
+2. Select your project: **yanbrain**
 3. Go to **Hosting** in the left sidebar
 
 ### 2.2 Add Domain for Main Website
@@ -375,7 +375,7 @@ npm run deploy:functions   # Deploy only Cloud Functions
 After setup:
 - Main: https://yanbrain.com
 - Admin: https://admin.yanbrain.com
-- API: https://us-central1-yan-play.cloudfunctions.net/api/health
+- API: https://us-central1-yanbrain.cloudfunctions.net/api/health
 
 ---
 

@@ -1,39 +1,57 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { redirect } from 'next/navigation'
+'use client'
+
+import { useEffect, useState } from 'react'
 import { AdminPanel } from '@/features/admin/admin-panel'
 import { User, CLOUD_FUNCTIONS_URL } from '@yanbrain/shared'
+import { auth } from '@/lib/firebase-client'
 
-export const revalidate = 0
+export default function UsersPage() {
+    const [users, setUsers] = useState<User[]>([])
+    const [loading, setLoading] = useState(true)
 
-async function getUsers(token: string): Promise<User[]> {
-    try {
-        const response = await fetch(`${CLOUD_FUNCTIONS_URL}/users?limit=1000`, {
-            cache: 'no-store',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        })
+    useEffect(() => {
+        async function fetchUsers() {
+            try {
+                const user = auth.currentUser
+                if (!user) {
+                    setUsers([])
+                    setLoading(false)
+                    return
+                }
 
-        const data = await response.json()
-        if (!data.success) throw new Error(data.error)
+                const token = await user.getIdToken()
+                const response = await fetch(`${CLOUD_FUNCTIONS_URL}/users?limit=1000`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                })
 
-        return data.users || []
-    } catch (error) {
-        console.error('Error fetching users:', error)
-        return []
+                const data = await response.json()
+                if (data.success) {
+                    setUsers(data.users || [])
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error)
+                setUsers([])
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchUsers()
+    }, [])
+
+    if (loading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
+                    <p className="mt-2 text-sm text-muted-foreground">Loading users...</p>
+                </div>
+            </div>
+        )
     }
-}
 
-export default async function UsersPage() {
-    const session = await getServerSession(authOptions)
-
-    if (!session?.firebaseToken) {
-        redirect('/login')
-    }
-
-    const users = await getUsers(session.firebaseToken)
-
-    return <AdminPanel users={users} token={session.firebaseToken} />
+    return <AdminPanel initialUsers={users} />
 }

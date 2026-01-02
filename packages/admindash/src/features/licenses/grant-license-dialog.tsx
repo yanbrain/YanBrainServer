@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PRODUCTS } from '@yanbrain/shared'
-import { grantLicense } from '@/server/actions/licenses'
+import { grantLicense } from '@/lib/api-client'
 import { toast } from 'sonner'
 
 interface FormData {

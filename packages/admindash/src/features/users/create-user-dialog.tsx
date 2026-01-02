@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { createUser } from '@/server/actions/users'
+import { createUser } from '@/lib/api-client'
 import { toast } from 'sonner'
 
 interface FormData {

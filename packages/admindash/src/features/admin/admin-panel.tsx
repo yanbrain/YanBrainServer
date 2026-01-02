@@ -10,7 +10,7 @@ import { LicensePanel } from '@/features/licenses/license-panel'
 import { TransactionPanel } from '@/features/transactions/transaction-panel'
 import { CreateUserDialog } from '@/features/users/create-user-dialog'
 import { User } from '@yanbrain/shared'
-import { suspendUser, unsuspendUser } from '@/server/actions/users'
+import { suspendUser, unsuspendUser } from '@/lib/api-client'
 import { toast } from 'sonner'
 
 interface AdminPanelProps {

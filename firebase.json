@@ -8,7 +8,7 @@
   },
   "hosting": [
     {
-      "site": "yanbrain-main",
+      "site": "yanbrainserver",
       "public": "packages/website/out",
       "ignore": [
         "firebase.json",

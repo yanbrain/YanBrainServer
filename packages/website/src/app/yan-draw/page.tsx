@@ -2,15 +2,18 @@ import { notFound } from 'next/navigation'
 import { ProductHero } from '@/components/products/ProductHero'
 import { ProductFeatures } from '@/components/products/ProductFeatures'
 import { ProductCTA } from '@/components/products/ProductCTA'
-import { ProductGallery } from '@/components/products/ProductGallery'
+import { HorizontalGallery } from '@/components/products/HorizontalGallery'
 import { Container } from '@/components/ui/container'
 import { BeforeAfterComparison } from '@/components/ui/before-after-comparison'
 import { getProductBySlug } from '@/config/products'
+import { getGalleryImages } from '@/lib/gallery'
 
 const product = getProductBySlug('yan-draw')
 
-export default function YanDrawPage() {
+export default async function YanDrawPage() {
   if (!product) notFound()
+
+  const galleryImages = await getGalleryImages(product.slug)
   
   return (
     <>
@@ -29,7 +32,7 @@ export default function YanDrawPage() {
       
       <Container className="py-20">
         <h2 className="mb-8 text-center text-3xl font-bold">Gallery</h2>
-        <ProductGallery productSlug={product.slug} imageCount={5} />
+        <HorizontalGallery images={galleryImages} />
       </Container>
       
       <Container className="py-20">

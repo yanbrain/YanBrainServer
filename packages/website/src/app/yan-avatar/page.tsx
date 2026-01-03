@@ -2,14 +2,17 @@ import { notFound } from 'next/navigation'
 import { ProductHero } from '@/components/products/ProductHero'
 import { ProductFeatures } from '@/components/products/ProductFeatures'
 import { ProductCTA } from '@/components/products/ProductCTA'
-import { ProductGallery } from '@/components/products/ProductGallery'
+import { VerticalGallery } from '@/components/products/VerticalGallery'
 import { Container } from '@/components/ui/container'
 import { getProductBySlug } from '@/config/products'
+import { getGalleryImages } from '@/lib/gallery'
 
 const product = getProductBySlug('yan-avatar')
 
-export default function YanAvatarPage() {
+export default async function YanAvatarPage() {
   if (!product) notFound()
+
+  const galleryImages = await getGalleryImages(product.slug)
   
   return (
     <>
@@ -23,7 +26,7 @@ export default function YanAvatarPage() {
       
       <Container className="py-20">
         <h2 className="mb-8 text-center text-3xl font-bold">Gallery</h2>
-        <ProductGallery productSlug={product.slug} imageCount={5} isPortrait />
+        <VerticalGallery images={galleryImages} />
       </Container>
       
       <Container className="py-20">

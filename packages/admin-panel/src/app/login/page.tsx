@@ -1,12 +1,12 @@
 'use client'
 
-import { Suspense, useState } from 'react'
-import { signIn } from 'next-auth/react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { signIn } from '@/lib/auth-utils'
 
 // Disable static generation for this page
 export const dynamic = 'force-dynamic'
@@ -22,6 +22,12 @@ function LoginForm() {
     const searchParams = useSearchParams()
     const error = searchParams.get('error')
 
+    useEffect(() => {
+        if (error === 'not-admin') {
+            toast.error('You do not have admin access')
+        }
+    }, [error])
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -35,34 +41,26 @@ function LoginForm() {
         try {
             console.log('Attempting login with:', email)
 
-            const result = await signIn('credentials', {
-                email,
-                password,
-                redirect: false,
-            })
+            await signIn(email, password)
 
-            console.log('Login result:', result)
-
-            if (result?.error) {
-                console.error('Login error:', result.error)
-
-                if (result.error.includes('Invalid email or password')) {
-                    toast.error('Invalid email or password')
-                } else if (result.error.includes('Not authorized as admin')) {
-                    toast.error('You do not have admin access')
-                } else {
-                    toast.error(result.error)
-                }
-            } else if (result?.ok) {
-                toast.success('Logged in successfully')
-                router.push('/users')
-                router.refresh()
-            } else {
-                toast.error('An unexpected error occurred')
-            }
+            toast.success('Logged in successfully')
+            const from = searchParams.get('from') || '/users'
+            router.push(from)
+            router.refresh()
         } catch (error: any) {
             console.error('Login exception:', error)
-            toast.error(error.message || 'Failed to log in')
+
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                toast.error('Invalid email or password')
+            } else if (error.code === 'auth/invalid-credential') {
+                toast.error('Invalid email or password')
+            } else if (error.message === 'User does not have admin privileges') {
+                toast.error('You do not have admin access')
+            } else if (error.code === 'auth/too-many-requests') {
+                toast.error('Too many failed login attempts. Please try again later.')
+            } else {
+                toast.error(error.message || 'Failed to log in')
+            }
         } finally {
             setLoading(false)
         }

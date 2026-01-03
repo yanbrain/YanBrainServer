@@ -2,15 +2,10 @@
 
 import { revalidatePath } from 'next/cache'
 import { CLOUD_FUNCTIONS_URL } from '@yanplay/shared'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { getFirebaseToken } from '@/lib/server-auth'
 
 async function getToken(): Promise<string> {
-    const session = await getServerSession(authOptions)
-    if (!session?.firebaseToken) {
-        throw new Error('Not authenticated')
-    }
-    return session.firebaseToken
+    return await getFirebaseToken()
 }
 
 async function callApi(endpoint: string, method: string = 'POST', body?: any) {

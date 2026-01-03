@@ -1,16 +1,17 @@
 'use client'
 
-import { useSession, signOut } from 'next-auth/react'
+import { useAuth } from './session-provider'
+import { signOut } from '@/lib/auth-utils'
 import { Button } from './ui/button'
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 export function Topbar() {
-    const { data: session } = useSession()
+    const { user } = useAuth()
     const router = useRouter()
 
     const handleSignOut = async () => {
-        await signOut({ redirect: false })
+        await signOut()
         router.push('/login')
     }
 
@@ -20,9 +21,9 @@ export function Topbar() {
                 <h1 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
                     Admin Panel
                 </h1>
-                {session?.user && (
+                {user && (
                     <div className="flex items-center gap-4">
-                        <span className="text-sm text-muted-foreground">{session.user.email}</span>
+                        <span className="text-sm text-muted-foreground">{user.email}</span>
                         <Button variant="ghost" size="sm" onClick={handleSignOut}>
                             <LogOut className="h-4 w-4 mr-2" />
                             Logout

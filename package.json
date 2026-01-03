@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace=packages/admin-panel",
+    "dev:admin": "npm run dev --workspace=packages/admin-panel",
     "dev:functions": "npm run serve --workspace=packages/functions",
     "build": "npm run build --workspaces --if-present",
     "deploy:functions": "firebase deploy --only functions",

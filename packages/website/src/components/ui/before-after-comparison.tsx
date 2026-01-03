@@ -136,11 +136,11 @@ export const ComparisonHandle = () => {
       style={{ left }}
     >
       <div className="flex h-full items-center">
-        <div className="flex h-16 w-8 items-center justify-center rounded-full border-2 border-white bg-black shadow-lg">
-          <GripVertical className="h-5 w-5 text-white" />
+        <div className="flex h-20 w-20 items-center justify-center rounded-full border-4 border-white bg-gradient-to-br from-orange-500 to-orange-600 shadow-2xl shadow-orange-500/50 backdrop-blur-sm transition-transform hover:scale-110">
+          <GripVertical className="h-8 w-8 text-white drop-shadow-lg" strokeWidth={2.5} />
         </div>
       </div>
-      <div className="absolute inset-y-0 w-0.5 bg-white" />
+      <div className="absolute inset-y-0 w-1 bg-gradient-to-b from-white/0 via-white to-white/0 shadow-lg shadow-white/50" />
     </motion.div>
   )
 }
@@ -159,11 +159,11 @@ export function BeforeAfterComparison({
   primaryColor,
   secondaryColor
 }: BeforeAfterComparisonProps) {
-  const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}_before.png`
-  const afterImage = `/images/products/${productSlug}/before-after/${productSlug}_after.png`
+  const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}-before.png`
+  const afterImage = `/images/products/${productSlug}/before-after/${productSlug}-after.png`
 
   const comparisonContent = (
-    <Comparison className="h-full w-full rounded-lg">
+    <Comparison className="h-full w-full rounded-xl overflow-hidden">
       <ComparisonItem position="left">
         <div className="relative h-full w-full">
           <Image
@@ -171,9 +171,10 @@ export function BeforeAfterComparison({
             alt="Before"
             fill
             className="object-cover"
+            priority
           />
-          <div className="absolute left-4 top-4 rounded-md bg-black/70 px-3 py-1 text-sm font-medium text-white">
-            Before
+          <div className="absolute left-6 top-6 rounded-full bg-gradient-to-br from-gray-900/90 to-black/90 px-5 py-2.5 text-sm font-bold text-white shadow-2xl backdrop-blur-md border border-white/20">
+            BEFORE
           </div>
         </div>
       </ComparisonItem>
@@ -184,9 +185,10 @@ export function BeforeAfterComparison({
             alt="After"
             fill
             className="object-cover"
+            priority
           />
-          <div className="absolute right-4 top-4 rounded-md bg-black/70 px-3 py-1 text-sm font-medium text-white">
-            After
+          <div className="absolute right-6 top-6 rounded-full bg-gradient-to-br from-orange-600/90 to-orange-700/90 px-5 py-2.5 text-sm font-bold text-white shadow-2xl backdrop-blur-md border border-white/30">
+            AFTER
           </div>
         </div>
       </ComparisonItem>

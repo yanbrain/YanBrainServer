@@ -26,21 +26,21 @@ export function ProductsGrid() {
             className="flex"
           >
             <Link href={`/${product.slug}`} className="group flex flex-col flex-1">
-              <GlowingCard
-                primaryColor={product.colors.primary}
-                secondaryColor={product.colors.secondary || 'hsl(25, 95%, 53%)'}
-              >
-                {hasBeforeAfter ? (
-                  <BeforeAfterComparison
-                    productSlug={product.slug}
-                    aspectRatio="video"
-                  />
-                ) : (
+              {hasBeforeAfter ? (
+                <BeforeAfterComparison
+                  productSlug={product.slug}
+                  aspectRatio="video"
+                />
+              ) : (
+                <GlowingCard
+                  primaryColor={product.colors.primary}
+                  secondaryColor={product.colors.secondary || 'hsl(25, 95%, 53%)'}
+                >
                   <div className="flex h-full items-center justify-center bg-secondary text-lg font-semibold text-muted-foreground">
                     {product.name}
                   </div>
-                )}
-              </GlowingCard>
+                </GlowingCard>
+              )}
 
               <div className="mt-4 px-2 flex-1 flex flex-col">
                 <h2

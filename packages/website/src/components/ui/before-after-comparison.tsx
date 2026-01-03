@@ -1,185 +1,130 @@
 'use client'
 
-import { GripVertical } from 'lucide-react'
-import { type MotionValue, motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { type ComponentProps, createContext, type HTMLAttributes, useContext, useState } from 'react'
-import { cn } from '@/lib/utils'
+import { useState, useRef, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { GlowingCard } from '@/components/ui/glowing-card'
+import { cn } from '@/lib/utils'
 
-type ComparisonContextType = {
-  sliderPosition: number
-  setSliderPosition: (pos: number) => void
-  motionSliderPosition: MotionValue<number>
-  mode: 'hover' | 'drag'
-}
-
-const ComparisonContext = createContext<ComparisonContextType | undefined>(undefined)
-
-const useComparisonContext = () => {
-  const context = useContext(ComparisonContext)
-  if (!context) {
-    throw new Error('useComparisonContext must be used within a Comparison')
-  }
-  return context
-}
-
-export type ComparisonProps = HTMLAttributes<HTMLDivElement> & {
-  mode?: 'hover' | 'drag'
-  onDragStart?: () => void
-  onDragEnd?: () => void
-}
-
-export const Comparison = ({
-  className,
-  mode = 'drag',
-  onDragStart,
-  onDragEnd,
-  children,
-  ...props
-}: ComparisonProps) => {
-  const [sliderPosition, setSliderPosition] = useState(50)
-  const [isDragging, setIsDragging] = useState(false)
-  const motionSliderPosition = useMotionValue(50)
-  const springConfig = { damping: 30, stiffness: 300 }
-  const sliderPositionSpring = useSpring(motionSliderPosition, springConfig)
-
-  const handleMouseDrag = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (mode === 'drag' && !isDragging) return
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width))
-    const percentage = (x / rect.width) * 100
-    setSliderPosition(percentage)
-    motionSliderPosition.set(percentage)
-  }
-
-  const handleTouchDrag = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (mode === 'drag' && !isDragging) return
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = Math.max(0, Math.min(e.touches[0].clientX - rect.left, rect.width))
-    const percentage = (x / rect.width) * 100
-    setSliderPosition(percentage)
-    motionSliderPosition.set(percentage)
-  }
-
-  const handleDragStart = () => {
-    if (mode === 'drag') {
-      setIsDragging(true)
-      onDragStart?.()
-    }
-  }
-
-  const handleDragEnd = () => {
-    if (mode === 'drag') {
-      setIsDragging(false)
-      onDragEnd?.()
-    }
-  }
-
-  return (
-    <ComparisonContext.Provider value={{ sliderPosition, setSliderPosition, motionSliderPosition, mode }}>
-      <div
-        aria-label="Comparison slider"
-        aria-valuemax={100}
-        aria-valuemin={0}
-        aria-valuenow={sliderPosition}
-        className={cn('relative isolate w-full select-none overflow-hidden', className)}
-        onMouseDown={handleDragStart}
-        onMouseLeave={handleDragEnd}
-        onMouseMove={handleMouseDrag}
-        onMouseUp={handleDragEnd}
-        onTouchEnd={handleDragEnd}
-        onTouchMove={handleTouchDrag}
-        onTouchStart={handleDragStart}
-        role="slider"
-        tabIndex={0}
-        {...props}
-      >
-        {children}
-      </div>
-    </ComparisonContext.Provider>
-  )
-}
-
-export type ComparisonItemProps = ComponentProps<typeof motion.div> & {
-  position: 'left' | 'right'
-}
-
-export const ComparisonItem = ({ className, position, children, ...props }: ComparisonItemProps) => {
-  const { motionSliderPosition } = useComparisonContext()
-  const clipPath = useTransform(
-    motionSliderPosition,
-    [0, 100],
-    position === 'left'
-      ? ['inset(0 100% 0 0)', 'inset(0 0% 0 0)']
-      : ['inset(0 0% 0 100%)', 'inset(0 0% 0 0%)']
-  )
-
-  return (
-    <motion.div
-      className={cn('absolute inset-0', className)}
-      style={{ clipPath }}
-      {...props}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
-export const ComparisonHandle = () => {
-  const { motionSliderPosition } = useComparisonContext()
-  const left = useTransform(motionSliderPosition, (value) => `${value}%`)
-
-  return (
-    <motion.div
-      className="absolute inset-y-0 z-10 flex items-center justify-center"
-      style={{ left }}
-    >
-      <div className="flex h-full items-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full border-4 border-white bg-gradient-to-br from-orange-500 to-orange-600 shadow-2xl shadow-orange-500/50 backdrop-blur-sm transition-transform hover:scale-110">
-          <GripVertical className="h-8 w-8 text-white drop-shadow-lg" strokeWidth={2.5} />
-        </div>
-      </div>
-      <div className="absolute inset-y-0 w-1 bg-gradient-to-b from-white/0 via-white to-white/0 shadow-lg shadow-white/50" />
-    </motion.div>
-  )
-}
-
-// Main component for before/after images
 interface BeforeAfterComparisonProps {
   productSlug: string
   aspectRatio?: 'video' | 'portrait'
-  primaryColor?: string
-  secondaryColor?: string
 }
 
 export function BeforeAfterComparison({
   productSlug,
   aspectRatio = 'video',
-  primaryColor,
-  secondaryColor
 }: BeforeAfterComparisonProps) {
+  const [sliderPosition, setSliderPosition] = useState(50)
+  const [isDragging, setIsDragging] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
   const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}-before.png`
   const afterImage = `/images/products/${productSlug}/before-after/${productSlug}-after.png`
 
-  const comparisonContent = (
-    <Comparison className="h-full w-full rounded-xl overflow-hidden">
-      <ComparisonItem position="left">
-        <div className="relative h-full w-full">
-          <Image
-            src={beforeImage}
-            alt="Before"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute left-6 top-6 rounded-full bg-gradient-to-br from-gray-900/90 to-black/90 px-5 py-2.5 text-sm font-bold text-white shadow-2xl backdrop-blur-md border border-white/20">
-            BEFORE
-          </div>
-        </div>
-      </ComparisonItem>
-      <ComparisonItem position="right">
-        <div className="relative h-full w-full">
+  useEffect(() => {
+    // Trigger visibility animation on mount
+    const timer = setTimeout(() => setIsVisible(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true)
+    updateSliderPosition(e)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return
+    updateSliderPosition(e)
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true)
+    updateSliderPositionTouch(e)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return
+    updateSliderPositionTouch(e)
+  }
+
+  const handleTouchEnd = () => {
+    setIsDragging(false)
+  }
+
+  const updateSliderPosition = (e: React.MouseEvent) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width))
+    const percentage = (x / rect.width) * 100
+    setSliderPosition(Math.max(0, Math.min(percentage, 100)))
+  }
+
+  const updateSliderPositionTouch = (e: React.TouchEvent) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = Math.max(0, Math.min(e.touches[0].clientX - rect.left, rect.width))
+    const percentage = (x / rect.width) * 100
+    setSliderPosition(Math.max(0, Math.min(percentage, 100)))
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className={cn(
+        'relative w-full overflow-hidden rounded-xl select-none',
+        aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-video'
+      )}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Before Image (Background) */}
+      <div className="relative h-full w-full">
+        <Image
+          src={beforeImage}
+          alt="Before"
+          fill
+          className="object-cover"
+          priority
+        />
+
+        {/* Before Label */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.3, delay: 0.7 }}
+          className={cn(
+            'absolute right-4 top-4 px-4 py-2 text-sm font-medium tracking-wider text-white',
+            sliderPosition < 95 ? 'opacity-100' : 'opacity-0'
+          )}
+        >
+          BEFORE
+        </motion.div>
+      </div>
+
+      {/* After Image (Overlay) */}
+      <motion.div
+        initial={{ width: '0%' }}
+        animate={isVisible ? { width: `${sliderPosition}%` } : { width: '0%' }}
+        transition={
+          isVisible && !isDragging
+            ? {
+                duration: 0.7,
+                ease: [0.42, 0, 0.58, 1.6], // Bounce easing
+              }
+            : { duration: 0 }
+        }
+        className="absolute left-0 top-0 h-full overflow-hidden"
+        style={isDragging ? { width: `${sliderPosition}%` } : undefined}
+      >
+        <div className="relative h-full" style={{ width: containerRef.current?.offsetWidth || '100vw' }}>
           <Image
             src={afterImage}
             alt="After"
@@ -187,27 +132,44 @@ export function BeforeAfterComparison({
             className="object-cover"
             priority
           />
-          <div className="absolute right-6 top-6 rounded-full bg-gradient-to-br from-orange-600/90 to-orange-700/90 px-5 py-2.5 text-sm font-bold text-white shadow-2xl backdrop-blur-md border border-white/30">
+
+          {/* After Label */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.3, delay: 0.7 }}
+            className={cn(
+              'absolute left-4 top-4 px-4 py-2 text-sm font-medium tracking-wider text-white',
+              sliderPosition > 5 ? 'opacity-100' : 'opacity-0'
+            )}
+          >
             AFTER
-          </div>
+          </motion.div>
         </div>
-      </ComparisonItem>
-      <ComparisonHandle />
-    </Comparison>
-  )
+      </motion.div>
 
-  // If colors provided, wrap in GlowingCard for consistent styling
-  if (primaryColor) {
-    return (
-      <GlowingCard
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor || 'hsl(25, 95%, 53%)'}
-        isPortrait={aspectRatio === 'portrait'}
+      {/* Draggable Handle */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0 }}
+        animate={isVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+        transition={{ duration: 0.3, delay: 0.7 }}
+        className="absolute top-1/2 -translate-y-1/2 cursor-move"
+        style={{ left: `${sliderPosition}%`, marginLeft: '-22px' }}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
       >
-        {comparisonContent}
-      </GlowingCard>
-    )
-  }
-
-  return comparisonContent
+        <div
+          className={cn(
+            'h-11 w-11 rounded-full bg-black shadow-[0_0_0_6px_rgba(0,0,0,0.2),0_0_10px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.3)] transition-colors',
+            isDragging && 'bg-orange-600'
+          )}
+          style={{
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M15 18L9 12L15 6\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/%3E%3Cpath d=\'M9 18L15 12L9 6\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/%3E%3C/svg%3E")',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
+        />
+      </motion.div>
+    </div>
+  )
 }

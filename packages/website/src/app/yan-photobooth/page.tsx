@@ -19,8 +19,6 @@ export default function YanPhotoboothPage() {
           <BeforeAfterComparison
             productSlug={product.slug}
             aspectRatio="video"
-            primaryColor={product.colors.primary}
-            secondaryColor={product.colors.secondary}
           />
         </ProductHero>
       </Container>

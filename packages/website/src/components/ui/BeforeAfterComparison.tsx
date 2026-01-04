@@ -60,21 +60,21 @@ export function BeforeAfterComparison({
         priority
       />
 
-      {/* BEFORE Label - Only visible when before image is showing (left side) */}
+      {/* BEFORE Label - Hard masked by separator line (left side) */}
       <div
-        className="pointer-events-none absolute left-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm transition-opacity duration-200"
+        className="pointer-events-none absolute left-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm"
         style={{
-          opacity: compareValue > 10 ? 1 : 0,
+          clipPath: `inset(0 0 0 calc(var(--compare) * 1%))`,
         }}
       >
         BEFORE
       </div>
 
-      {/* AFTER Label - Only visible when after image is showing (right side) */}
+      {/* AFTER Label - Hard masked by separator line (right side) */}
       <div
-        className="pointer-events-none absolute right-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm transition-opacity duration-200"
+        className="pointer-events-none absolute right-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm"
         style={{
-          opacity: compareValue < 90 ? 1 : 0,
+          clipPath: `inset(0 calc(100% - (var(--compare) * 1%)) 0 0)`,
         }}
       >
         AFTER

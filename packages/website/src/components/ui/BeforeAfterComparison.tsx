@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
@@ -13,78 +13,52 @@ export function BeforeAfterComparison({
   productSlug,
   aspectRatio = 'video',
 }: BeforeAfterComparisonProps) {
-  const [compareValue, setCompareValue] = useState(100) // Start at 100 to show full "before" image
-  const sectionRef = useRef<HTMLElement>(null)
+  const [compareValue, setCompareValue] = useState(50) // Start at 50% for centered position
 
   const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}_before.webp`
   const afterImage = `/images/products/${productSlug}/before-after/${productSlug}_after.webp`
 
-  // Update CSS custom property when slider changes
-  useEffect(() => {
-    if (sectionRef.current) {
-      sectionRef.current.style.setProperty('--compare', compareValue.toString())
-    }
-  }, [compareValue])
-
   return (
     <section
-      ref={sectionRef}
       className={cn(
         'relative mx-auto overflow-hidden rounded-xl border-2 border-border shadow-2xl',
         aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-video',
         'w-full max-w-[min(80vmin,1080px)]'
       )}
-      style={{
-        containerType: 'inline-size',
-        '--compare': compareValue,
-      } as React.CSSProperties}
     >
-      {/* After Image (Background - shows on right side) */}
-      <Image
-        src={afterImage}
-        alt="After"
-        fill
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        priority
-      />
-
-      {/* Before Image (Clipped - shows on left side) */}
-      <Image
-        src={beforeImage}
-        alt="Before"
-        fill
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        style={{
-          // Clip from RIGHT side based on slider position
-          // When compare=100: show full image (clip 0% from right)
-          // When compare=0: hide image (clip 100% from right)
-          clipPath: `inset(0 calc((100 - var(--compare)) * 1%) 0 0)`,
-        }}
-        priority
-      />
-
-      {/* BEFORE Label - Visible on left side, clipped same as before image */}
-      <div
-        className="pointer-events-none absolute left-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm"
-        style={{
-          // Same clip as before image - clips from right
-          clipPath: `inset(0 calc((100 - var(--compare)) * 1%) 0 0)`,
-        }}
-      >
-        BEFORE
+      {/* After Image - Base Layer (always fully visible) */}
+      <div className="absolute inset-0">
+        <Image
+          src={afterImage}
+          alt="After"
+          fill
+          className="pointer-events-none h-full w-full object-cover"
+          priority
+        />
+        {/* AFTER Label - naturally masked by parent */}
+        <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
+          AFTER
+        </div>
       </div>
 
-      {/* AFTER Label - Visible on right side, clipped from left */}
+      {/* Before Image - Overlay with dynamic width */}
       <div
-        className="pointer-events-none absolute right-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm"
+        className="absolute inset-0 overflow-hidden"
         style={{
-          // Clip from LEFT side based on slider position
-          // When compare=0: show full label (clip 0% from left)
-          // When compare=100: hide label (clip 100% from left)
-          clipPath: `inset(0 0 0 calc(var(--compare) * 1%))`,
+          width: `${compareValue}%`,
         }}
       >
-        AFTER
+        <Image
+          src={beforeImage}
+          alt="Before"
+          fill
+          className="pointer-events-none h-full w-full object-cover"
+          priority
+        />
+        {/* BEFORE Label - naturally masked by parent overflow */}
+        <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
+          BEFORE
+        </div>
       </div>
 
       {/* Separator Line */}
@@ -103,15 +77,13 @@ export function BeforeAfterComparison({
         max="100"
         value={compareValue}
         onChange={(e) => setCompareValue(Number(e.target.value))}
-        className="absolute inset-0 z-10 h-full w-full cursor-grab appearance-none bg-transparent opacity-0 active:cursor-grabbing"
-        style={{
-          overflow: 'hidden',
-        }}
+        aria-label="Image comparison slider"
+        className="absolute inset-0 z-30 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0"
       />
 
       {/* Drag Handle */}
       <div
-        className="pointer-events-none absolute top-1/2 z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-white shadow-lg"
+        className="pointer-events-none absolute top-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-white shadow-lg"
         style={{
           left: `${compareValue}%`,
           transform: 'translate(-50%, -50%) rotate(90deg)',

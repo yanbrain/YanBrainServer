@@ -1,95 +1,155 @@
 'use client'
 
-import { useState } from 'react'
+import * as React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 interface BeforeAfterComparisonProps {
-  productSlug: string
-  aspectRatio?: 'video' | 'portrait'
+    productSlug: string
+    aspectRatio?: 'video' | 'portrait'
+    initial?: number
+    beforeLabel?: string
+    afterLabel?: string
+}
+
+function clamp(n: number, min: number, max: number) {
+    return Math.min(max, Math.max(min, n))
 }
 
 export function BeforeAfterComparison({
-  productSlug,
-  aspectRatio = 'video',
-}: BeforeAfterComparisonProps) {
-  const [compareValue, setCompareValue] = useState(50)
+                                          productSlug,
+                                          aspectRatio = 'video',
+                                          initial = 50,
+                                          beforeLabel = 'Before',
+                                          afterLabel = 'After',
+                                      }: BeforeAfterComparisonProps) {
+    const rootRef = React.useRef<HTMLDivElement | null>(null)
+    const rangeRef = React.useRef<HTMLInputElement | null>(null)
+    const dragging = React.useRef(false)
 
-  const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}_before.webp`
-  const afterImage = `/images/products/${productSlug}/before-after/${productSlug}_after.webp`
+    const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}_before.webp`
+    const afterImage = `/images/products/${productSlug}/before-after/${productSlug}_after.webp`
 
-  return (
-    <section
-      className={cn(
-        'relative mx-auto overflow-hidden rounded-xl border-2 border-border shadow-2xl',
-        aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-video',
-        'w-full max-w-[min(80vmin,1080px)]'
-      )}
-    >
-      {/* After Image - Base Layer (always visible) */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${afterImage})`,
-        }}
-      >
-        {/* AFTER Label */}
-        <div className="absolute right-4 top-4 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
-          AFTER
-        </div>
-      </div>
+    React.useEffect(() => {
+        rootRef.current?.style.setProperty('--pos', `${clamp(initial, 0, 100)}%`)
+    }, [initial])
 
-      {/* Before Image - Overlay with dynamic width */}
-      <div
-        className="absolute inset-0 border-r-2 border-white bg-cover bg-center shadow-lg"
-        style={{
-          backgroundImage: `url(${beforeImage})`,
-          width: `${compareValue}%`,
-        }}
-      >
-        {/* BEFORE Label */}
-        <div className="absolute left-4 top-4 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
-          BEFORE
-        </div>
-      </div>
+    const setFromX = (clientX: number) => {
+        const el = rootRef.current
+        if (!el) return
 
-      {/* Range Input Slider */}
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={compareValue}
-        onChange={(e) => setCompareValue(Number(e.target.value))}
-        aria-label="Image comparison slider"
-        className="absolute inset-0 z-30 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0 active:cursor-grabbing"
-        style={{
-          WebkitAppearance: 'none',
-        }}
-      />
+        const rect = el.getBoundingClientRect()
+        const value = clamp(((clientX - rect.left) / rect.width) * 100, 0, 100)
 
-      {/* Drag Handle */}
-      <div
-        className="pointer-events-none absolute top-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-white shadow-lg transition-none"
-        style={{
-          left: `${compareValue}%`,
-          transform: 'translate(-50%, -50%)',
-        }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="2"
-          stroke="currentColor"
-          className="h-5 w-5"
-          style={{ transform: 'rotate(90deg)' }}
+        el.style.setProperty('--pos', `${value}%`)
+        if (rangeRef.current) rangeRef.current.value = String(Math.round(value))
+    }
+
+    return (
+        <section
+            ref={rootRef}
+            className={cn(
+                'relative mx-auto w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl',
+                aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-video',
+                'max-w-[min(80vmin,1080px)]'
+            )}
+            style={{ ['--pos' as any]: '50%' }}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-          />
-        </svg>
-      </div>
-    </section>
-  )
+            {/* AFTER - with clipping for right side */}
+            <div
+                className="absolute inset-0 z-10"
+                style={{ clipPath: 'inset(0 0 0 var(--pos))' }}
+            >
+                <Image
+                    src={afterImage}
+                    alt="After"
+                    fill
+                    priority
+                    className="pointer-events-none object-cover"
+                />
+
+                {/* AFTER LABEL - inside clipped area */}
+                <div className="absolute right-3 top-3 pointer-events-none">
+                    <span className="inline-block rounded bg-black/55 px-3 py-1.5 text-sm font-bold uppercase text-white backdrop-blur-sm">
+                        {afterLabel}
+                    </span>
+                </div>
+            </div>
+
+            {/* BEFORE - with clipping for left side */}
+            <div
+                className="absolute inset-0 z-10"
+                style={{ clipPath: 'inset(0 calc(100% - var(--pos)) 0 0)' }}
+            >
+                <Image
+                    src={beforeImage}
+                    alt="Before"
+                    fill
+                    className="pointer-events-none object-cover"
+                />
+
+                {/* BEFORE LABEL - inside clipped area */}
+                <div className="absolute left-3 top-3 pointer-events-none">
+                    <span className="inline-block rounded bg-black/55 px-3 py-1.5 text-sm font-bold uppercase text-white backdrop-blur-sm">
+                        {beforeLabel}
+                    </span>
+                </div>
+            </div>
+
+            {/* Drag surface */}
+            <div
+                className="absolute inset-0 z-20 cursor-ew-resize"
+                onPointerDown={(e) => {
+                    dragging.current = true
+                    e.currentTarget.setPointerCapture(e.pointerId)
+                    setFromX(e.clientX)
+                }}
+                onPointerMove={(e) => dragging.current && setFromX(e.clientX)}
+                onPointerUp={() => (dragging.current = false)}
+                onPointerCancel={() => (dragging.current = false)}
+            />
+
+            {/* Divider */}
+            <div
+                className="pointer-events-none absolute top-0 z-30 h-full w-0.5 bg-white"
+                style={{ left: 'var(--pos)', transform: 'translateX(-50%)' }}
+            />
+
+            {/* Handle */}
+            <div
+                className="pointer-events-none absolute top-1/2 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-xl ring-2 ring-gray-900"
+                style={{ left: 'var(--pos)', transform: 'translate(-50%, -50%)' }}
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-6 w-6"
+                >
+                    {/* Left arrow */}
+                    <path d="M9 7 L5 12 L9 17" />
+                    {/* Right arrow */}
+                    <path d="M15 7 L19 12 L15 17" />
+                </svg>
+            </div>
+
+            {/* Accessible range */}
+            <input
+                ref={rangeRef}
+                type="range"
+                min={0}
+                max={100}
+                defaultValue={initial}
+                aria-label="Image comparison slider"
+                onChange={(e) =>
+                    rootRef.current?.style.setProperty('--pos', `${e.target.value}%`)
+                }
+                className="absolute inset-0 z-50 h-full w-full cursor-ew-resize opacity-0"
+            />
+        </section>
+    )
 }

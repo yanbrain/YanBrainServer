@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { Product } from '@/types'
 
 export function ProductCTA({ product }: { product: Product }) {

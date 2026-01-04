@@ -1,7 +1,7 @@
 import { Hero } from '@/components/home/Hero'
 import { OurClientsScroll } from '@/components/home/OurClientsScroll'
 import { ProductsGrid } from '@/components/home/ProductsGrid'
-import { Container } from '@/components/ui/container'
+import { Container } from '@/components/ui/Container'
 import { getClientLogos } from '@/lib/clients'
 
 export default async function HomePage() {

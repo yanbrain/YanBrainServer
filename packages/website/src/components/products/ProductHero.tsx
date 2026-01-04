@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion'
 import { Download } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { GlowingCard } from '@/components/ui/glowing-card'
+import { Button } from '@/components/ui/Button'
+import { GlowingCard } from '@/components/ui/GlowingCard'
 import { Product } from '@/types'
 import Image from 'next/image'
 

@@ -3,7 +3,7 @@ import { ProductHero } from '@/components/products/ProductHero'
 import { ProductFeatures } from '@/components/products/ProductFeatures'
 import { ProductCTA } from '@/components/products/ProductCTA'
 import { VerticalGallery } from '@/components/products/VerticalGallery'
-import { Container } from '@/components/ui/container'
+import { Container } from '@/components/ui/Container'
 import { getProductBySlug } from '@/config/products'
 import { getGalleryImages } from '@/lib/gallery'
 

@@ -1,4 +1,4 @@
-import { Container } from '@/components/ui/container'
+import { Container } from '@/components/ui/Container'
 import { ContactForm } from '@/components/contact/ContactForm'
 import { ContactInfo } from '@/components/contact/ContactInfo'
 

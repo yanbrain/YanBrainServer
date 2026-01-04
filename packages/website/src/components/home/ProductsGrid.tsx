@@ -5,17 +5,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { PRODUCTS } from '@/config/products'
-import { GlowingCard } from '@/components/ui/glowing-card'
-import { BeforeAfterComparison } from '@/components/ui/before-after-comparison'
-
-// Products that have before/after images
-const PRODUCTS_WITH_BEFORE_AFTER = ['yan-draw', 'yan-photobooth']
 
 export function ProductsGrid() {
   return (
     <div className="grid gap-8 md:grid-cols-3">
       {PRODUCTS.map((product, i) => {
-        const hasBeforeAfter = PRODUCTS_WITH_BEFORE_AFTER.includes(product.slug)
         const heroImage = `/images/products/${product.slug}/hero/${product.slug}_hero.webp`
 
         return (
@@ -27,21 +21,14 @@ export function ProductsGrid() {
             className="flex"
           >
             <Link href={`/${product.slug}`} className="group flex flex-col flex-1">
-              {hasBeforeAfter ? (
-                <BeforeAfterComparison
-                  productSlug={product.slug}
-                  aspectRatio="video"
+              <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl">
+                <Image
+                  src={heroImage}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
                 />
-              ) : (
-                <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl">
-                  <Image
-                    src={heroImage}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
+              </div>
 
               <div className="mt-4 px-2 flex-1 flex flex-col">
                 <h2

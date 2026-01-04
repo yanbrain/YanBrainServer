@@ -35,23 +35,6 @@ export default async function YanAvatarPage() {
         </ProductHero>
       </Container>
 
-      <Container className="py-20">
-        <ProductHero product={product} isPortrait>
-          <GlowingCard
-            primaryColor={product.colors.primary}
-            secondaryColor={product.colors.secondary || 'hsl(25, 95%, 53%)'}
-            isPortrait
-          >
-            <Image
-              src="/images/products/yan-avatar/hero/yan-avatar_product-hero.webp"
-              alt="Yan Avatar Product Preview"
-              fill
-              className="object-cover"
-            />
-          </GlowingCard>
-        </ProductHero>
-      </Container>
-
       <Container className="space-y-20 py-20">
         <ProductFeatures product={product} />
       </Container>

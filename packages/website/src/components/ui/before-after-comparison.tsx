@@ -60,13 +60,23 @@ export function BeforeAfterComparison({
         priority
       />
 
-      {/* BEFORE Label */}
-      <div className="pointer-events-none absolute left-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
+      {/* BEFORE Label - Only visible when before image is showing (left side) */}
+      <div
+        className="pointer-events-none absolute left-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm transition-opacity duration-200"
+        style={{
+          opacity: compareValue > 10 ? 1 : 0,
+        }}
+      >
         BEFORE
       </div>
 
-      {/* AFTER Label */}
-      <div className="pointer-events-none absolute right-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
+      {/* AFTER Label - Only visible when after image is showing (right side) */}
+      <div
+        className="pointer-events-none absolute right-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm transition-opacity duration-200"
+        style={{
+          opacity: compareValue < 90 ? 1 : 0,
+        }}
+      >
         AFTER
       </div>
 

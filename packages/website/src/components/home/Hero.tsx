@@ -18,8 +18,8 @@ export function Hero() {
         className="relative z-10 py-20 text-center"
       >
         <h1 className="mb-4 text-6xl font-bold">{SITE_CONFIG.name}</h1>
-        <p className="text-xl font-medium text-accent">Intelligent Software Solutions</p>
-        <p className="mx-auto mt-3 max-w-2xl text-lg text-muted-foreground">
+        <p className="font-medium text-accent" style={{ fontSize: '1rem' }}>Intelligent Software Solutions</p>
+        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground" style={{ fontSize: '1.5rem' }}>
           Say Hi to AI !
         </p>
       </motion.section>

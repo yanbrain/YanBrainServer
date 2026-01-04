@@ -19,8 +19,10 @@ export function HeroParticleBackground() {
         animate={{ opacity: CONFIG.opacity }}
         transition={{ duration: 1 }}
         style={{
-          width: `max(${CONFIG.size * 100}%, ${CONFIG.size * 50}vw)`,
-          height: `max(${CONFIG.size * 100}%, ${CONFIG.size * 50}vh)`,
+          width: `${CONFIG.size * 100}vw`,
+          height: `${CONFIG.size * 100}vh`,
+          minWidth: `${CONFIG.size * 100}%`,
+          minHeight: `${CONFIG.size * 100}%`,
           maxWidth: 'none',
           maxHeight: 'none'
         }}

@@ -10,7 +10,10 @@ export function ProductsGrid() {
   return (
     <div className="grid gap-8 md:grid-cols-3">
       {PRODUCTS.map((product, i) => {
-        const heroImage = `/images/products/${product.slug}/hero/${product.slug}_hero.webp`
+        // Use landing-hero for yan-avatar, regular hero for others
+        const heroImage = product.slug === 'yan-avatar'
+          ? `/images/products/${product.slug}/hero/${product.slug}_landing-hero.webp`
+          : `/images/products/${product.slug}/hero/${product.slug}_hero.webp`
 
         return (
           <motion.div

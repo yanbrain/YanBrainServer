@@ -1,52 +1,46 @@
 'use client'
 
-import Image from 'next/image'
-import { cn } from '@/lib/utils'
+import type { GalleryImage } from '@/lib/gallery'
 
 interface ProductGalleryProps {
-  productSlug: string
-  imageCount?: number
-  isPortrait?: boolean
+  images: GalleryImage[]
 }
 
-export function ProductGallery({ 
-  productSlug, 
-  imageCount = 5,
-  isPortrait = false
-}: ProductGalleryProps) {
-  const images = Array.from({ length: imageCount }, (_, i) => ({
-    src: `/images/products/${productSlug}/gallery/${productSlug}_gallery_${String(i + 1).padStart(2, '0')}.webp`,
-    alt: `${productSlug} example ${i + 1}`
-  }))
+export function ProductGallery({ images }: ProductGalleryProps) {
+  if (images.length === 0) {
+    return (
+      <p className="text-center text-sm text-muted-foreground">
+        No gallery images yet. Add images to the product gallery folder to see them here.
+      </p>
+    )
+  }
 
   return (
     <div className="relative mx-auto max-w-6xl">
-      <div 
+      <div
         className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"
         style={{
           scrollSnapType: 'x mandatory',
           WebkitOverflowScrolling: 'touch'
         }}
       >
-        {images.map((image, index) => (
+        {images.map((image) => (
           <div
             key={image.src}
-            className={cn(
-              "relative shrink-0 overflow-hidden rounded-lg bg-secondary",
-              isPortrait ? "aspect-[9/16] w-48" : "aspect-video w-96"
-            )}
+            className="flex shrink-0 items-center justify-center rounded-lg bg-secondary p-4"
             style={{ scrollSnapAlign: 'start' }}
           >
-            <Image
+            <img
               src={image.src}
               alt={image.alt}
-              fill
-              className="object-cover"
+              className="max-h-96 w-auto max-w-[85vw] object-contain"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         ))}
       </div>
-      
+
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { ProductHero } from '@/components/products/ProductHero'
 import { ProductFeatures } from '@/components/products/ProductFeatures'
 import { ProductCTA } from '@/components/products/ProductCTA'
-import { VerticalGallery } from '@/components/products/VerticalGallery'
+import { ProductGallery } from '@/components/products/ProductGallery'
 import { Container } from '@/components/ui/Container'
 import { GlowingCard } from '@/components/ui/GlowingCard'
 import { getProductBySlug } from '@/config/products'
@@ -41,7 +41,7 @@ export default async function YanAvatarPage() {
       
       <Container className="py-20">
         <h2 className="mb-8 text-center text-3xl font-bold">Gallery</h2>
-        <VerticalGallery images={galleryImages} />
+        <ProductGallery images={galleryImages} />
       </Container>
       
       <Container className="py-20">

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 interface BeforeAfterComparisonProps {
@@ -13,7 +12,7 @@ export function BeforeAfterComparison({
   productSlug,
   aspectRatio = 'video',
 }: BeforeAfterComparisonProps) {
-  const [compareValue, setCompareValue] = useState(50) // Start at 50% for centered position
+  const [compareValue, setCompareValue] = useState(50)
 
   const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}_before.webp`
   const afterImage = `/images/products/${productSlug}/before-after/${productSlug}_after.webp`
@@ -26,49 +25,32 @@ export function BeforeAfterComparison({
         'w-full max-w-[min(80vmin,1080px)]'
       )}
     >
-      {/* After Image - Base Layer (always fully visible) */}
-      <div className="absolute inset-0">
-        <Image
-          src={afterImage}
-          alt="After"
-          fill
-          className="pointer-events-none h-full w-full object-cover"
-          priority
-        />
-        {/* AFTER Label - naturally masked by parent */}
-        <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
+      {/* After Image - Base Layer (always visible) */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${afterImage})`,
+        }}
+      >
+        {/* AFTER Label */}
+        <div className="absolute right-4 top-4 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
           AFTER
         </div>
       </div>
 
       {/* Before Image - Overlay with dynamic width */}
       <div
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-0 border-r-2 border-white bg-cover bg-center shadow-lg"
         style={{
+          backgroundImage: `url(${beforeImage})`,
           width: `${compareValue}%`,
         }}
       >
-        <Image
-          src={beforeImage}
-          alt="Before"
-          fill
-          className="pointer-events-none h-full w-full object-cover"
-          priority
-        />
-        {/* BEFORE Label - naturally masked by parent overflow */}
-        <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
+        {/* BEFORE Label */}
+        <div className="absolute left-4 top-4 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
           BEFORE
         </div>
       </div>
-
-      {/* Separator Line */}
-      <div
-        className="pointer-events-none absolute top-0 z-20 h-full w-0.5 bg-white shadow-lg"
-        style={{
-          left: `${compareValue}%`,
-          transform: 'translateX(-50%)',
-        }}
-      />
 
       {/* Range Input Slider */}
       <input
@@ -78,24 +60,28 @@ export function BeforeAfterComparison({
         value={compareValue}
         onChange={(e) => setCompareValue(Number(e.target.value))}
         aria-label="Image comparison slider"
-        className="absolute inset-0 z-30 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0"
+        className="absolute inset-0 z-30 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0 active:cursor-grabbing"
+        style={{
+          WebkitAppearance: 'none',
+        }}
       />
 
       {/* Drag Handle */}
       <div
-        className="pointer-events-none absolute top-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-white shadow-lg"
+        className="pointer-events-none absolute top-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-white shadow-lg transition-none"
         style={{
           left: `${compareValue}%`,
-          transform: 'translate(-50%, -50%) rotate(90deg)',
+          transform: 'translate(-50%, -50%)',
         }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          strokeWidth="1.5"
+          strokeWidth="2"
           stroke="currentColor"
-          className="h-6 w-6"
+          className="h-5 w-5"
+          style={{ transform: 'rotate(90deg)' }}
         >
           <path
             strokeLinecap="round"

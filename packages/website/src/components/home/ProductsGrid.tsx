@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { PRODUCTS } from '@/config/products'
 import { GlowingCard } from '@/components/ui/glowing-card'
@@ -13,7 +12,7 @@ const PRODUCTS_WITH_BEFORE_AFTER = ['yan-draw', 'yan-photobooth']
 
 export function ProductsGrid() {
   return (
-    <div className="grid gap-8 md:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {PRODUCTS.map((product, i) => {
         const hasBeforeAfter = PRODUCTS_WITH_BEFORE_AFTER.includes(product.slug)
 
@@ -25,35 +24,45 @@ export function ProductsGrid() {
             transition={{ duration: 0.6, delay: i * 0.1 }}
             className="flex"
           >
-            <Link href={`/${product.slug}`} className="group flex flex-col flex-1">
-              {hasBeforeAfter ? (
-                <BeforeAfterComparison
-                  productSlug={product.slug}
-                  aspectRatio="video"
-                />
-              ) : (
-                <GlowingCard
-                  primaryColor={product.colors.primary}
-                  secondaryColor={product.colors.secondary || 'hsl(25, 95%, 53%)'}
-                >
-                  <div className="flex h-full items-center justify-center bg-secondary text-lg font-semibold text-muted-foreground">
-                    {product.name}
+            <Link
+              href={`/${product.slug}`}
+              className="group flex flex-1 flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 via-black/80 to-black px-5 pb-6 pt-5 transition hover:border-white/20 hover:bg-white/5"
+            >
+              <div className="relative">
+                {hasBeforeAfter ? (
+                  <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/60">
+                    <BeforeAfterComparison
+                      productSlug={product.slug}
+                      aspectRatio="video"
+                    />
                   </div>
-                </GlowingCard>
-              )}
+                ) : (
+                  <GlowingCard
+                    primaryColor={product.colors.primary}
+                    secondaryColor={product.colors.secondary || 'hsl(25, 95%, 53%)'}
+                    className="rounded-2xl"
+                  >
+                    <div className="flex h-full items-center justify-center bg-secondary text-lg font-semibold text-muted-foreground">
+                      {product.name}
+                    </div>
+                  </GlowingCard>
+                )}
+              </div>
 
-              <div className="mt-4 px-2 flex-1 flex flex-col">
+              <div className="mt-5 flex flex-1 flex-col">
                 <h2
-                  className="mb-2 text-2xl font-bold transition-colors"
+                  className="text-xl font-semibold text-white transition-colors"
                   style={{
                     ['--hover-color' as string]: product.colors.primary
                   }}
                 >
                   {product.name}
                 </h2>
-                <p className="mb-4 text-muted-foreground flex-1">{product.description}</p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground flex-1">
+                  {product.description}
+                </p>
                 <div
-                  className="flex items-center text-sm font-medium transition-colors"
+                  className="mt-4 inline-flex items-center text-sm font-medium transition-colors"
                   style={{ color: product.colors.primary }}
                 >
                   Learn more

@@ -55,26 +55,33 @@ export function BeforeAfterComparison({
         fill
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         style={{
-          clipPath: 'inset(0 0 0 calc(var(--compare) * 1%))',
+          // Clip from RIGHT side based on slider position
+          // When compare=100: show full image (clip 0% from right)
+          // When compare=0: hide image (clip 100% from right)
+          clipPath: `inset(0 calc((100 - var(--compare)) * 1%) 0 0)`,
         }}
         priority
       />
 
-      {/* BEFORE Label - Hard masked by separator line (left side) */}
+      {/* BEFORE Label - Visible on left side, clipped same as before image */}
       <div
         className="pointer-events-none absolute left-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm"
         style={{
-          clipPath: `inset(0 0 0 calc(var(--compare) * 1%))`,
+          // Same clip as before image - clips from right
+          clipPath: `inset(0 calc((100 - var(--compare)) * 1%) 0 0)`,
         }}
       >
         BEFORE
       </div>
 
-      {/* AFTER Label - Hard masked by separator line (right side) */}
+      {/* AFTER Label - Visible on right side, clipped from left */}
       <div
         className="pointer-events-none absolute right-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm"
         style={{
-          clipPath: `inset(0 calc(100% - (var(--compare) * 1%)) 0 0)`,
+          // Clip from LEFT side based on slider position
+          // When compare=0: show full label (clip 0% from left)
+          // When compare=100: hide label (clip 100% from left)
+          clipPath: `inset(0 0 0 calc(var(--compare) * 1%))`,
         }}
       >
         AFTER

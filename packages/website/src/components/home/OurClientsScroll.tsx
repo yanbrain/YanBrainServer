@@ -3,18 +3,19 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 
-const CLIENTS = [
-    { name: 'BMW', logo: '/images/clients/bmw.webp' },
-    { name: 'ADNOC', logo: '/images/clients/adnoc.webp' },
-    { name: 'ALI & SONS', logo: '/images/clients/ali-sons.webp' },
-    { name: 'WTC Dubai', logo: '/images/clients/wtc.webp' },
-    { name: 'Sofoil', logo: '/images/clients/sofoil.webp' }
-]
+interface Client {
+    name: string
+    logo: string
+}
 
-export function OurClientsScroll() {
+interface OurClientsScrollProps {
+    clients: Client[]
+}
+
+export function OurClientsScroll({ clients }: OurClientsScrollProps) {
     // Calculate the width of one set: (width + gap) * number of items
     // 160px width + 80px gap (20 * 4) = 240px per item
-    const scrollDistance = -(240 * CLIENTS.length)
+    const scrollDistance = -(240 * clients.length)
 
     return (
         <section className="border-y border-border bg-secondary/30 py-12">
@@ -50,7 +51,7 @@ export function OurClientsScroll() {
                                 }}
                                 aria-hidden={groupIndex > 1}
                             >
-                                {CLIENTS.map((client) => (
+                                {clients.map((client) => (
                                     <div
                                         key={`${client.name}-${groupIndex}`}
                                         className="flex h-20 w-40 shrink-0 items-center justify-center"

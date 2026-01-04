@@ -19,8 +19,8 @@ export function BeforeAfterComparison({
   const [isVisible, setIsVisible] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}-before.png`
-  const afterImage = `/images/products/${productSlug}/before-after/${productSlug}-after.png`
+  const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}-before.webp`
+  const afterImage = `/images/products/${productSlug}/before-after/${productSlug}-after.webp`
 
   useEffect(() => {
     // Trigger visibility animation on mount

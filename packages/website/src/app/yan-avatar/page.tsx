@@ -20,6 +20,10 @@ export default async function YanAvatarPage() {
         <ProductHero product={product} isPortrait />
       </Container>
 
+      <Container className="py-20">
+        <ProductHero product={product} isPortrait />
+      </Container>
+
       <Container className="space-y-20 py-20">
         <ProductFeatures product={product} />
       </Container>

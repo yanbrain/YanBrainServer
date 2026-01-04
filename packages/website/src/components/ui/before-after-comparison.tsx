@@ -13,7 +13,7 @@ export function BeforeAfterComparison({
   productSlug,
   aspectRatio = 'video',
 }: BeforeAfterComparisonProps) {
-  const [compareValue, setCompareValue] = useState(50)
+  const [compareValue, setCompareValue] = useState(100) // Start at 100 to show full "before" image
   const sectionRef = useRef<HTMLElement>(null)
 
   const beforeImage = `/images/products/${productSlug}/before-after/${productSlug}_before.webp`
@@ -39,25 +39,44 @@ export function BeforeAfterComparison({
         '--compare': compareValue,
       } as React.CSSProperties}
     >
-      {/* Before Image (Background) */}
+      {/* After Image (Background - shows on right side) */}
       <Image
-        src={beforeImage}
-        alt="Before"
+        src={afterImage}
+        alt="After"
         fill
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         priority
       />
 
-      {/* After Image (Clipped) */}
+      {/* Before Image (Clipped - shows on left side) */}
       <Image
-        src={afterImage}
-        alt="After"
+        src={beforeImage}
+        alt="Before"
         fill
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         style={{
           clipPath: 'inset(0 0 0 calc(var(--compare) * 1%))',
         }}
         priority
+      />
+
+      {/* BEFORE Label */}
+      <div className="pointer-events-none absolute left-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
+        BEFORE
+      </div>
+
+      {/* AFTER Label */}
+      <div className="pointer-events-none absolute right-4 top-4 z-30 rounded-md bg-black/70 px-3 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-sm">
+        AFTER
+      </div>
+
+      {/* Separator Line */}
+      <div
+        className="pointer-events-none absolute top-0 z-20 h-full w-0.5 bg-white shadow-lg"
+        style={{
+          left: `${compareValue}%`,
+          transform: 'translateX(-50%)',
+        }}
       />
 
       {/* Range Input Slider */}
@@ -75,7 +94,7 @@ export function BeforeAfterComparison({
 
       {/* Drag Handle */}
       <div
-        className="pointer-events-none absolute top-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-600 bg-black text-white shadow-lg transition-opacity active:opacity-0"
+        className="pointer-events-none absolute top-1/2 z-30 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-white shadow-lg"
         style={{
           left: `${compareValue}%`,
           transform: 'translate(-50%, -50%) rotate(90deg)',

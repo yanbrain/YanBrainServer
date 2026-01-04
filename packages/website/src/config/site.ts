@@ -1,8 +1,8 @@
 export const SITE_CONFIG = {
-  name: 'YanPlay',
-  title: 'YanPlay - AI-Powered Creative Solutions',
+  name: 'YanBrain',
+  title: 'YanBrain - AI-Powered Creative Solutions',
   description: 'Transform your business with intelligent tools designed for the present. Essential AI tools for modern creators and businesses.',
-  url: 'https://yanplay.com',
+  url: 'https://yanbrain.com',
   whatsapp: '+971501537705',
-  email: 'contact@yanplay.com',
+  email: 'contact@yanbrain.com',
 }

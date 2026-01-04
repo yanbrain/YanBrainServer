@@ -15,6 +15,7 @@ out/
 # Environment variables
 .env
 .env.local
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
@@ -48,4 +49,4 @@ Thumbs.db
 # Misc
 .cache/
 .temp/
-/packages/website/public/
+/packages/admindash/.well-known/

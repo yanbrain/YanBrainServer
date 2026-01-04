@@ -33,4 +33,4 @@ export const RATE_LIMIT = {
 
 export const CLOUD_FUNCTIONS_URL =
     process.env.NEXT_PUBLIC_CLOUD_FUNCTIONS_URL ||
-    'https://us-central1-yan-play.cloudfunctions.net/api';
+    'https://us-central1-yanbrainserver.cloudfunctions.net/api';

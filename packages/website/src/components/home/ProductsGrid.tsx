@@ -16,6 +16,7 @@ export function ProductsGrid() {
     <div className="grid gap-8 md:grid-cols-3">
       {PRODUCTS.map((product, i) => {
         const hasBeforeAfter = PRODUCTS_WITH_BEFORE_AFTER.includes(product.slug)
+        const heroImage = `/images/products/${product.slug}/hero/${product.slug}_hero.webp`
 
         return (
           <motion.div
@@ -32,14 +33,14 @@ export function ProductsGrid() {
                   aspectRatio="video"
                 />
               ) : (
-                <GlowingCard
-                  primaryColor={product.colors.primary}
-                  secondaryColor={product.colors.secondary || 'hsl(25, 95%, 53%)'}
-                >
-                  <div className="flex h-full items-center justify-center bg-secondary text-lg font-semibold text-muted-foreground">
-                    {product.name}
-                  </div>
-                </GlowingCard>
+                <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl">
+                  <Image
+                    src={heroImage}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               )}
 
               <div className="mt-4 px-2 flex-1 flex flex-col">

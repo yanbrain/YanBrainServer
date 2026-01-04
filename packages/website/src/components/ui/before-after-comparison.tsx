@@ -75,10 +75,10 @@ export function BeforeAfterComparison({
 
       {/* Drag Handle */}
       <div
-        className="pointer-events-none absolute left-0 top-1/2 z-20 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-gray-600 bg-black text-white shadow-lg transition-opacity active:opacity-0"
+        className="pointer-events-none absolute top-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-600 bg-black text-white shadow-lg transition-opacity active:opacity-0"
         style={{
-          translate: `calc(-50% + (var(--compare) * 1cqi)) -50%`,
-          rotate: '90deg',
+          left: `${compareValue}%`,
+          transform: 'translate(-50%, -50%) rotate(90deg)',
         }}
       >
         <svg

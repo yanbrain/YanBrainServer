@@ -5,17 +5,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { PRODUCTS } from '@/config/products'
-import { GlowingCard } from '@/components/ui/glowing-card'
-import { BeforeAfterComparison } from '@/components/ui/before-after-comparison'
-
-// Products that have before/after images
-const PRODUCTS_WITH_BEFORE_AFTER = ['yan-draw', 'yan-photobooth']
 
 export function ProductsGrid() {
   return (
     <div className="grid gap-8 md:grid-cols-3">
       {PRODUCTS.map((product, i) => {
-        const hasBeforeAfter = PRODUCTS_WITH_BEFORE_AFTER.includes(product.slug)
+        // Use landing-hero for yan-avatar, regular hero for others
+        const heroImage = product.slug === 'yan-avatar'
+          ? `/images/products/${product.slug}/hero/${product.slug}_landing-hero.webp`
+          : `/images/products/${product.slug}/hero/${product.slug}_hero.webp`
 
         return (
           <motion.div
@@ -26,21 +24,14 @@ export function ProductsGrid() {
             className="flex"
           >
             <Link href={`/${product.slug}`} className="group flex flex-col flex-1">
-              {hasBeforeAfter ? (
-                <BeforeAfterComparison
-                  productSlug={product.slug}
-                  aspectRatio="video"
+              <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl">
+                <Image
+                  src={heroImage}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
                 />
-              ) : (
-                <GlowingCard
-                  primaryColor={product.colors.primary}
-                  secondaryColor={product.colors.secondary || 'hsl(25, 95%, 53%)'}
-                >
-                  <div className="flex h-full items-center justify-center bg-secondary text-lg font-semibold text-muted-foreground">
-                    {product.name}
-                  </div>
-                </GlowingCard>
-              )}
+              </div>
 
               <div className="mt-4 px-2 flex-1 flex flex-col">
                 <h2

@@ -1,8 +1,8 @@
 'use client'
 
-import type { KeyboardEvent } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import Image from 'next/image'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { GalleryImage } from '@/lib/gallery'
 import { cn } from '@/lib/utils'
 
@@ -11,38 +11,35 @@ interface HorizontalGalleryProps {
 }
 
 export function HorizontalGallery({ images }: HorizontalGalleryProps) {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const itemRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(true)
 
-  const clampIndex = useCallback(
-    (index: number) => Math.max(0, Math.min(images.length - 1, index)),
-    [images.length]
-  )
+  const checkScrollability = useCallback(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
 
-  useEffect(() => {
-    const target = itemRefs.current[activeIndex]
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
-    }
-  }, [activeIndex])
+    setCanScrollLeft(container.scrollLeft > 0)
+    setCanScrollRight(
+      container.scrollLeft < container.scrollWidth - container.clientWidth - 10
+    )
+  }, [])
 
-  useEffect(() => {
-    setActiveIndex((current) => clampIndex(current))
-  }, [clampIndex])
+  const scroll = (direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current
+    if (!container) return
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === 'ArrowRight') {
-        event.preventDefault()
-        setActiveIndex((current) => clampIndex(current + 1))
-      }
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault()
-        setActiveIndex((current) => clampIndex(current - 1))
-      }
-    },
-    [clampIndex]
-  )
+    const scrollAmount = container.clientWidth * 0.8
+    const newScrollLeft =
+      direction === 'left'
+        ? container.scrollLeft - scrollAmount
+        : container.scrollLeft + scrollAmount
+
+    container.scrollTo({
+      left: newScrollLeft,
+      behavior: 'smooth',
+    })
+  }
 
   if (images.length === 0) {
     return (
@@ -53,48 +50,68 @@ export function HorizontalGallery({ images }: HorizontalGalleryProps) {
   }
 
   return (
-    <div
-      className="relative mx-auto max-w-6xl"
-      tabIndex={0}
-      role="region"
-      aria-label="Gallery images"
-      onKeyDown={handleKeyDown}
-    >
-      <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide scroll-smooth snap-x snap-mandatory">
-        {images.map((image, index) => {
-          const isActive = index === activeIndex
+    <div className="relative mx-auto max-w-7xl">
+      {/* Left Fade + Navigation Button */}
+      <div
+        className={cn(
+          'absolute left-0 top-0 z-10 flex h-full w-32 items-center transition-opacity duration-300',
+          'bg-gradient-to-r from-background via-background/80 to-transparent',
+          canScrollLeft ? 'opacity-100' : 'pointer-events-none opacity-0'
+        )}
+      >
+        <button
+          onClick={() => scroll('left')}
+          disabled={!canScrollLeft}
+          className="ml-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/80 text-white backdrop-blur-sm transition-all hover:bg-black hover:scale-110 disabled:opacity-0"
+          aria-label="Scroll left"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+      </div>
 
-          return (
-            <button
-              key={image.src}
-              ref={(element) => {
-                itemRefs.current[index] = element
-              }}
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              className={cn(
-                'relative shrink-0 overflow-hidden rounded-2xl bg-secondary transition duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60',
-                isActive
-                  ? 'aspect-video w-[28rem] ring-1 ring-primary/40 shadow-lg'
-                  : 'aspect-video w-64 opacity-80 hover:opacity-100'
-              )}
-              style={{ scrollSnapAlign: 'center' }}
-            >
+      {/* Right Fade + Navigation Button */}
+      <div
+        className={cn(
+          'absolute right-0 top-0 z-10 flex h-full w-32 items-center justify-end transition-opacity duration-300',
+          'bg-gradient-to-l from-background via-background/80 to-transparent',
+          canScrollRight ? 'opacity-100' : 'pointer-events-none opacity-0'
+        )}
+      >
+        <button
+          onClick={() => scroll('right')}
+          disabled={!canScrollRight}
+          className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/80 text-white backdrop-blur-sm transition-all hover:bg-black hover:scale-110 disabled:opacity-0"
+          aria-label="Scroll right"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+      </div>
+
+      {/* Scrollable Gallery */}
+      <div
+        ref={scrollContainerRef}
+        onScroll={checkScrollability}
+        className="scrollbar-hide flex gap-6 overflow-x-auto scroll-smooth px-8 py-4"
+        role="region"
+        aria-label="Gallery images"
+      >
+        {images.map((image, index) => (
+          <div
+            key={image.src}
+            className="group relative shrink-0 overflow-hidden rounded-xl bg-secondary shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
+          >
+            <div className="relative aspect-video w-80">
               <Image
                 src={image.src}
                 alt={image.alt}
                 fill
-                className={cn('object-cover transition duration-300', isActive && 'scale-[1.03]')}
-                sizes="(max-width: 768px) 70vw, 448px"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 90vw, 320px"
               />
-              <span className="sr-only">View gallery image {index + 1}</span>
-            </button>
-          )
-        })}
+            </div>
+          </div>
+        ))}
       </div>
-      <p className="text-center text-sm text-muted-foreground">
-        Click a neighboring image to move through the gallery.
-      </p>
     </div>
   )
 }

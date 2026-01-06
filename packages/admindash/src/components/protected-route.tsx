@@ -26,7 +26,12 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
         }
     }, [user, loading, isAdmin, router, pathname])
 
-    // Show loading state
+    // Always allow the login page to render, even while auth is loading.
+    if (pathname === '/login') {
+        return <>{children}</>
+    }
+
+    // Show loading state for protected routes.
     if (loading) {
         return (
             <div className="flex min-h-screen items-center justify-center">
@@ -40,9 +45,6 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
     // Show login page if not authenticated
     if (!user || !isAdmin) {
-        if (pathname === '/login') {
-            return <>{children}</>
-        }
         return null
     }
 

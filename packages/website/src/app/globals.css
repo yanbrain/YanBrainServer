@@ -91,6 +91,8 @@ body {
     --gradient-color: color-mix(in oklab, var(--electric-border-color) 40%, transparent);
     --electric-radius: 22px;
     --electric-inset: 6px;
+    position: relative;
+    overflow: visible;
 }
 
 .electric-layer {
@@ -123,7 +125,7 @@ body {
 
 .electric-glow {
     position: absolute;
-    inset: 0;
+    inset: calc(var(--electric-inset) * -1);
     border-radius: var(--electric-radius);
     border: 2px solid color-mix(in oklab, var(--electric-border-color), transparent 40%);
     z-index: 1;
@@ -140,7 +142,7 @@ body {
 
 .electric-overlay {
     position: absolute;
-    inset: 0;
+    inset: calc(var(--electric-inset) * -1);
     border-radius: var(--electric-radius);
     mix-blend-mode: overlay;
     transform: scale(1.05);
@@ -155,7 +157,7 @@ body {
 
 .electric-bg-glow {
     position: absolute;
-    inset: 0;
+    inset: calc(var(--electric-inset) * -1);
     border-radius: var(--electric-radius);
     filter: blur(32px);
     transform: scale(1.1);

@@ -18,7 +18,7 @@ export function OurClientsScroll({ clients }: OurClientsScrollProps) {
     const scrollDistance = -(240 * clients.length)
 
     return (
-        <section className="border-y border-border bg-secondary/30 py-12">
+        <section className="glass-panel glass-panel--edge py-12">
             <div className="mx-auto max-w-7xl px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

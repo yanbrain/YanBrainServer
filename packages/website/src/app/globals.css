@@ -8,6 +8,58 @@
     html { scroll-behavior: smooth; }
 }
 
+:root {
+    --bg: #0b1020;
+    --panel: rgba(255, 255, 255, 0.07);
+    --panel-strong: rgba(255, 255, 255, 0.1);
+    --stroke: rgba(255, 255, 255, 0.12);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.7);
+    --radius: 18px;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+    --c1: #6d28d9;
+    --c2: #22c55e;
+    --c3: #06b6d4;
+    --c4: #f59e0b;
+    --c5: #ef4444;
+
+    --neon-hue-1: 255;
+    --neon-hue-2: 222;
+    --neon-radius: 22px;
+    --neon-border: hsl(var(--neon-hue-2) 12% 20% / 0.9);
+}
+
+body {
+    background:
+        radial-gradient(900px 500px at 12% 10%, color-mix(in oklab, var(--c1) 55%, transparent), transparent 60%),
+        radial-gradient(700px 500px at 80% 15%, color-mix(in oklab, var(--c3) 55%, transparent), transparent 60%),
+        radial-gradient(900px 700px at 70% 85%, color-mix(in oklab, var(--c5) 45%, transparent), transparent 65%),
+        linear-gradient(180deg, #070a12 0%, var(--bg) 55%, #05070d 100%);
+    color: var(--text);
+}
+
+.glass-panel {
+    background: color-mix(in oklab, var(--panel) 90%, transparent);
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.glass-panel--edge {
+    border-radius: 0;
+}
+
+.glass-panel--header {
+    background: color-mix(in oklab, var(--panel-strong) 85%, #060913);
+    border-color: color-mix(in oklab, var(--stroke) 70%, transparent);
+    box-shadow:
+        0 14px 30px -22px rgba(0, 0, 0, 0.6),
+        0 1px 0 0 rgba(255, 255, 255, 0.06) inset;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
@@ -45,6 +97,8 @@
 .electric-card {
     --electric-light-color: color-mix(in oklab, var(--electric-border-color), white 30%);
     --gradient-color: color-mix(in oklab, var(--electric-border-color) 40%, transparent);
+    --electric-radius: 22px;
+    --electric-inset: 6px;
 }
 
 .electric-layer {
@@ -58,10 +112,10 @@
 
 .electric-border-outer {
     position: absolute;
-    inset: -2px;
-    border-radius: 24px;
+    inset: calc(var(--electric-inset) * -1);
+    border-radius: var(--electric-radius);
     border: 2px solid color-mix(in oklab, var(--electric-border-color), transparent 50%);
-    padding: 4px;
+    padding: var(--electric-inset);
     overflow: hidden;
     z-index: 2;
     background: linear-gradient(-30deg, var(--gradient-color), transparent, var(--gradient-color));
@@ -70,7 +124,7 @@
 .electric-border-main {
     position: absolute;
     inset: 0;
-    border-radius: 24px;
+    border-radius: var(--electric-radius);
     border: 2px solid var(--electric-border-color);
     filter: url(#turbulent-displace);
 }
@@ -78,7 +132,7 @@
 .electric-glow {
     position: absolute;
     inset: 0;
-    border-radius: 24px;
+    border-radius: var(--electric-radius);
     border: 2px solid color-mix(in oklab, var(--electric-border-color), transparent 40%);
     z-index: 1;
 }
@@ -95,7 +149,7 @@
 .electric-overlay {
     position: absolute;
     inset: 0;
-    border-radius: 24px;
+    border-radius: var(--electric-radius);
     mix-blend-mode: overlay;
     transform: scale(1.05);
     filter: blur(16px);
@@ -110,10 +164,204 @@
 .electric-bg-glow {
     position: absolute;
     inset: 0;
-    border-radius: 24px;
+    border-radius: var(--electric-radius);
     filter: blur(32px);
     transform: scale(1.1);
     opacity: 0.3;
     z-index: -1;
     background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color));
+}
+
+.electric-card-inner {
+    position: relative;
+    overflow: hidden;
+    border-radius: calc(var(--electric-radius) - var(--electric-inset));
+    border: 2px solid hsl(var(--border));
+    box-shadow: 0 20px 40px -24px hsl(var(--foreground) / 0.4);
+}
+
+.product-photo-frame {
+    position: relative;
+    border-radius: 1rem;
+}
+
+.product-photo-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 107, 0, 0.2), rgba(255, 255, 255, 0.15));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.product-photo-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.product-photo-frame-inner {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    background: hsl(var(--secondary));
+}
+
+.neon-menu {
+    position: relative;
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    overflow: hidden;
+}
+
+.neon-menu-inner {
+    position: relative;
+    z-index: 5;
+}
+
+.neon-menu-shine,
+.neon-menu-glow {
+    pointer-events: none;
+    position: absolute;
+    inset: auto;
+    width: 70%;
+    aspect-ratio: 1;
+    border-radius: 0;
+    border-top-right-radius: inherit;
+    border-bottom-left-radius: inherit;
+    right: -1px;
+    top: -1px;
+    opacity: 0.9;
+}
+
+.neon-menu-shine {
+    border: 1px solid transparent;
+    background: conic-gradient(
+        from -45deg at center,
+        transparent 12%,
+        color-mix(in oklab, var(--c1) 70%, transparent),
+        transparent 42%
+    ) border-box;
+    mask:
+        linear-gradient(transparent),
+        linear-gradient(black);
+    mask-repeat: no-repeat;
+    mask-clip: padding-box, border-box;
+    mask-composite: subtract;
+    z-index: 3;
+}
+
+.neon-menu-shine-bottom {
+    top: auto;
+    bottom: -1px;
+    left: -1px;
+    right: auto;
+    transform: rotate(180deg);
+}
+
+.neon-menu-glow {
+    border-radius: calc(var(--neon-radius) * 2.5);
+    border: calc(var(--neon-radius) * 1.25) solid transparent;
+    inset: calc(var(--neon-radius) * -2);
+    filter: blur(14px) saturate(1.2) brightness(0.6);
+    mix-blend-mode: plus-lighter;
+    background: conic-gradient(
+        from -45deg at center,
+        transparent 10%,
+        color-mix(in oklab, var(--c3) 70%, transparent),
+        transparent 40%
+    ) border-box;
+    z-index: 2;
+}
+
+.neon-menu-glow-bottom {
+    top: auto;
+    bottom: calc(var(--neon-radius) * -2);
+    left: calc(var(--neon-radius) * -2);
+    right: auto;
+    transform: rotate(180deg);
+}
+
+.neon-menu-glow-bright {
+    border-width: 5px;
+    border-radius: calc(var(--neon-radius) + 2px);
+    inset: -7px;
+    filter: blur(2px) brightness(0.7);
+    z-index: 4;
+}
+
+.neon-menu-item {
+    position: relative;
+    border-radius: calc(var(--neon-radius) * 0.33);
+    border: 1px solid var(--stroke);
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    background:
+        linear-gradient(
+            90deg,
+            color-mix(in oklab, var(--panel-strong) 70%, transparent),
+            color-mix(in oklab, var(--panel) 70%, transparent) 25%,
+            transparent 90%
+        );
+}
+
+.neon-menu-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    background:
+        linear-gradient(
+            90deg,
+            color-mix(in oklab, var(--c1) 25%, transparent),
+            color-mix(in oklab, var(--c3) 20%, transparent) 24%,
+            transparent 85%
+        ) border-box;
+    mask:
+        linear-gradient(transparent),
+        linear-gradient(to right, black, transparent);
+    mask-repeat: no-repeat;
+    mask-clip: padding-box, border-box;
+    mask-composite: subtract;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.neon-menu-item:hover,
+.neon-menu-item:focus-visible,
+.neon-menu-item-active {
+    color: white;
+    border-color: color-mix(in oklab, var(--c1) 35%, transparent);
+    box-shadow: 0 8px 20px -16px color-mix(in oklab, var(--c1) 50%, transparent);
+    background:
+        linear-gradient(
+            90deg,
+            color-mix(in oklab, var(--panel-strong) 85%, transparent),
+            color-mix(in oklab, var(--panel) 85%, transparent) 30%,
+            transparent 90%
+        );
+    outline: none;
+}
+
+.neon-menu-item:hover::after,
+.neon-menu-item:focus-visible::after,
+.neon-menu-item-active::after {
+    opacity: 1;
+}
+
+@supports not (background: color-mix(in oklab, white 50%, black)) {
+    body { background: linear-gradient(180deg, #070a12 0%, #0b1020 60%, #05070d 100%); }
+    .glass-panel { background: rgba(255, 255, 255, 0.08); }
 }

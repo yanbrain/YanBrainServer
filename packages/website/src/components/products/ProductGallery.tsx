@@ -28,16 +28,18 @@ export function ProductGallery({ images }: ProductGalleryProps) {
         {images.map((image) => (
           <div
             key={image.src}
-            className="relative h-72 w-80 shrink-0 overflow-hidden rounded-lg bg-secondary sm:h-80 sm:w-96"
+            className="product-photo-frame h-72 w-80 shrink-0 sm:h-80 sm:w-96"
             style={{ scrollSnapAlign: 'start' }}
           >
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              className="object-contain"
-              sizes="(max-width: 768px) 85vw, 384px"
-            />
+            <div className="product-photo-frame-inner">
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 85vw, 384px"
+              />
+            </div>
           </div>
         ))}
       </div>

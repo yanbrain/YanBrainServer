@@ -24,6 +24,7 @@ export default async function YanAvatarPage() {
             primaryColor={product.colors.primary}
             secondaryColor={product.colors.secondary || 'hsl(25, 95%, 53%)'}
             isPortrait
+            disableGlow
           >
             <Image
               src="/images/products/yan-avatar/hero/yan-avatar_product-hero.webp"

@@ -3,7 +3,7 @@ import { SITE_CONFIG } from '@/config/site'
 
 export function Footer() {
   return (
-    <footer className="border-t border-border py-8">
+    <footer className="glass-panel glass-panel--edge py-8">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
           <p>© {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.</p>

@@ -61,7 +61,7 @@ export function ContactInfo() {
         })}
       </div>
 
-      <div className="rounded-lg border border-border bg-secondary/30 p-6">
+      <div className="glass-panel p-6">
         <h3 className="mb-2 font-medium">Business Hours</h3>
         <p className="text-sm text-muted-foreground">
           Sunday - Thursday: 9:00 AM - 6:00 PM GST<br />

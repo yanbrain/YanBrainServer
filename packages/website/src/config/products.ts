@@ -10,18 +10,18 @@ export const PRODUCTS = [
     features: [
       {
         icon: 'Sparkles',
-        title: 'Professional Avatar Customization',
-        description: 'We design a unique 3D avatar that represents your brand identity and connects with your customers.',
+        title: 'Knowledge Base Integration',
+        description: 'Upload documents, images, spreadsheets, and more. Your avatar instantly understands your entire knowledge base and responds with precise, context-aware answers.',
       },
       {
         icon: 'FileText',
-        title: 'Knowledge Base Integration',
-        description: 'Upload PDFs, images, DOCX files, and more. Your avatar creates embeddings from your documents and answers questions with accurate, context-aware responses.',
+        title: 'Multilingual Support',
+        description: 'One avatar. Many languages. Seamless communication.',
       },
       {
         icon: 'Rocket',
-        title: 'Deploy Anywhere',
-        description: 'Perfect for customer support, sales assistance, and interactive product demonstrations.',
+        title: 'Customise',
+        description: 'Create avatars that look, feel, and speak like your brand.',
       },
     ],
     cta: {
@@ -41,18 +41,18 @@ export const PRODUCTS = [
     features: [
       {
         icon: 'Paintbrush',
-        title: 'Intuitive Canvas',
-        description: 'Draw freely with professional brush tools. Your creativity leads, AI enhances.',
+        title: 'Simple Canvas',
+        description: 'Draw freely with intuitive, easy-to-use tools.',
       },
       {
         icon: 'Wand2',
-        title: 'Instant Transformation',
-        description: 'Watch your rough sketches transform into polished, professional artwork in real-time.',
+        title: 'Styles',
+        description: 'Choose from a range of preset styles or create your own.',
       },
       {
         icon: 'Palette',
-        title: 'Endless Possibilities',
-        description: 'From concept art to finished illustrations. Perfect for designers, artists, and creative professionals.',
+        title: 'Deliver',
+        description: 'Print or email your creation instantly.',
       },
     ],
     cta: {
@@ -73,17 +73,17 @@ export const PRODUCTS = [
       {
         icon: 'Camera',
         title: 'Webcam Photo Capture',
-        description: 'Simple, intuitive photo capture directly from any webcam. No complicated setup required.',
+        description: 'Simple, intuitive photo capture directly from any webcam or DSLR.',
       },
       {
         icon: 'Image',
-        title: 'Artistic AI Generation',
-        description: 'Advanced AI converts your photos into stunning artistic styles. From professional portraits to creative interpretations.',
+        title: 'Styles',
+        description: 'Choose from a range of preset styles or create your own.',
       },
       {
         icon: 'Share2',
-        title: 'Perfect for Any Occasion',
-        description: 'Weddings, corporate events, parties, and marketing activations. Create shareable AI art instantly.',
+        title: 'Deliver',
+        description: 'Print or email your creation instantly.',
       },
     ],
     cta: {

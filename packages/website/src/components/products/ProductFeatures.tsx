@@ -11,7 +11,12 @@ export function ProductFeatures({ product }: { product: Product }) {
       {product.features.map((feature, i) => {
         const Icon = (LucideIcons as any)[feature.icon] || LucideIcons.Sparkles
         const isPortrait = product.id === 'yan-avatar'
+        const shouldFlipSecond = isPortrait && i === 1
         const featureImageSrc = `/images/products/${product.slug}/features/${product.slug}_feature_${String(i + 1).padStart(2, '0')}.webp`
+        const textOrder = i % 2 === 0 ? 'lg:order-1' : 'lg:order-2'
+        const imageOrder = i % 2 === 0 ? 'lg:order-2' : 'lg:order-1'
+        const resolvedTextOrder = shouldFlipSecond ? imageOrder : textOrder
+        const resolvedImageOrder = shouldFlipSecond ? textOrder : imageOrder
         
         return (
           <motion.div
@@ -22,12 +27,12 @@ export function ProductFeatures({ product }: { product: Product }) {
             transition={{ delay: i * 0.1 }}
             className="grid gap-12 lg:grid-cols-2 lg:gap-16"
           >
-            <div className={i % 2 === 0 ? 'lg:order-1' : 'lg:order-2'}>
+            <div className={resolvedTextOrder}>
               <Icon className="mb-6 h-12 w-12" style={{ color: product.colors.primary }} />
               <h2 className="mb-4 text-3xl font-bold">{feature.title}</h2>
               <p className="text-lg text-muted-foreground">{feature.description}</p>
             </div>
-            <div className={`flex items-center justify-center ${i % 2 === 0 ? 'lg:order-2' : 'lg:order-1'}`}>
+            <div className={`flex items-center justify-center ${resolvedImageOrder}`}>
               <div className={`w-full ${isPortrait ? 'max-w-sm' : ''}`}>
                 <div className={`${isPortrait ? 'aspect-[9/16]' : 'aspect-video'} relative w-full overflow-hidden rounded-lg bg-secondary`}>
                   <Image

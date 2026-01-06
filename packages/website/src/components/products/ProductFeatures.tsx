@@ -11,12 +11,12 @@ export function ProductFeatures({ product }: { product: Product }) {
       {product.features.map((feature, i) => {
         const Icon = (LucideIcons as any)[feature.icon] || LucideIcons.Sparkles
         const isPortrait = product.id === 'yan-avatar'
-        const shouldFlipSecond = isPortrait && i === 1
+        const shouldFlipFirst = isPortrait && i === 0
         const featureImageSrc = `/images/products/${product.slug}/features/${product.slug}_feature_${String(i + 1).padStart(2, '0')}.webp`
         const textOrder = i % 2 === 0 ? 'lg:order-1' : 'lg:order-2'
         const imageOrder = i % 2 === 0 ? 'lg:order-2' : 'lg:order-1'
-        const resolvedTextOrder = shouldFlipSecond ? imageOrder : textOrder
-        const resolvedImageOrder = shouldFlipSecond ? textOrder : imageOrder
+        const resolvedTextOrder = shouldFlipFirst ? imageOrder : textOrder
+        const resolvedImageOrder = shouldFlipFirst ? textOrder : imageOrder
         
         return (
           <motion.div

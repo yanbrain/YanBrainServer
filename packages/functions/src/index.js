@@ -1,4 +1,4 @@
-const {onRequest} = require("firebase-functions/v2/https");
+const functions = require("firebase-functions");
 const {defineSecret} = require("firebase-functions/params");
 const admin = require("firebase-admin");
 const express = require("express");
@@ -47,9 +47,6 @@ app.use((err, req, res, next) => {
     res.status(500).json({success: false, error: "Internal server error"});
 });
 
-exports.api = onRequest(
-    {
-        secrets: [breakglassSecret, breakglassAllowlist],
-    },
-    app
-);
+exports.api = functions
+    .runWith({secrets: [breakglassSecret, breakglassAllowlist]})
+    .https.onRequest(app);

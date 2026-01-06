@@ -64,28 +64,15 @@ export function ProductsGrid() {
             <Link
               href={`/${product.slug}`}
               className="group flex flex-col flex-1"
-              style={{
-                ['--hover-color' as string]: product.colors.primary,
-                ['--electric-border-color' as string]: product.colors.primary
-              }}
+              style={{ ['--hover-color' as string]: product.colors.primary }}
             >
-              <div className="electric-card relative aspect-video w-full">
-                <div className="electric-border-outer electric-layer pointer-events-none">
-                  <div className="electric-border-main" />
-                </div>
-                <div className="electric-glow electric-glow-1 electric-layer pointer-events-none" />
-                <div className="electric-glow electric-glow-2 electric-layer pointer-events-none" />
-                <div className="electric-overlay electric-overlay-1 electric-layer pointer-events-none" />
-                <div className="electric-overlay electric-overlay-2 electric-layer pointer-events-none" />
-                <div className="electric-bg-glow electric-layer pointer-events-none" />
-                <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl">
-                  <Image
-                    src={heroImage}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+              <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl transition-shadow duration-300 group-hover:shadow-[0_0_0_3px_var(--hover-color)]">
+                <Image
+                  src={heroImage}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                />
               </div>
 
               <div className="mt-4 px-2 flex-1 flex flex-col">

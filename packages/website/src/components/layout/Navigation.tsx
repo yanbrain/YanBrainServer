@@ -18,7 +18,7 @@ export function Navigation() {
   const pathname = usePathname()
 
   return (
-    <nav className="glass-panel glass-panel--edge fixed left-0 right-0 top-0 z-50">
+    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/15 bg-black/50 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="text-xl font-bold text-white transition-colors hover:text-white/90">
@@ -33,23 +33,17 @@ export function Navigation() {
                     Software
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="neon-menu glass-panel">
-                      <span className="neon-menu-shine neon-menu-shine-top" />
-                      <span className="neon-menu-shine neon-menu-shine-bottom" />
-                      <span className="neon-menu-glow neon-menu-glow-top" />
-                      <span className="neon-menu-glow neon-menu-glow-bottom" />
-                      <span className="neon-menu-glow neon-menu-glow-bright neon-menu-glow-top" />
-                      <span className="neon-menu-glow neon-menu-glow-bright neon-menu-glow-bottom" />
-                      <div className="neon-menu-inner">
-                        <ul className="w-64 space-y-2">
+                    <div className="rounded-2xl border border-white/15 bg-black/60 p-2 shadow-2xl backdrop-blur-xl outline outline-1 outline-white/10">
+                      <div className="rounded-xl border border-white/10 bg-black/50">
+                        <ul className="w-64 space-y-2 p-2">
                           {PRODUCTS.map((product) => (
                             <li key={product.slug}>
                               <NavigationMenuLink asChild>
                                 <Link
                                   href={`/${product.slug}`}
                                   className={cn(
-                                    "neon-menu-item group flex flex-col gap-1 px-4 py-3",
-                                    pathname === `/${product.slug}` && "neon-menu-item-active"
+                                    "group flex flex-col gap-1 rounded-lg border border-white/10 px-4 py-3 transition-colors hover:border-white/30 hover:bg-white/5",
+                                    pathname === `/${product.slug}` && "border-white/40 bg-white/10"
                                   )}
                                 >
                                   <div className={cn(

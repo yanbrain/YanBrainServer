@@ -1,4 +1,4 @@
-const functions = require("firebase-functions/v1");
+const functions = require("firebase-functions");
 const {defineSecret} = require("firebase-functions/params");
 const admin = require("firebase-admin");
 const express = require("express");

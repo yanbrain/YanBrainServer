@@ -8,57 +8,46 @@ module.exports = {
     './src/features/**/*.{ts,tsx}',
   ],
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
       colors: {
-        border: "hsl(0 0% 33%)",
-        input: "hsl(0 0% 33%)",
-        ring: "hsl(27 96% 46%)",
-        background: "hsl(0 0% 10%)",
-        foreground: "hsl(0 0% 90%)",
+        background: 'hsl(0 0% 0%)',
+        foreground: 'hsl(0 0% 100%)',
         primary: {
-          DEFAULT: "hsl(27 96% 46%)",
-          foreground: "hsl(0 0% 10%)",
+          DEFAULT: 'hsl(20 100% 50%)',
+          foreground: 'hsl(0 0% 100%)',
         },
         secondary: {
-          DEFAULT: "hsl(0 0% 16%)",
-          foreground: "hsl(0 0% 90%)",
-        },
-        destructive: {
-          DEFAULT: "hsl(4 90% 58%)",
-          foreground: "hsl(0 0% 100%)",
-        },
-        success: {
-          DEFAULT: "hsl(144 76% 60%)",
-          foreground: "hsl(0 0% 10%)",
-        },
-        warning: {
-          DEFAULT: "hsl(48 100% 50%)",
-          foreground: "hsl(0 0% 10%)",
+          DEFAULT: 'hsl(0 0% 10%)',
+          foreground: 'hsl(0 0% 100%)',
         },
         muted: {
-          DEFAULT: "hsl(0 0% 16%)",
-          foreground: "hsl(0 0% 50%)",
+          DEFAULT: 'hsl(0 0% 20%)',
+          foreground: 'hsl(0 0% 60%)',
         },
         accent: {
-          DEFAULT: "hsl(0 0% 16%)",
-          foreground: "hsl(0 0% 90%)",
+          DEFAULT: 'hsl(20 100% 50%)',
+          foreground: 'hsl(0 0% 100%)',
         },
-        card: {
-          DEFAULT: "hsl(0 0% 16%)",
-          foreground: "hsl(0 0% 90%)",
+        destructive: {
+          DEFAULT: 'hsl(4 90% 58%)',
+          foreground: 'hsl(0 0% 100%)',
         },
+        success: {
+          DEFAULT: 'hsl(144 76% 60%)',
+          foreground: 'hsl(0 0% 10%)',
+        },
+        warning: {
+          DEFAULT: 'hsl(48 100% 50%)',
+          foreground: 'hsl(0 0% 10%)',
+        },
+        border: 'hsl(0 0% 20%)',
+        input: 'hsl(0 0% 20%)',
+        ring: 'hsl(20 100% 50%)',
       },
       borderRadius: {
-        lg: "0.5rem",
-        md: "0.375rem",
-        sm: "0.25rem",
+        lg: '0.5rem',
+        md: '0.375rem',
+        sm: '0.25rem',
       },
     },
   },

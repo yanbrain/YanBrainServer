@@ -43,7 +43,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
     return (
         <div className="space-y-3">
             {transactions.map((tx) => (
-                <div key={tx.id} className="rounded-lg border bg-card p-4">
+                <div key={tx.id} className="glass-panel border-white/10 p-4">
                     <div className="flex items-start gap-3">
                         <div className="mt-0.5">{getIcon(tx.type)}</div>
                         <div className="space-y-1 flex-1">

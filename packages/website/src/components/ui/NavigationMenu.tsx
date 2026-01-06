@@ -76,7 +76,7 @@ const NavigationMenuViewport = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Viewport>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport>
 >(({ className, ...props }, ref) => (
-  <div className={cn("absolute left-0 top-full mt-4 flex justify-start")}>
+  <div className={cn("absolute left-0 top-full mt-2 flex justify-start")}>
     <NavigationMenuPrimitive.Viewport
       className={cn(
         "origin-top-left relative overflow-visible rounded-3xl bg-transparent text-foreground shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",

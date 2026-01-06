@@ -15,8 +15,18 @@ export function ProductFeatures({ product }: { product: Product }) {
         const featureImageSrc = `/images/products/${product.slug}/features/${product.slug}_feature_${String(i + 1).padStart(2, '0')}.webp`
         const textOrder = i % 2 === 0 ? 'lg:order-1' : 'lg:order-2'
         const imageOrder = i % 2 === 0 ? 'lg:order-2' : 'lg:order-1'
-        const resolvedTextOrder = shouldFlipFirst ? imageOrder : textOrder
-        const resolvedImageOrder = shouldFlipFirst ? textOrder : imageOrder
+        let resolvedTextOrder = shouldFlipFirst ? imageOrder : textOrder
+        let resolvedImageOrder = shouldFlipFirst ? textOrder : imageOrder
+
+        if (isPortrait && i === 1) {
+          resolvedTextOrder = 'lg:order-1'
+          resolvedImageOrder = 'lg:order-2'
+        }
+
+        if (isPortrait && i === 2) {
+          resolvedTextOrder = 'lg:order-2'
+          resolvedImageOrder = 'lg:order-1'
+        }
         
         return (
           <motion.div

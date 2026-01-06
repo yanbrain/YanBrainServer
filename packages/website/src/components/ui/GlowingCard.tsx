@@ -9,6 +9,7 @@ interface GlowingCardProps {
     secondaryColor?: string // Secondary color for glow (defaults to orange)
     className?: string
     isPortrait?: boolean
+    disableGlow?: boolean
 }
 
 export function GlowingCard({
@@ -16,7 +17,8 @@ export function GlowingCard({
                                 primaryColor,
                                 secondaryColor = 'hsl(25, 95%, 53%)', // Default orange
                                 className,
-                                isPortrait = false
+                                isPortrait = false,
+                                disableGlow = false
                             }: GlowingCardProps) {
     const cardRef = useRef<HTMLDivElement>(null)
 
@@ -81,10 +83,13 @@ export function GlowingCard({
                 }}
             >
                 {/* Glow effect - positioned outside to prevent clipping */}
-                <span className="glow-effect" />
+                {!disableGlow && <span className="glow-effect" />}
 
                 {/* Colored outline */}
                 <span className="colored-outline" />
+
+                {/* Static pale outline */}
+                <span className="static-outline" />
 
                 {/* Content */}
                 <div className="relative z-10 h-full w-full overflow-hidden rounded-lg bg-secondary">
@@ -106,7 +111,8 @@ export function GlowingCard({
                     }
 
                     .glowing-card .colored-outline,
-                    .glowing-card .glow-effect {
+                    .glowing-card .glow-effect,
+                    .glowing-card .static-outline {
                         content: "";
                         position: absolute;
                         inset: 0;
@@ -140,6 +146,12 @@ export function GlowingCard({
                                 transparent 65%,
                                 black 80%
                         );
+                    }
+
+                    .glowing-card .static-outline {
+                        z-index: 15;
+                        border: 1px solid rgba(255, 255, 255, 0.25);
+                        opacity: 1;
                     }
 
                     /* Outer glow (secondary/orange color) - OUTSIDE card to prevent clipping */

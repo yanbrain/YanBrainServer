@@ -45,6 +45,8 @@
 .electric-card {
     --electric-light-color: color-mix(in oklab, var(--electric-border-color), white 30%);
     --gradient-color: color-mix(in oklab, var(--electric-border-color) 40%, transparent);
+    --electric-radius: 22px;
+    --electric-inset: 6px;
 }
 
 .electric-layer {
@@ -58,10 +60,10 @@
 
 .electric-border-outer {
     position: absolute;
-    inset: -2px;
-    border-radius: 24px;
+    inset: calc(var(--electric-inset) * -1);
+    border-radius: var(--electric-radius);
     border: 2px solid color-mix(in oklab, var(--electric-border-color), transparent 50%);
-    padding: 4px;
+    padding: var(--electric-inset);
     overflow: hidden;
     z-index: 2;
     background: linear-gradient(-30deg, var(--gradient-color), transparent, var(--gradient-color));
@@ -70,7 +72,7 @@
 .electric-border-main {
     position: absolute;
     inset: 0;
-    border-radius: 24px;
+    border-radius: var(--electric-radius);
     border: 2px solid var(--electric-border-color);
     filter: url(#turbulent-displace);
 }
@@ -78,7 +80,7 @@
 .electric-glow {
     position: absolute;
     inset: 0;
-    border-radius: 24px;
+    border-radius: var(--electric-radius);
     border: 2px solid color-mix(in oklab, var(--electric-border-color), transparent 40%);
     z-index: 1;
 }
@@ -95,7 +97,7 @@
 .electric-overlay {
     position: absolute;
     inset: 0;
-    border-radius: 24px;
+    border-radius: var(--electric-radius);
     mix-blend-mode: overlay;
     transform: scale(1.05);
     filter: blur(16px);
@@ -110,10 +112,57 @@
 .electric-bg-glow {
     position: absolute;
     inset: 0;
-    border-radius: 24px;
+    border-radius: var(--electric-radius);
     filter: blur(32px);
     transform: scale(1.1);
     opacity: 0.3;
     z-index: -1;
     background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color));
+}
+
+.electric-card-inner {
+    position: relative;
+    overflow: hidden;
+    border-radius: calc(var(--electric-radius) - var(--electric-inset));
+    border: 2px solid hsl(var(--border));
+    box-shadow: 0 20px 40px -24px hsl(var(--foreground) / 0.4);
+}
+
+.product-photo-frame {
+    position: relative;
+    border-radius: 1rem;
+}
+
+.product-photo-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 107, 0, 0.2), rgba(255, 255, 255, 0.15));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.product-photo-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.product-photo-frame-inner {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    background: hsl(var(--secondary));
 }

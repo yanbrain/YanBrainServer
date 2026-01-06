@@ -21,7 +21,7 @@ export function Navigation() {
     <nav className="glass-panel glass-panel--edge fixed left-0 right-0 top-0 z-50">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="text-xl font-bold transition-colors hover:text-accent">
+          <Link href="/" className="text-xl font-bold text-white transition-colors hover:text-white/90">
             {SITE_CONFIG.name}
           </Link>
 
@@ -29,7 +29,7 @@ export function Navigation() {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="h-auto bg-transparent p-0 text-sm font-normal text-muted-foreground hover:bg-transparent hover:text-foreground focus:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-foreground">
+                  <NavigationMenuTrigger className="h-auto bg-transparent p-0 text-sm font-normal text-white/70 hover:bg-transparent hover:text-white focus:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-white">
                     Software
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -76,8 +76,8 @@ export function Navigation() {
             <Link
               href="/contact"
               className={cn(
-                "text-sm transition-colors hover:text-foreground",
-                pathname === '/contact' ? 'text-accent' : 'text-muted-foreground'
+                "text-sm transition-colors hover:text-white",
+                pathname === '/contact' ? 'text-white' : 'text-white/70'
               )}
             >
               Contact

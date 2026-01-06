@@ -23,8 +23,12 @@ export function ProductsGrid() {
             transition={{ duration: 0.6, delay: i * 0.1 }}
             className="flex"
           >
-            <Link href={`/${product.slug}`} className="group flex flex-col flex-1">
-              <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl">
+            <Link
+              href={`/${product.slug}`}
+              className="group flex flex-col flex-1"
+              style={{ ['--hover-color' as string]: product.colors.primary }}
+            >
+              <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl transition-shadow duration-300 group-hover:shadow-[0_0_0_3px_var(--hover-color)]">
                 <Image
                   src={heroImage}
                   alt={product.name}
@@ -35,10 +39,7 @@ export function ProductsGrid() {
 
               <div className="mt-4 px-2 flex-1 flex flex-col">
                 <h2
-                  className="mb-2 text-2xl font-bold transition-colors"
-                  style={{
-                    ['--hover-color' as string]: product.colors.primary
-                  }}
+                  className="mb-2 text-2xl font-bold transition-colors group-hover:text-[color:var(--hover-color)]"
                 >
                   {product.name}
                 </h2>

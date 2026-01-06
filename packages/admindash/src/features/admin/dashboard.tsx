@@ -67,8 +67,13 @@ export function Dashboard({ users, token }: DashboardProps) {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">Admin Panel</h1>
+            <div className="glass-panel flex items-center justify-between px-6 py-5">
+                <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">
+                        Admin Control
+                    </p>
+                    <h1 className="mt-2 text-2xl font-bold text-white">Admin Panel</h1>
+                </div>
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={() => setShowCreateUser(true)}>
                         <UserPlus className="mr-2 h-4 w-4" />

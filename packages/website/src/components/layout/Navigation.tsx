@@ -18,7 +18,7 @@ export function Navigation() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/15 bg-black/50 backdrop-blur-xl">
+    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="text-xl font-bold text-white transition-colors hover:text-white/90">
@@ -33,8 +33,8 @@ export function Navigation() {
                     Software
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="rounded-2xl border border-white/15 bg-black/60 p-2 shadow-2xl backdrop-blur-xl outline outline-1 outline-white/10">
-                      <div className="rounded-xl border border-white/10 bg-black/50">
+                    <div className="rounded-2xl border border-white/10 bg-black p-2 shadow-xl outline outline-1 outline-white/10">
+                      <div className="rounded-xl border border-white/5 bg-black/95">
                         <ul className="w-64 space-y-2 p-2">
                           {PRODUCTS.map((product) => (
                             <li key={product.slug}>

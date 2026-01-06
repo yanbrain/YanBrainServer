@@ -78,7 +78,7 @@ export function ProductsGrid() {
                                 <div className="electric-overlay electric-overlay-1 electric-layer pointer-events-none" />
                                 <div className="electric-overlay electric-overlay-2 electric-layer pointer-events-none" />
                                 <div className="electric-bg-glow electric-layer pointer-events-none" />
-                                <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl">
+                                <div className="electric-card-inner aspect-video w-full">
                                     <Image
                                         src={heroImage}
                                         alt={product.name}

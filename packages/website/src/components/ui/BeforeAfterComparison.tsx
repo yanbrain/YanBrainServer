@@ -49,7 +49,7 @@ export function BeforeAfterComparison({
         <section
             ref={rootRef}
             className={cn(
-                'relative mx-auto w-full overflow-hidden rounded-xl border-2 border-border shadow-2xl',
+                'product-photo-frame relative mx-auto w-full overflow-hidden rounded-xl shadow-2xl',
                 aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-video',
                 'max-w-[min(80vmin,1080px)]'
             )}

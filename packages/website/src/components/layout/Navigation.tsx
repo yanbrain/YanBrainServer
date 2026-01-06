@@ -18,7 +18,7 @@ export function Navigation() {
   const pathname = usePathname()
 
   return (
-    <nav className="glass-panel glass-panel--edge glass-panel--header fixed left-0 right-0 top-0 z-50">
+    <nav className="glass-panel glass-panel--edge fixed left-0 right-0 top-0 z-50">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="text-xl font-bold text-white transition-colors hover:text-white/90">
@@ -48,7 +48,7 @@ export function Navigation() {
                                 <Link
                                   href={`/${product.slug}`}
                                   className={cn(
-                                    "neon-menu-item group flex w-full flex-col gap-1 px-4 py-3",
+                                    "neon-menu-item group flex flex-col gap-1 px-4 py-3",
                                     pathname === `/${product.slug}` && "neon-menu-item-active"
                                   )}
                                 >
@@ -58,11 +58,11 @@ export function Navigation() {
                                   )}>
                                     {product.name}
                                   </div>
-                              <div className="text-xs leading-relaxed text-white/60">
-                                {product.tagline}
-                              </div>
-                            </Link>
-                          </NavigationMenuLink>
+                                  <div className="text-xs leading-relaxed text-muted-foreground">
+                                    {product.tagline}
+                                  </div>
+                                </Link>
+                              </NavigationMenuLink>
                             </li>
                           ))}
                         </ul>

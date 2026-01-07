@@ -7,7 +7,7 @@ if (!uid) {
 }
 
 admin.initializeApp({
-    credential: admin.credential.cert(require("../../serviceAccount.json")),
+    credential: admin.credential.cert(require("../serviceAccount.json")),
 });
 
 (async () => {

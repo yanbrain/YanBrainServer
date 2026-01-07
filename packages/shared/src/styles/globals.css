@@ -18,6 +18,12 @@
   --neon-hue-2: 222;
   --neon-radius: 22px;
   --neon-border: hsl(var(--neon-hue-2) 12% 20% / 0.9);
+
+  --input-bg: #020617;
+  --input-border: rgba(148, 163, 184, 0.35);
+  --input-text: rgba(255, 255, 255, 0.95);
+  --input-placeholder: rgba(148, 163, 184, 0.75);
+  --input-ring: rgba(16, 185, 129, 0.5);
 }
 
 body {

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '@/lib/firebase-client'
 import { useAuth } from '@/lib/auth-context'
-import { Input } from '@/components/ui/input'
+import { FormField } from '@yanbrain/shared/ui'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { AuthCard } from '@yanbrain/shared/ui'
@@ -90,16 +90,14 @@ function LoginForm() {
                 description="Enter your email to receive a password reset link"
             >
                 <form onSubmit={handleForgotPassword} className="space-y-4">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">Email</label>
-                        <Input
-                            type="email"
-                            placeholder="admin@example.com"
-                            value={resetEmail}
-                            onChange={(e) => setResetEmail(e.target.value)}
-                            required
-                        />
-                    </div>
+                    <FormField
+                        label="Email"
+                        type="email"
+                        placeholder="admin@example.com"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        required
+                    />
                     <div className="flex gap-2">
                         <Button
                             type="button"
@@ -122,28 +120,24 @@ function LoginForm() {
     return (
         <AuthCard title="Admin Login" description="Sign in to access the admin panel">
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Email</label>
-                    <Input
-                        type="email"
-                        placeholder="admin@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        autoComplete="email"
-                    />
-                </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Password</label>
-                    <Input
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        autoComplete="current-password"
-                    />
-                </div>
+                <FormField
+                    label="Email"
+                    type="email"
+                    placeholder="admin@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                />
+                <FormField
+                    label="Password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                />
 
                 <div className="flex items-center justify-end">
                     <button

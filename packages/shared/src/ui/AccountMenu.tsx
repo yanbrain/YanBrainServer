@@ -60,16 +60,16 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 mt-3 w-48 rounded-2xl border border-white/10 bg-black/90 p-2 text-sm text-white shadow-lg"
+          className="absolute right-0 mt-3 w-56 rounded-3xl border border-white/10 bg-gradient-to-br from-black via-neutral-950 to-neutral-900 p-2 text-sm text-white shadow-2xl"
         >
           {summary ? (
-            <div className="px-3 py-2 text-xs text-white/60">
+            <div className="px-3 py-2 text-center text-xs text-white/60">
               {summary}
             </div>
           ) : null}
           {items.map((item) => {
             const content = (
-              <span className="block w-full rounded-lg px-3 py-2 text-left transition hover:bg-white/10">
+              <span className="block w-full rounded-2xl px-3 py-2 text-center transition hover:bg-white/5">
                 {item.label}
               </span>
             )

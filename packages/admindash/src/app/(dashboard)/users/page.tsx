@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Dashboard } from '@/features/admin/dashboard'
 import { User, CLOUD_FUNCTIONS_URL } from '@yanbrain/shared'
 import { auth } from '@/lib/firebase-client'
@@ -10,40 +10,40 @@ export default function UsersPage() {
     const [token, setToken] = useState<string>('')
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        async function fetchUsers() {
-            try {
-                const user = auth.currentUser
-                if (!user) {
-                    setUsers([])
-                    setLoading(false)
-                    return
-                }
-
-                const idToken = await user.getIdToken()
-                setToken(idToken)
-
-                const response = await fetch(`${CLOUD_FUNCTIONS_URL}/users?limit=1000`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${idToken}`,
-                    },
-                })
-
-                const data = await response.json()
-                if (data.success) {
-                    setUsers(data.users || [])
-                }
-            } catch (error) {
-                console.error('Error fetching users:', error)
+    const fetchUsers = useCallback(async () => {
+        try {
+            const user = auth.currentUser
+            if (!user) {
                 setUsers([])
-            } finally {
                 setLoading(false)
+                return
             }
-        }
 
-        fetchUsers()
+            const idToken = await user.getIdToken(true)
+            setToken(idToken)
+
+            const response = await fetch(`${CLOUD_FUNCTIONS_URL}/users?limit=1000`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`,
+                },
+            })
+
+            const data = await response.json()
+            if (data.success) {
+                setUsers(data.users || [])
+            }
+        } catch (error) {
+            console.error('Error fetching users:', error)
+            setUsers([])
+        } finally {
+            setLoading(false)
+        }
     }, [])
+
+    useEffect(() => {
+        fetchUsers()
+    }, [fetchUsers])
 
     if (loading) {
         return (
@@ -56,5 +56,5 @@ export default function UsersPage() {
         )
     }
 
-    return <Dashboard users={users} token={token} />
+    return <Dashboard users={users} token={token} onRefresh={fetchUsers} />
 }

@@ -13,7 +13,7 @@ module.exports = {
         background: 'hsl(0 0% 0%)',
         foreground: 'hsl(0 0% 100%)',
         primary: {
-          DEFAULT: 'hsl(20 100% 50%)',
+          DEFAULT: '#2678dc',
           foreground: 'hsl(0 0% 100%)',
         },
         secondary: {
@@ -25,7 +25,7 @@ module.exports = {
           foreground: 'hsl(0 0% 60%)',
         },
         accent: {
-          DEFAULT: 'hsl(20 100% 50%)',
+          DEFAULT: '#2678dc',
           foreground: 'hsl(0 0% 100%)',
         },
         destructive: {
@@ -42,7 +42,7 @@ module.exports = {
         },
         border: 'hsl(0 0% 20%)',
         input: 'hsl(0 0% 20%)',
-        ring: 'hsl(20 100% 50%)',
+        ring: '#2678dc',
       },
       borderRadius: {
         lg: '0.5rem',

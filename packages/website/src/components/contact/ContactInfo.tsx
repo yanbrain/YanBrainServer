@@ -1,5 +1,6 @@
 import { Mail, Phone, MapPin } from 'lucide-react'
 import { SITE_CONFIG } from '@/config/site'
+import { GlassPanel } from '@yanbrain/shared/yglassui'
 
 export function ContactInfo() {
   const info = [
@@ -61,14 +62,14 @@ export function ContactInfo() {
         })}
       </div>
 
-      <div className="glass-panel p-6">
+      <GlassPanel className="p-6">
         <h3 className="mb-2 font-medium">Business Hours</h3>
         <p className="text-sm text-muted-foreground">
           Sunday - Thursday: 9:00 AM - 6:00 PM GST<br />
           Saturday: 10:00 AM - 4:00 PM GST<br />
           Friday: Closed
         </p>
-      </div>
+      </GlassPanel>
     </div>
   )
 }

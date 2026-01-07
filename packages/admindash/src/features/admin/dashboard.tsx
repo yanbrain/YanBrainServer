@@ -10,6 +10,7 @@ import { LicensePanel } from '@/features/licenses/license-panel'
 import { TransactionPanel } from '@/features/transactions/transaction-panel'
 import { CreateUserDialog } from '@/features/users/create-user-dialog'
 import { User } from '@yanbrain/shared'
+import { GlassPanel } from '@yanbrain/shared/yglassui'
 import { suspendUser, unsuspendUser } from '@/lib/api-client'
 import { toast } from 'sonner'
 
@@ -67,7 +68,7 @@ export function Dashboard({ users, token }: DashboardProps) {
 
     return (
         <div className="space-y-6">
-            <div className="glass-panel flex items-center justify-between px-6 py-5">
+            <GlassPanel className="flex items-center justify-between px-6 py-5">
                 <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">
                         Admin Control
@@ -95,7 +96,7 @@ export function Dashboard({ users, token }: DashboardProps) {
                         Refresh
                     </Button>
                 </div>
-            </div>
+            </GlassPanel>
 
             <div className="grid gap-6 lg:grid-cols-[1fr_350px_350px]">
                 <Card className="p-6">

@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { GlassPanel } from '@yanbrain/shared/yglassui'
 
 interface Client {
     name: string
@@ -18,7 +19,7 @@ export function OurClientsScroll({ clients }: OurClientsScrollProps) {
     const scrollDistance = -(240 * clients.length)
 
     return (
-        <section className="glass-panel glass-panel--edge py-12">
+        <GlassPanel as="section" edge className="py-12">
             <div className="mx-auto max-w-7xl px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -71,6 +72,6 @@ export function OurClientsScroll({ clients }: OurClientsScrollProps) {
                     </div>
                 </motion.div>
             </div>
-        </section>
+        </GlassPanel>
     )
 }

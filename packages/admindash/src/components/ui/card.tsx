@@ -1,14 +1,15 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
+import { GlassPanel } from '@yanbrain/shared/yglassui'
 
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div
+  <GlassPanel
     ref={ref}
     className={cn(
-      'glass-panel border-white/10 bg-transparent text-foreground',
+      'border-white/10 bg-transparent text-foreground',
       className
     )}
     {...props}

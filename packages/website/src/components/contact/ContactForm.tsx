@@ -36,7 +36,7 @@ export function ContactForm() {
           id="name"
           {...register('name')}
           placeholder="Your name"
-          className="mt-2 border-white/10 bg-black/40 text-white outline outline-1 outline-white/10 placeholder:text-white/40 focus-visible:ring-white/20"
+          className="mt-2 border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
         />
         {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>}
       </div>
@@ -48,7 +48,7 @@ export function ContactForm() {
           type="email"
           {...register('email')}
           placeholder="your@email.com"
-          className="mt-2 border-white/10 bg-black/40 text-white outline outline-1 outline-white/10 placeholder:text-white/40 focus-visible:ring-white/20"
+          className="mt-2 border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
         />
         {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>}
       </div>
@@ -59,7 +59,7 @@ export function ContactForm() {
           id="subject"
           {...register('subject')}
           placeholder="How can we help?"
-          className="mt-2 border-white/10 bg-black/40 text-white outline outline-1 outline-white/10 placeholder:text-white/40 focus-visible:ring-white/20"
+          className="mt-2 border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
         />
         {errors.subject && <p className="mt-1 text-sm text-red-500">{errors.subject.message}</p>}
       </div>
@@ -71,7 +71,7 @@ export function ContactForm() {
           {...register('message')}
           placeholder="Tell us more..."
           rows={5}
-          className="mt-2 border-white/10 bg-black/40 text-white outline outline-1 outline-white/10 placeholder:text-white/40 focus-visible:ring-white/20"
+          className="mt-2 border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
         />
         {errors.message && <p className="mt-1 text-sm text-red-500">{errors.message.message}</p>}
       </div>
@@ -81,7 +81,7 @@ export function ContactForm() {
         size="lg"
         disabled={isSubmitting}
         variant="outline"
-        className="w-full border-white/20 text-white outline outline-1 outline-white/20 hover:border-white/40 hover:bg-white/5"
+        className="h-auto w-full border-white/20 bg-white/5 py-3.5 text-white outline outline-1 outline-white/15 hover:border-white/40 hover:bg-white/10"
       >
         {isSubmitting ? 'Sending...' : 'Send Message'}
       </Button>

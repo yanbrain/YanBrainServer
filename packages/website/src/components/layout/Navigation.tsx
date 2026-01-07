@@ -231,6 +231,7 @@ export function Navigation() {
                   required
                   labelClassName="text-white/80"
                   wrapperClassName="grid gap-2 text-sm"
+                  inputClassName="border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
                 />
                 <FormField
                   label="Password"
@@ -240,6 +241,7 @@ export function Navigation() {
                   required
                   labelClassName="text-white/80"
                   wrapperClassName="grid gap-2 text-sm"
+                  inputClassName="border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
                 />
 
                 {authError ? (

@@ -23,7 +23,7 @@
   --input-border: rgba(148, 163, 184, 0.35);
   --input-text: rgba(255, 255, 255, 0.95);
   --input-placeholder: rgba(148, 163, 184, 0.75);
-  --input-ring: rgba(16, 185, 129, 0.5);
+  --input-ring: rgba(148, 163, 184, 0.45);
 }
 
 body {

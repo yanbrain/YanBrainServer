@@ -25,4 +25,23 @@ async function requireAdmin(req, res, next) {
     }
 }
 
-module.exports = {requireAdmin};
+async function requireUser(req, res, next) {
+    try {
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader?.startsWith("Bearer ")) {
+            return sendError(res, 401, "Missing authorization token");
+        }
+
+        const token = authHeader.split("Bearer ")[1];
+        const decodedToken = await admin.auth().verifyIdToken(token);
+
+        req.user = decodedToken;
+        next();
+    } catch (error) {
+        logger.error("Auth error:", error);
+        return sendError(res, 401, "Invalid or expired token");
+    }
+}
+
+module.exports = {requireAdmin, requireUser};

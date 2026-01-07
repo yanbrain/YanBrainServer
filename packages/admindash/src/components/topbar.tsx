@@ -1,9 +1,8 @@
 'use client'
 
 import { useAuth } from '@/lib/auth-context'
-import { Button } from './ui/button'
-import { LogOut } from 'lucide-react'
-import { GlassPanel } from '@yanbrain/shared/yglassui'
+import { User } from 'lucide-react'
+import { AccountMenu, GlassPanel } from '@yanbrain/shared/yglassui'
 
 export function Topbar() {
     const { user, signOut } = useAuth()
@@ -19,13 +18,14 @@ export function Topbar() {
                     Admin Panel
                 </h1>
                 {user && (
-                    <div className="flex items-center gap-4">
-                        <span className="text-sm text-white/70">{user.email}</span>
-                        <Button variant="ghost" size="sm" onClick={signOut}>
-                            <LogOut className="h-4 w-4 mr-2" />
-                            Logout
-                        </Button>
-                    </div>
+                    <AccountMenu
+                        summary={user.email || 'Admin'}
+                        trigger={<User className="h-4 w-4" />}
+                        items={[
+                            { label: 'Users', href: '/users' },
+                            { label: 'Logout', onSelect: signOut }
+                        ]}
+                    />
                 )}
             </div>
         </GlassPanel>

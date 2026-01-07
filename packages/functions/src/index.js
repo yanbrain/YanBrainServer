@@ -33,6 +33,7 @@ app.get("/health", (req, res) => res.json({status: "ok"}));
 app.use("/licenses", require("./routes/licenses"));
 app.use("/subscriptions", require("./routes/subscriptions"));
 app.use("/users", require("./routes/users"));
+app.use("/me", require("./routes/me"));
 app.use("/webhooks", require("./routes/webhooks"));
 
 // Global error handler

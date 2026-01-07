@@ -12,7 +12,7 @@ import {
 } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { Button } from '@/components/ui/Button'
-import { AuthCard } from '@yanbrain/shared/ui'
+import { AuthCard, FormField } from '@yanbrain/shared/ui'
 
 const PRODUCTS = [
   { id: 'yanAvatar', name: 'Yan Avatar' },
@@ -223,26 +223,22 @@ export default function DashboardPage() {
         )}
 
         <form onSubmit={handleAuthSubmit} className="grid gap-4">
-          <label className="grid gap-2 text-sm">
-            Email address
-            <input
-              type="email"
-              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-            />
-          </label>
-          <label className="grid gap-2 text-sm">
-            Password
-            <input
-              type="password"
-              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-            />
-          </label>
+          <FormField
+            label="Email address"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+            wrapperClassName="grid gap-2 text-sm"
+          />
+          <FormField
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            required
+            wrapperClassName="grid gap-2 text-sm"
+          />
           <Button type="submit">
             {authMode === 'login' ? 'Sign in' : 'Create account'}
           </Button>
@@ -304,12 +300,14 @@ export default function DashboardPage() {
               <div className="mt-6 grid gap-6 md:grid-cols-2">
                 <form onSubmit={handleEmailUpdate} className="grid gap-3">
                   <h3 className="text-sm font-semibold">Change email</h3>
-                  <input
+                  <FormField
+                    label="New email"
                     type="email"
-                    className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
                     placeholder="new@email.com"
                     value={newEmail}
                     onChange={(event) => setNewEmail(event.target.value)}
+                    labelClassName="text-xs text-white/80"
+                    wrapperClassName="grid gap-2"
                   />
                   <Button type="submit" variant="secondary">
                     Update email
@@ -318,12 +316,14 @@ export default function DashboardPage() {
 
                 <form onSubmit={handlePasswordUpdate} className="grid gap-3">
                   <h3 className="text-sm font-semibold">Change password</h3>
-                  <input
+                  <FormField
+                    label="New password"
                     type="password"
-                    className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
                     placeholder="New password"
                     value={newPassword}
                     onChange={(event) => setNewPassword(event.target.value)}
+                    labelClassName="text-xs text-white/80"
+                    wrapperClassName="grid gap-2"
                   />
                   <Button type="submit" variant="secondary">
                     Update password

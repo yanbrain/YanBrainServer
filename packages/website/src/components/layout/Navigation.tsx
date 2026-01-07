@@ -25,7 +25,7 @@ import { SITE_CONFIG } from '@/config/site'
 import { PRODUCTS } from '@/config/products'
 import { cn } from '@/lib/utils'
 import { auth } from '@/lib/firebase'
-import { AccountMenu, AuthCard } from '@yanbrain/shared/ui'
+import { AccountMenu, AuthCard, FormField } from '@yanbrain/shared/ui'
 
 export function Navigation() {
   const pathname = usePathname()
@@ -223,26 +223,24 @@ export function Navigation() {
               variant="modal"
             >
               <form onSubmit={handleAuthSubmit} className="grid gap-4">
-                <label className="grid gap-2 text-sm text-white/80">
-                  Email address
-                  <input
-                    type="email"
-                    className="rounded-md border border-white/10 bg-black px-3 py-2 text-white"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    required
-                  />
-                </label>
-                <label className="grid gap-2 text-sm text-white/80">
-                  Password
-                  <input
-                    type="password"
-                    className="rounded-md border border-white/10 bg-black px-3 py-2 text-white"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    required
-                  />
-                </label>
+                <FormField
+                  label="Email address"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                  labelClassName="text-white/80"
+                  wrapperClassName="grid gap-2 text-sm"
+                />
+                <FormField
+                  label="Password"
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
+                  labelClassName="text-white/80"
+                  wrapperClassName="grid gap-2 text-sm"
+                />
 
                 {authError ? (
                   <p className="text-sm text-red-300">{authError}</p>

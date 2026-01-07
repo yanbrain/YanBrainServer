@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./globals.css": "./src/styles/globals.css",
+    "./globals.css": "./globals.css",
+    "./styles/globals.css": "./styles/globals.css",
     "./ui": "./src/ui/index.ts",
     "./yglassui": "./src/yglassui/index.ts"
   },

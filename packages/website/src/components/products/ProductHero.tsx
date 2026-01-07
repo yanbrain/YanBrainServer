@@ -22,10 +22,7 @@ export function ProductHero({ product, isPortrait = false, children }: ProductHe
     >
       <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
-          <div
-            className="mb-6 flex h-16 w-16 items-center justify-center rounded-lg p-3"
-            style={{ backgroundColor: product.colors.primary }}
-          >
+          <div className="mb-6 h-16 w-16">
             <Image
               src={`/images/products/${product.slug}/${product.slug}_logo.webp`}
               alt={`${product.name} logo`}

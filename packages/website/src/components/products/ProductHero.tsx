@@ -36,7 +36,11 @@ export function ProductHero({ product, isPortrait = false, children }: ProductHe
             {product.tagline}
           </p>
           <p className="mb-8 text-lg leading-relaxed text-muted-foreground">{product.heroDescription}</p>
-          <Button size="lg" style={{ backgroundColor: product.colors.primary }} className="text-white hover:opacity-90">
+          <Button
+            size="lg"
+            style={{ backgroundColor: product.colors.primary }}
+            className="h-12 px-10 text-base text-white hover:opacity-90"
+          >
             <Download className="mr-2 h-5 w-5" />
             Download Now
           </Button>

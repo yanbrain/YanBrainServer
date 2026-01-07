@@ -17,6 +17,7 @@ const nextConfig = {
   },
   webpack: (config) => {
     config.resolve.alias['@yanbrain/shared'] = path.resolve(__dirname, '../shared/src')
+    config.resolve.alias['@'] = path.resolve(__dirname, 'src')
     return config
   },
 }

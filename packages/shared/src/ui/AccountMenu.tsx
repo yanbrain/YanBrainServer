@@ -60,7 +60,7 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 mt-3 w-56 rounded-3xl border border-white/10 bg-gradient-to-br from-black via-neutral-950 to-neutral-900 p-2 text-sm text-white shadow-2xl"
+          className="absolute right-0 mt-3 w-56 rounded-2xl border border-white/10 bg-black p-2 text-sm text-white shadow-xl outline outline-1 outline-white/10"
         >
           {summary ? (
             <div className="px-3 py-2 text-center text-xs text-white/60">
@@ -69,7 +69,7 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
           ) : null}
           {items.map((item) => {
             const content = (
-              <span className="block w-full rounded-2xl px-3 py-2 text-center transition hover:bg-white/5">
+              <span className="block w-full rounded-lg border border-white/10 px-3 py-2 text-center text-white/80 transition hover:border-white/30 hover:bg-white/5 hover:text-white">
                 {item.label}
               </span>
             )

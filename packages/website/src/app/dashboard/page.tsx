@@ -258,7 +258,7 @@ export default function DashboardPage() {
           </button>
 
           {apiBase === '' && (
-            <span className="text-xs text-amber-300">
+            <span className="text-xs text-slate-400">
               Set NEXT_PUBLIC_API_BASE_URL to load licenses.
             </span>
           )}

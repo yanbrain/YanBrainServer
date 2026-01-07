@@ -12,7 +12,7 @@ module.exports = {
         background: 'hsl(0 0% 0%)',
         foreground: 'hsl(0 0% 100%)',
         primary: {
-          DEFAULT: 'hsl(20 100% 50%)',
+          DEFAULT: '#2678dc',
           foreground: 'hsl(0 0% 100%)',
         },
         secondary: {
@@ -24,12 +24,12 @@ module.exports = {
           foreground: 'hsl(0 0% 60%)',
         },
         accent: {
-          DEFAULT: 'hsl(20 100% 50%)',
+          DEFAULT: '#2678dc',
           foreground: 'hsl(0 0% 100%)',
         },
         border: 'hsl(0 0% 20%)',
         input: 'hsl(0 0% 20%)',
-        ring: 'hsl(20 100% 50%)',
+        ring: '#2678dc',
         'yan-avatar': {
           primary: '#DC2678',
           secondary: '#78DC26',
@@ -42,7 +42,7 @@ module.exports = {
           primary: '#7826DC',
           secondary: '#26DC78',
         },
-        whatsapp: '#128C7E',
+        whatsapp: '#22c55e',
       },
       borderRadius: {
         lg: '0.5rem',

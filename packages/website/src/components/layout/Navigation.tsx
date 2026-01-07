@@ -11,7 +11,7 @@ import {
   signOut,
   type User
 } from 'firebase/auth'
-import { User as UserIcon, X } from 'lucide-react'
+import { User as UserIcon } from 'lucide-react'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -208,16 +208,11 @@ export function Navigation() {
       </div>
 
       {modalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
-          <div className="relative w-full max-w-md">
-            <button
-              type="button"
-              className="absolute right-4 top-4 rounded-full border border-white/10 bg-white/5 p-2 text-white/70 transition hover:text-white"
-              onClick={() => setModalOpen(false)}
-              aria-label="Close"
-            >
-              <X className="h-4 w-4" />
-            </button>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-6 backdrop-blur-2xl"
+          onClick={() => setModalOpen(false)}
+        >
+          <div className="relative w-full max-w-md" onClick={(event) => event.stopPropagation()}>
             <AuthCard
               title={modalMode === 'login' ? 'Sign in to your account' : 'Create a new account'}
               description={
@@ -257,7 +252,12 @@ export function Navigation() {
                   <p className="text-sm text-emerald-300">{authMessage}</p>
                 ) : null}
 
-                <Button type="submit" disabled={authLoading}>
+                <Button
+                  type="submit"
+                  disabled={authLoading}
+                  variant="secondary"
+                  className="glass-panel border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                >
                   {authLoading
                     ? 'Processing...'
                     : modalMode === 'login'

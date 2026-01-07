@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 interface GlowingCardProps {
     children: React.ReactNode
     primaryColor: string  // Main product color for outline
-    secondaryColor?: string // Secondary color for glow (defaults to orange)
+    secondaryColor?: string // Secondary color for glow (defaults to blue)
     className?: string
     isPortrait?: boolean
     disableGlow?: boolean
@@ -15,7 +15,7 @@ interface GlowingCardProps {
 export function GlowingCard({
                                 children,
                                 primaryColor,
-                                secondaryColor = 'hsl(25, 95%, 53%)', // Default orange
+                                secondaryColor = '#2678dc', // Default blue
                                 className,
                                 isPortrait = false,
                                 disableGlow = false
@@ -154,7 +154,7 @@ export function GlowingCard({
                         opacity: 1;
                     }
 
-                    /* Outer glow (secondary/orange color) - OUTSIDE card to prevent clipping */
+                    /* Outer glow (secondary color) - OUTSIDE card to prevent clipping */
                     .glowing-card .glow-effect {
                         inset: -16px;
                         z-index: 0;

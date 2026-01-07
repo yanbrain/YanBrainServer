@@ -36,8 +36,8 @@ async function callApi(endpoint: string, method: string = 'POST', body?: any) {
 }
 
 // User Actions
-export async function createUser(email: string, password: string) {
-    return callApi('/users', 'POST', { email, password })
+export async function createUser(userId: string, email: string) {
+    return callApi('/users', 'POST', { userId, email })
 }
 
 export async function deleteUser(userId: string) {

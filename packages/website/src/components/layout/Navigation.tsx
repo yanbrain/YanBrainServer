@@ -49,7 +49,7 @@ export function Navigation() {
             {SITE_CONFIG.name}
           </Link>
 
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6">
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
@@ -100,6 +100,37 @@ export function Navigation() {
             >
               Contact
             </Link>
+
+            {user ? (
+              <AccountMenu
+                summary={user?.email ?? 'Guest'}
+                trigger={<UserIcon className="h-4 w-4" />}
+                items={accountItems}
+              />
+            ) : (
+              <div className="flex items-center gap-3 text-sm text-white">
+                <button
+                  type="button"
+                  className="text-white/70 transition hover:text-white"
+                  onClick={() => {
+                    setModalMode('login')
+                    setModalOpen(true)
+                  }}
+                >
+                  Sign in
+                </button>
+                <Button
+                  variant="outline"
+                  className="h-9 border-white/30 text-white"
+                  onClick={() => {
+                    setModalMode('register')
+                    setModalOpen(true)
+                  }}
+                >
+                  Join
+                </Button>
+              </div>
+            )}
           </div>
 
           <AccountMenu
@@ -109,6 +140,94 @@ export function Navigation() {
           />
         </div>
       </div>
+
+      {modalOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
+          <div className="relative w-full max-w-md">
+            <button
+              type="button"
+              className="absolute right-4 top-4 rounded-full border border-white/10 bg-white/5 p-2 text-white/70 transition hover:text-white"
+              onClick={() => setModalOpen(false)}
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <AuthCard
+              title={modalMode === 'login' ? 'Sign in to your account' : 'Create a new account'}
+              description={
+                modalMode === 'login'
+                  ? 'Don’t have an account? Join here.'
+                  : 'Already have an account? Sign in.'
+              }
+              variant="modal"
+            >
+              <form onSubmit={handleAuthSubmit} className="grid gap-4">
+                <label className="grid gap-2 text-sm text-white/80">
+                  Email address
+                  <input
+                    type="email"
+                    className="rounded-md border border-white/10 bg-black px-3 py-2 text-white"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
+                </label>
+                <label className="grid gap-2 text-sm text-white/80">
+                  Password
+                  <input
+                    type="password"
+                    className="rounded-md border border-white/10 bg-black px-3 py-2 text-white"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                  />
+                </label>
+
+                {authError ? (
+                  <p className="text-sm text-red-300">{authError}</p>
+                ) : null}
+
+                {authMessage ? (
+                  <p className="text-sm text-emerald-300">{authMessage}</p>
+                ) : null}
+
+                <Button type="submit" disabled={authLoading}>
+                  {authLoading
+                    ? 'Processing...'
+                    : modalMode === 'login'
+                      ? 'Sign in'
+                      : 'Create account'}
+                </Button>
+              </form>
+
+              <div className="mt-4 flex items-center justify-between text-sm text-white/70">
+                <button
+                  type="button"
+                  className="text-white hover:underline"
+                  onClick={() => {
+                    setModalMode(modalMode === 'login' ? 'register' : 'login')
+                    setAuthError(null)
+                    setAuthMessage(null)
+                  }}
+                >
+                  {modalMode === 'login'
+                    ? 'Don’t have an account? Join here.'
+                    : 'Already have an account? Sign in.'}
+                </button>
+                {modalMode === 'login' ? (
+                  <button
+                    type="button"
+                    className="text-white hover:underline"
+                    onClick={handlePasswordReset}
+                  >
+                    Forgot password?
+                  </button>
+                ) : null}
+              </div>
+            </AuthCard>
+          </div>
+        </div>
+      ) : null}
     </nav>
   )
 }

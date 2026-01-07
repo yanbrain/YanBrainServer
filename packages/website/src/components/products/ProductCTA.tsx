@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/Button'
 import { Product } from '@/types'
+import { GlassPanel } from '@yanbrain/shared/yglassui'
 
 export function ProductCTA({ product }: { product: Product }) {
   return (
-    <section className="glass-panel glass-panel--edge text-center">
+    <GlassPanel as="section" edge className="text-center">
       <div className="py-16">
         <h2 className="mb-4 text-3xl font-bold">{product.cta.title}</h2>
         <p className="mb-8 text-base text-muted-foreground">
@@ -17,6 +18,6 @@ export function ProductCTA({ product }: { product: Product }) {
           {product.cta.buttonText}
         </Button>
       </div>
-    </section>
+    </GlassPanel>
   )
 }

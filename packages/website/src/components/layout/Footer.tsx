@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
+import { GlassPanel } from '@yanbrain/shared/yglassui'
 
 export function Footer() {
   return (
-    <footer className="glass-panel glass-panel--edge py-8">
+    <GlassPanel as="footer" edge className="py-8">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
           <p>© {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.</p>
@@ -14,6 +15,6 @@ export function Footer() {
           </div>
         </div>
       </div>
-    </footer>
+    </GlassPanel>
   )
 }

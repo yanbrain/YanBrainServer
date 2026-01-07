@@ -3,6 +3,7 @@
 import { CheckCircle, XCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Transaction, TRANSACTION_TYPES } from '@yanbrain/shared'
+import { GlassPanel } from '@yanbrain/shared/yglassui'
 import { formatDate } from '@/lib/utils'
 
 interface TransactionListProps {
@@ -43,7 +44,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
     return (
         <div className="space-y-3">
             {transactions.map((tx) => (
-                <div key={tx.id} className="glass-panel border-white/10 p-4">
+                <GlassPanel key={tx.id} className="border-white/10 p-4">
                     <div className="flex items-start gap-3">
                         <div className="mt-0.5">{getIcon(tx.type)}</div>
                         <div className="space-y-1 flex-1">
@@ -57,7 +58,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
                             <p className="text-xs text-muted-foreground">{formatDate(tx.timestamp)}</p>
                         </div>
                     </div>
-                </div>
+                </GlassPanel>
             ))}
         </div>
     )

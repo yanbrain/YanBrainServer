@@ -1,4 +1,4 @@
-const functions = require("firebase-functions");
+const {onRequest} = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const express = require("express");
 const cors = require("cors");
@@ -34,7 +34,6 @@ app.use("/licenses", require("./routes/licenses"));
 app.use("/subscriptions", require("./routes/subscriptions"));
 app.use("/users", require("./routes/users"));
 app.use("/webhooks", require("./routes/webhooks"));
-
 // Global error handler
 app.use((err, req, res, next) => {
     const logger = require("firebase-functions/logger");
@@ -42,4 +41,4 @@ app.use((err, req, res, next) => {
     res.status(500).json({success: false, error: "Internal server error"});
 });
 
-exports.api = functions.https.onRequest(app);
+exports.api = onRequest(app);

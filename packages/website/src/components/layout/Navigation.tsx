@@ -3,15 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signOut,
-  type User
-} from 'firebase/auth'
-import { User as UserIcon, X } from 'lucide-react'
+import { onAuthStateChanged, signOut, type User } from 'firebase/auth'
+import { User as UserIcon } from 'lucide-react'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -24,19 +17,11 @@ import { SITE_CONFIG } from '@/config/site'
 import { PRODUCTS } from '@/config/products'
 import { cn } from '@/lib/utils'
 import { auth } from '@/lib/firebase'
-import { AccountMenu, AuthCard } from '@yanbrain/shared/ui'
-import { Button } from '@/components/ui/Button'
+import { AccountMenu } from '@yanbrain/shared/ui'
 
 export function Navigation() {
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [modalMode, setModalMode] = useState<'login' | 'register'>('login')
-  const [authError, setAuthError] = useState<string | null>(null)
-  const [authMessage, setAuthMessage] = useState<string | null>(null)
-  const [authLoading, setAuthLoading] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
 
   useEffect(() => {
     if (!auth) return
@@ -49,60 +34,12 @@ export function Navigation() {
   const accountItems = useMemo(() => {
     if (user) {
       return [
-        { label: 'Profile', href: '/dashboard?tab=profile' },
-        { label: 'Licenses', href: '/dashboard?tab=licenses' },
+        { label: 'Account', href: '/dashboard' },
         { label: 'Logout', onSelect: () => auth && signOut(auth) }
       ]
     }
-    return []
+    return [{ label: 'Login', href: '/dashboard' }]
   }, [user])
-
-  async function handleAuthSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setAuthError(null)
-    setAuthMessage(null)
-    setAuthLoading(true)
-
-    try {
-      if (!auth) {
-        setAuthError('Firebase is not configured.')
-        return
-      }
-
-      if (modalMode === 'login') {
-        await signInWithEmailAndPassword(auth, email, password)
-        setAuthMessage('Signed in successfully.')
-      } else {
-        await createUserWithEmailAndPassword(auth, email, password)
-        setAuthMessage('Account created successfully.')
-      }
-      setPassword('')
-      setModalOpen(false)
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Authentication failed'
-      setAuthError(message)
-    } finally {
-      setAuthLoading(false)
-    }
-  }
-
-  async function handlePasswordReset() {
-    setAuthError(null)
-    setAuthMessage(null)
-
-    if (!auth || !email) {
-      setAuthError('Enter your email to reset your password.')
-      return
-    }
-
-    try {
-      await sendPasswordResetEmail(auth, email)
-      setAuthMessage('Password reset email sent.')
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Password reset failed'
-      setAuthError(message)
-    }
-  }
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black">
@@ -195,6 +132,12 @@ export function Navigation() {
               </div>
             )}
           </div>
+
+          <AccountMenu
+            summary={user?.email ?? 'Guest'}
+            trigger={<UserIcon className="h-4 w-4" />}
+            items={accountItems}
+          />
         </div>
       </div>
 

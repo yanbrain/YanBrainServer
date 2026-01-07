@@ -1,11 +1,9 @@
 'use client'
 
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   updateEmail,
@@ -15,7 +13,6 @@ import {
 import { auth } from '@/lib/firebase'
 import { Button } from '@/components/ui/Button'
 import { AuthCard } from '@yanbrain/shared/ui'
-import { cn } from '@/lib/utils'
 
 const PRODUCTS = [
   { id: 'yanAvatar', name: 'Yan Avatar' },
@@ -74,15 +71,11 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const activeTab = searchParams.get('tab') ?? 'profile'
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [newEmail, setNewEmail] = useState('')
   const [newPassword, setNewPassword] = useState('')
-  const [resetStatus, setResetStatus] = useState<string | null>(null)
   const [actionMessage, setActionMessage] = useState<string | null>(null)
 
   const licenseList = useMemo(() => {
@@ -202,30 +195,6 @@ export default function DashboardPage() {
     }
   }
 
-  async function handlePasswordReset() {
-    setError(null)
-    setResetStatus(null)
-
-    if (!user?.email || !auth) {
-      setError('Please sign in before requesting a reset email.')
-      return
-    }
-
-    try {
-      await sendPasswordResetEmail(auth, user.email)
-      setResetStatus('Password reset email sent.')
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Password reset failed'
-      setError(message)
-    }
-  }
-
-  function setTab(tab: string) {
-    const params = new URLSearchParams(searchParams)
-    params.set('tab', tab)
-    router.push(`/dashboard?${params.toString()}`)
-  }
-
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center text-lg">
@@ -237,12 +206,8 @@ export default function DashboardPage() {
   if (!user) {
     return (
       <AuthCard
-        title={authMode === 'login' ? 'Sign in to your account' : 'Create a new account'}
-        description={
-          authMode === 'login'
-            ? 'Don’t have an account? Join here.'
-            : 'Already have an account? Sign in.'
-        }
+        title={authMode === 'login' ? 'Sign in' : 'Create your account'}
+        description="Use your email and password to access your licenses and account settings."
       >
         {error && (
           <div className="mb-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
@@ -288,9 +253,7 @@ export default function DashboardPage() {
             className="text-white hover:underline"
             onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
           >
-            {authMode === 'login'
-              ? 'Don’t have an account? Join here.'
-              : 'Already have an account? Sign in.'}
+            {authMode === 'login' ? 'Need an account?' : 'Have an account?'}
           </button>
 
           {apiBase === '' && (
@@ -305,7 +268,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 px-6 py-16 text-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10">
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-10">
         <header className="flex flex-col gap-3">
           <h1 className="text-3xl font-semibold">User Dashboard</h1>
           <p className="text-sm text-slate-300">
@@ -325,177 +288,137 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-          <aside className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-300">
-                Dashboard
-              </h2>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                Sign out
-              </Button>
-            </div>
-            <div className="mt-6 grid gap-2 text-sm">
-              {['profile', 'licenses', 'activity'].map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  className={cn(
-                    'rounded-lg border border-transparent px-3 py-2 text-left capitalize text-slate-300 transition hover:border-slate-700 hover:text-white',
-                    activeTab === tab && 'border-slate-700 bg-slate-950 text-white'
-                  )}
-                  onClick={() => setTab(tab)}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </aside>
-
-          <div className="grid gap-6">
-            {activeTab === 'profile' && (
-              <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
-                <div className="flex flex-wrap items-start justify-between gap-6">
-                  <div>
-                    <h2 className="text-xl font-semibold">Profile</h2>
-                    <p className="text-sm text-slate-400">Signed in as {user.email}</p>
-                  </div>
+        <>
+            <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
+              <div className="flex flex-wrap items-start justify-between gap-6">
+                <div>
+                  <h2 className="text-xl font-semibold">Account</h2>
+                  <p className="text-sm text-slate-400">Signed in as {user.email}</p>
                 </div>
+                <Button variant="outline" onClick={handleSignOut}>
+                  Sign out
+                </Button>
+              </div>
 
-                <div className="mt-6 grid gap-6 md:grid-cols-2">
-                  <form onSubmit={handleEmailUpdate} className="grid gap-3">
-                    <h3 className="text-sm font-semibold">Change email</h3>
-                    <input
-                      type="email"
-                      className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-                      placeholder="new@email.com"
-                      value={newEmail}
-                      onChange={(event) => setNewEmail(event.target.value)}
-                    />
-                    <Button type="submit" variant="secondary">
-                      Update email
-                    </Button>
-                  </form>
-
-                  <form onSubmit={handlePasswordUpdate} className="grid gap-3">
-                    <h3 className="text-sm font-semibold">Change password</h3>
-                    <input
-                      type="password"
-                      className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-                      placeholder="New password"
-                      value={newPassword}
-                      onChange={(event) => setNewPassword(event.target.value)}
-                    />
-                    <Button type="submit" variant="secondary">
-                      Update password
-                    </Button>
-                  </form>
-                </div>
-
-                <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-300">
-                  <Button variant="outline" onClick={handlePasswordReset}>
-                    Send password reset email
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
+                <form onSubmit={handleEmailUpdate} className="grid gap-3">
+                  <h3 className="text-sm font-semibold">Change email</h3>
+                  <input
+                    type="email"
+                    className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                    placeholder="new@email.com"
+                    value={newEmail}
+                    onChange={(event) => setNewEmail(event.target.value)}
+                  />
+                  <Button type="submit" variant="secondary">
+                    Update email
                   </Button>
-                  {resetStatus ? <span className="text-emerald-300">{resetStatus}</span> : null}
-                </div>
-              </section>
-            )}
+                </form>
 
-            {activeTab === 'licenses' && (
-              <>
-                <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold">Licenses</h2>
-                    <Button variant="outline" onClick={() => user && loadDashboard(user)} disabled={loading}>
-                      {loading ? 'Refreshing...' : 'Refresh'}
-                    </Button>
+                <form onSubmit={handlePasswordUpdate} className="grid gap-3">
+                  <h3 className="text-sm font-semibold">Change password</h3>
+                  <input
+                    type="password"
+                    className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                    placeholder="New password"
+                    value={newPassword}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                  />
+                  <Button type="submit" variant="secondary">
+                    Update password
+                  </Button>
+                </form>
+              </div>
+            </section>
+
+            <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold">Licenses</h2>
+                <Button variant="outline" onClick={() => user && loadDashboard(user)} disabled={loading}>
+                  {loading ? 'Refreshing...' : 'Refresh'}
+                </Button>
+              </div>
+
+              <div className="mt-6 grid gap-4 md:grid-cols-3">
+                {licenseList.map(({ id, name, license }) => (
+                  <div key={id} className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                    <h3 className="text-base font-semibold">{name}</h3>
+                    <p className="mt-2 text-sm text-slate-300">
+                      Status:{' '}
+                      <span className={license?.isActive ? 'text-emerald-300' : 'text-slate-400'}>
+                        {license?.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </p>
+                    <p className="text-sm text-slate-400">Expiry: {formatDate(license?.expiryDate)}</p>
                   </div>
+                ))}
+              </div>
+            </section>
 
-                  <div className="mt-6 grid gap-4 md:grid-cols-3">
-                    {licenseList.map(({ id, name, license }) => (
-                      <div key={id} className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                        <h3 className="text-base font-semibold">{name}</h3>
-                        <p className="mt-2 text-sm text-slate-300">
-                          Status:{' '}
-                          <span className={license?.isActive ? 'text-emerald-300' : 'text-slate-400'}>
-                            {license?.isActive ? 'Active' : 'Inactive'}
-                          </span>
-                        </p>
-                        <p className="text-sm text-slate-400">Expiry: {formatDate(license?.expiryDate)}</p>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-
-                <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
-                  <h2 className="text-xl font-semibold">Subscriptions</h2>
-                  <div className="mt-4 grid gap-4">
-                    {data?.subscriptions?.length ? (
-                      data.subscriptions.map((subscription) => (
-                        <div key={subscription.id} className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                          <div className="flex flex-wrap items-center justify-between gap-2">
-                            <div>
-                              <p className="text-sm text-slate-400">Subscription ID</p>
-                              <p className="text-sm font-medium text-white">{subscription.id}</p>
-                            </div>
-                            <span className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-200">
-                              {subscription.status || 'Unknown'}
-                            </span>
-                          </div>
-                          <div className="mt-3 grid gap-2 text-sm text-slate-400">
-                            <p>Plan: {subscription.plan || 'Standard'}</p>
-                            <p>Next billing: {formatDate(subscription.nextBillingDate)}</p>
-                            <p>
-                              Products: {subscription.linkedProducts?.length ? subscription.linkedProducts.join(', ') : '—'}
-                            </p>
-                          </div>
+            <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
+              <h2 className="text-xl font-semibold">Subscriptions</h2>
+              <div className="mt-4 grid gap-4">
+                {data?.subscriptions?.length ? (
+                  data.subscriptions.map((subscription) => (
+                    <div key={subscription.id} className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                          <p className="text-sm text-slate-400">Subscription ID</p>
+                          <p className="text-sm font-medium text-white">{subscription.id}</p>
                         </div>
+                        <span className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-200">
+                          {subscription.status || 'Unknown'}
+                        </span>
+                      </div>
+                      <div className="mt-3 grid gap-2 text-sm text-slate-400">
+                        <p>Plan: {subscription.plan || 'Standard'}</p>
+                        <p>Next billing: {formatDate(subscription.nextBillingDate)}</p>
+                        <p>
+                          Products: {subscription.linkedProducts?.length ? subscription.linkedProducts.join(', ') : '—'}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-slate-400">No subscriptions found.</p>
+                )}
+              </div>
+            </section>
+
+            <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
+              <h2 className="text-xl font-semibold">Recent activity</h2>
+              <div className="mt-4 overflow-hidden rounded-xl border border-slate-800">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-950 text-slate-300">
+                    <tr>
+                      <th className="px-4 py-3 font-medium">Type</th>
+                      <th className="px-4 py-3 font-medium">Products</th>
+                      <th className="px-4 py-3 font-medium">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    {data?.transactions?.length ? (
+                      data.transactions.map((tx) => (
+                        <tr key={tx.id} className="bg-slate-900/30">
+                          <td className="px-4 py-3 text-slate-200">{tx.type || '—'}</td>
+                          <td className="px-4 py-3 text-slate-400">
+                            {tx.productIds?.length ? tx.productIds.join(', ') : '—'}
+                          </td>
+                          <td className="px-4 py-3 text-slate-400">{formatDate(tx.timestamp)}</td>
+                        </tr>
                       ))
                     ) : (
-                      <p className="text-sm text-slate-400">No subscriptions found.</p>
-                    )}
-                  </div>
-                </section>
-              </>
-            )}
-
-            {activeTab === 'activity' && (
-              <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
-                <h2 className="text-xl font-semibold">Recent activity</h2>
-                <div className="mt-4 overflow-hidden rounded-xl border border-slate-800">
-                  <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-950 text-slate-300">
                       <tr>
-                        <th className="px-4 py-3 font-medium">Type</th>
-                        <th className="px-4 py-3 font-medium">Products</th>
-                        <th className="px-4 py-3 font-medium">Date</th>
+                        <td className="px-4 py-6 text-center text-slate-400" colSpan={3}>
+                          No recent activity yet.
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-800">
-                      {data?.transactions?.length ? (
-                        data.transactions.map((tx) => (
-                          <tr key={tx.id} className="bg-slate-900/30">
-                            <td className="px-4 py-3 text-slate-200">{tx.type || '—'}</td>
-                            <td className="px-4 py-3 text-slate-400">
-                              {tx.productIds?.length ? tx.productIds.join(', ') : '—'}
-                            </td>
-                            <td className="px-4 py-3 text-slate-400">{formatDate(tx.timestamp)}</td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td className="px-4 py-6 text-center text-slate-400" colSpan={3}>
-                            No recent activity yet.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-            )}
-          </div>
-        </div>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+        </>
       </div>
     </div>
   )

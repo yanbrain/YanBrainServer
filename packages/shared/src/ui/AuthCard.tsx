@@ -7,7 +7,6 @@ interface AuthCardProps {
   children: ReactNode
   footer?: ReactNode
   className?: string
-  variant?: 'page' | 'modal'
 }
 
 export function AuthCard({
@@ -15,15 +14,10 @@ export function AuthCard({
   description,
   children,
   footer,
-  className,
-  variant = 'page'
+  className
 }: AuthCardProps) {
-  const containerClass =
-    variant === 'page'
-      ? 'flex min-h-screen items-center justify-center p-6'
-      : 'p-0'
   return (
-    <div className={containerClass}>
+    <div className="flex min-h-screen items-center justify-center p-6">
       <div className={cn('glass-panel w-full max-w-md p-6 text-white', className)}>
         <div className="space-y-2">
           <h1 className="text-xl font-semibold">{title}</h1>

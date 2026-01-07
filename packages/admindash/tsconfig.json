@@ -20,7 +20,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@yanbrain/shared": ["../shared/src"]
+      "@yanbrain/shared": ["../shared/src"],
+      "@yanbrain/shared/*": ["../shared/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

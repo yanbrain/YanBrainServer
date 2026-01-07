@@ -1,4 +1,4 @@
-@import '@yanbrain/shared/globals.css';
+@import '@yanbrain/shared/styles/globals.css';
 
 @tailwind base;
 @tailwind components;

@@ -71,12 +71,6 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
     return (
         <div className="space-y-6">
             <GlassPanel className="flex items-center justify-between px-6 py-5">
-                <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">
-                        Admin Control
-                    </p>
-                    <h1 className="mt-2 text-2xl font-bold text-white">Admin Panel</h1>
-                </div>
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={() => setShowCreateUser(true)}>
                         <UserPlus className="mr-2 h-4 w-4" />
@@ -114,7 +108,7 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
 
                 <Card className="p-6">
                     <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                        {selectedUser ? `Licenses: ${selectedUser.email}` : 'Select a user'}
+                        {selectedUser ? `Licenses: ${selectedUser.email}` : 'Licenses'}
                     </h2>
                     {selectedUser ? (
                         <LicensePanel
@@ -133,7 +127,7 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
 
                 <Card className="p-6">
                     <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                        {selectedUser ? 'Transactions' : 'Select a user'}
+                        Transactions
                     </h2>
                     {selectedUser ? (
                         <TransactionPanel

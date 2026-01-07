@@ -69,7 +69,7 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
           ) : null}
           {items.map((item) => {
             const content = (
-              <span className="block w-full rounded-lg border border-white/10 px-3 py-2 text-center text-white/80 transition hover:border-white/30 hover:bg-white/5 hover:text-white">
+              <span className="block w-full rounded-lg px-3 py-2 text-right text-white/80 transition hover:bg-white/5 hover:text-white">
                 {item.label}
               </span>
             )

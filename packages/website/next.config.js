@@ -5,6 +5,9 @@ const nextConfig = {
   output: 'export',
   trailingSlash: true,
   transpilePackages: ['@yanbrain/shared'],
+    experimental: {
+        externalDir: true,
+    },
   images: {
     unoptimized: true,
   },

@@ -17,9 +17,10 @@ import { toast } from 'sonner'
 interface DashboardProps {
     users: User[]
     token: string
+    onRefresh: () => void
 }
 
-export function Dashboard({ users, token }: DashboardProps) {
+export function Dashboard({ users, token, onRefresh }: DashboardProps) {
     const router = useRouter()
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
@@ -29,6 +30,7 @@ export function Dashboard({ users, token }: DashboardProps) {
     const selectedUser = users.find((u) => u.id === selectedUserId)
 
     const handleRefresh = () => {
+        onRefresh()
         router.refresh()
         setRefreshKey(k => k + 1)
     }

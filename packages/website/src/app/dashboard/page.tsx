@@ -27,31 +27,12 @@ type LicenseRecord = {
   revokedAt?: string | null
 }
 
-type SubscriptionRecord = {
-  id: string
-  status?: string
-  plan?: string
-  provider?: string
-  currentPeriodEnd?: string | null
-  nextBillingDate?: string | null
-  linkedProducts?: string[]
-}
-
-type TransactionRecord = {
-  id: string
-  type?: string
-  productIds?: string[]
-  timestamp?: string | null
-}
-
 type MeResponse = {
   user: {
     id: string
     email?: string | null
   }
   licenses: Record<string, LicenseRecord> | null
-  subscriptions: SubscriptionRecord[]
-  transactions: TransactionRecord[]
 }
 
 function formatDate(value?: string | null) {
@@ -59,6 +40,16 @@ function formatDate(value?: string | null) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return '—'
   return date.toLocaleDateString()
+}
+
+function formatTimeLeft(value?: string | null) {
+  if (!value) return 'No expiry date'
+  const expiry = new Date(value)
+  if (Number.isNaN(expiry.getTime())) return 'No expiry date'
+  const diffMs = expiry.getTime() - Date.now()
+  if (diffMs <= 0) return 'Expired'
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
+  return diffDays === 1 ? '1 day left' : `${diffDays} days left`
 }
 
 export default function DashboardPage() {
@@ -86,11 +77,21 @@ export default function DashboardPage() {
     }))
   }, [data])
 
+  const activeLicenses = useMemo(
+    () => licenseList.filter(({ license }) => license?.isActive),
+    [licenseList]
+  )
+
   async function loadDashboard(currentUser: User) {
     setLoading(true)
     setError(null)
 
     try {
+      if (!apiBase) {
+        setError('Set NEXT_PUBLIC_API_BASE_URL to load dashboard data.')
+        setData(null)
+        return
+      }
       const token = await currentUser.getIdToken()
       const response = await fetch(apiUrl, {
         headers: {
@@ -269,7 +270,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-slate-950 px-6 py-16 text-white">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-10">
-        <header className="flex flex-col gap-3">
+        <header className="flex flex-col items-end gap-3 text-right">
           <h1 className="text-3xl font-semibold">User Dashboard</h1>
           <p className="text-sm text-slate-300">
             Manage your account, update your email or password, and review your current licenses.
@@ -289,7 +290,7 @@ export default function DashboardPage() {
         )}
 
         <>
-            <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
+            <section className="rounded-2xl border border-white/15 bg-slate-900/80 p-8 shadow-xl ring-1 ring-white/10">
               <div className="flex flex-wrap items-start justify-between gap-6">
                 <div>
                   <h2 className="text-xl font-semibold">Account</h2>
@@ -340,82 +341,20 @@ export default function DashboardPage() {
               </div>
 
               <div className="mt-6 grid gap-4 md:grid-cols-3">
-                {licenseList.map(({ id, name, license }) => (
-                  <div key={id} className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                    <h3 className="text-base font-semibold">{name}</h3>
-                    <p className="mt-2 text-sm text-slate-300">
-                      Status:{' '}
-                      <span className={license?.isActive ? 'text-emerald-300' : 'text-slate-400'}>
-                        {license?.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </p>
-                    <p className="text-sm text-slate-400">Expiry: {formatDate(license?.expiryDate)}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
-              <h2 className="text-xl font-semibold">Subscriptions</h2>
-              <div className="mt-4 grid gap-4">
-                {data?.subscriptions?.length ? (
-                  data.subscriptions.map((subscription) => (
-                    <div key={subscription.id} className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                          <p className="text-sm text-slate-400">Subscription ID</p>
-                          <p className="text-sm font-medium text-white">{subscription.id}</p>
-                        </div>
-                        <span className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-200">
-                          {subscription.status || 'Unknown'}
-                        </span>
-                      </div>
-                      <div className="mt-3 grid gap-2 text-sm text-slate-400">
-                        <p>Plan: {subscription.plan || 'Standard'}</p>
-                        <p>Next billing: {formatDate(subscription.nextBillingDate)}</p>
-                        <p>
-                          Products: {subscription.linkedProducts?.length ? subscription.linkedProducts.join(', ') : '—'}
-                        </p>
-                      </div>
+                {activeLicenses.length ? (
+                  activeLicenses.map(({ id, name, license }) => (
+                    <div key={id} className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                      <h3 className="text-base font-semibold">{name}</h3>
+                      <p className="mt-2 text-sm text-emerald-300">Active</p>
+                      <p className="text-sm text-slate-400">
+                        Time left: {formatTimeLeft(license?.expiryDate)}
+                      </p>
+                      <p className="text-sm text-slate-500">Expiry: {formatDate(license?.expiryDate)}</p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-sm text-slate-400">No subscriptions found.</p>
+                  <p className="text-sm text-slate-400">No active licenses.</p>
                 )}
-              </div>
-            </section>
-
-            <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
-              <h2 className="text-xl font-semibold">Recent activity</h2>
-              <div className="mt-4 overflow-hidden rounded-xl border border-slate-800">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-950 text-slate-300">
-                    <tr>
-                      <th className="px-4 py-3 font-medium">Type</th>
-                      <th className="px-4 py-3 font-medium">Products</th>
-                      <th className="px-4 py-3 font-medium">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-800">
-                    {data?.transactions?.length ? (
-                      data.transactions.map((tx) => (
-                        <tr key={tx.id} className="bg-slate-900/30">
-                          <td className="px-4 py-3 text-slate-200">{tx.type || '—'}</td>
-                          <td className="px-4 py-3 text-slate-400">
-                            {tx.productIds?.length ? tx.productIds.join(', ') : '—'}
-                          </td>
-                          <td className="px-4 py-3 text-slate-400">{formatDate(tx.timestamp)}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td className="px-4 py-6 text-center text-slate-400" colSpan={3}>
-                          No recent activity yet.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
               </div>
             </section>
         </>

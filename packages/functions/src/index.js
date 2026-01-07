@@ -30,11 +30,9 @@ app.use(express.json({limit: "1mb"}));
 app.get("/health", (req, res) => res.json({status: "ok"}));
 
 // Routes
-app.use("/licenses", require("./routes/licenses"));
-app.use("/subscriptions", require("./routes/subscriptions"));
+app.use("/credits", require("./routes/credits"));
 app.use("/users", require("./routes/users"));
 app.use("/me", require("./routes/me"));
-app.use("/webhooks", require("./routes/webhooks"));
 
 // Global error handler
 app.use((err, req, res, next) => {

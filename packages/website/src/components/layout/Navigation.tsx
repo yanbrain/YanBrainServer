@@ -126,8 +126,8 @@ export function Navigation() {
                   <NavigationMenuTrigger className="h-auto bg-transparent p-0 text-sm font-normal text-white/70 hover:bg-transparent hover:text-white focus:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-white">
                     Software
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="rounded-2xl border border-white/10 bg-black p-2 shadow-xl outline outline-1 outline-white/10">
+                  <NavigationMenuContent className="mt-3">
+                    <div className="rounded-2xl border border-white/10 bg-black p-2 text-sm text-white shadow-xl outline outline-1 outline-white/10">
                       <div className="rounded-xl border border-white/5 bg-black/95">
                         <ul className="w-64 space-y-2 p-2">
                           {PRODUCTS.map((product) => (

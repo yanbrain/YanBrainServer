@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Download } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@yanbrain/shared/ui'
 import { GlowingCard } from '@/components/ui/GlowingCard'
 import { Product } from '@/types'
 import Image from 'next/image'

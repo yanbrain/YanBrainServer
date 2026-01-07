@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@yanbrain/shared/ui'
 import { Card } from '@/components/ui/card'
 
 export default function Error({

@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/Button'
+import { Button } from '@yanbrain/shared/ui'
 import { Product } from '@/types'
-import { GlassPanel } from '@yanbrain/shared/yglassui'
+import { GlassPanel } from '@yanbrain/shared/ui'
 
 export function ProductCTA({ product }: { product: Product }) {
   return (

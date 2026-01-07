@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { UserTable } from '@/features/users/user-table'
-import { LicensePanel } from '@/features/licenses/license-panel'
+import { CreditsPanel } from '@/features/credits/credits-panel'
 import { TransactionPanel } from '@/features/transactions/transaction-panel'
 import { CreateUserDialog } from '@/features/users/create-user-dialog'
 import { User } from '@yanbrain/shared'
@@ -108,10 +108,10 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
 
                 <Card className="p-6">
                     <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                        {selectedUser ? `Licenses: ${selectedUser.email}` : 'Licenses'}
+                        {selectedUser ? `Credits: ${selectedUser.email}` : 'Credits'}
                     </h2>
                     {selectedUser ? (
-                        <LicensePanel
+                        <CreditsPanel
                             userId={selectedUser.id}
                             isSuspended={selectedUser.isSuspended}
                             token={token}
@@ -120,7 +120,7 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
                         />
                     ) : (
                         <div className="py-12 text-center text-sm text-muted-foreground">
-                            Select a user to view licenses
+                            Select a user to view credits
                         </div>
                     )}
                 </Card>

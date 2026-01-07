@@ -15,18 +15,23 @@ const getUser = asyncHandler(async (req, res) => {
 
     if (!userId) return sendError(res, 400, "User ID required");
 
-    const [userDoc, licenseDoc, transactionsSnap, subscriptionsSnap] = await Promise.all([
+    const [userDoc, transactionsSnap, subscriptionsSnap, usageSnap] = await Promise.all([
         db.collection("users").doc(userId).get(),
-        db.collection("licenses").doc(userId).get(),
         db.collection("transactions").where("userId", "==", userId).orderBy("timestamp", "desc").limit(50).get(),
         db.collection("subscriptions").where("userId", "==", userId).get(),
+        db.collection("usage_daily").where("userId", "==", userId).orderBy("date", "desc").limit(30).get(),
     ]);
 
     if (!userDoc.exists) return sendError(res, 404, "User not found");
 
     return sendSuccess(res, {
         user: {id: userId, ...userDoc.data()},
-        licenses: licenseDoc.data() || null,
+        credits: {
+            balance: userDoc.data().creditsBalance || 0,
+            lifetime: userDoc.data().creditsLifetime || 0,
+            updatedAt: userDoc.data().creditsUpdatedAt || null,
+        },
+        usage: usageSnap.docs.map((doc) => ({id: doc.id, ...doc.data()})),
         subscriptions: subscriptionsSnap.docs.map((doc) => ({id: doc.id, ...doc.data()})),
         transactions: transactionsSnap.docs.map((doc) => ({id: doc.id, ...doc.data()})),
     });
@@ -40,16 +45,14 @@ const listUsers = asyncHandler(async (req, res) => {
 
     const users = await Promise.all(
         usersSnap.docs.map(async (userDoc) => {
-            const licenseDoc = await db.collection("licenses").doc(userDoc.id).get();
-            const hasActiveLicense = licenseDoc.exists &&
-                Object.values(licenseDoc.data()).some((l) => l.isActive);
+            const creditsBalance = userDoc.data().creditsBalance || 0;
 
             return {
                 id: userDoc.id,
                 email: userDoc.data().email,
                 createdAt: userDoc.data().createdAt,
                 isSuspended: userDoc.data().isSuspended || false,
-                hasActiveLicense,
+                creditsBalance,
             };
         })
     );
@@ -78,6 +81,9 @@ const createUser = asyncHandler(async (req, res) => {
         updatedAt: now,
         isActive: true,
         isSuspended: false,
+        creditsBalance: 0,
+        creditsLifetime: 0,
+        creditsUpdatedAt: now,
         ...(customData || {}),
     });
 
@@ -135,7 +141,6 @@ const deleteUser = asyncHandler(async (req, res) => {
     const now = admin.firestore.Timestamp.now();
 
     batch.delete(userRef);
-    batch.delete(db.collection("licenses").doc(userId));
 
     const [subscriptionsSnap, rateLimitsSnap] = await Promise.all([
         db.collection("subscriptions").where("userId", "==", userId).get(),

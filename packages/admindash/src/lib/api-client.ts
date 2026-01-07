@@ -52,11 +52,7 @@ export async function unsuspendUser(userId: string) {
     return callApi(`/users/${userId}/unsuspend`, 'PATCH')
 }
 
-// License Actions
-export async function grantLicense(userId: string, productId: string, days: number) {
-    return callApi('/licenses/grant', 'POST', { userId, productId, days })
-}
-
-export async function revokeLicense(userId: string, productId: string) {
-    return callApi(`/licenses/${userId}/${productId}`, 'DELETE')
+// Credit Actions
+export async function grantCredits(userId: string, credits: number, reason?: string, productId?: string | null) {
+    return callApi('/credits/grant', 'POST', { userId, credits, reason, productId })
 }

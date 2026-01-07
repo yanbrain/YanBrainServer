@@ -4,6 +4,7 @@ const logger = require("firebase-functions/logger");
 // Constants
 const PRODUCT_IDS = ["yanAvatar", "yanDraw", "yanPhotobooth"];
 const SUBSCRIPTION_DAYS = 30;
+const SUBSCRIPTION_CREDITS = 100;
 
 async function handleWebhookEvent(db, eventType, userId, subscriptionId) {
     logger.info(`Webhook: ${eventType} for ${userId}`);
@@ -28,42 +29,38 @@ async function handleWebhookEvent(db, eventType, userId, subscriptionId) {
 }
 
 async function renewSubscription(db, userId, subscriptionId) {
-    const [licenseDoc, subscriptionDoc] = await Promise.all([
-        db.collection("licenses").doc(userId).get(),
+    const [userDoc, subscriptionDoc] = await Promise.all([
+        db.collection("users").doc(userId).get(),
         db.collection("subscriptions").doc(subscriptionId).get(),
     ]);
 
-    if (!licenseDoc.exists || !subscriptionDoc.exists) {
+    if (!subscriptionDoc.exists) {
         logger.warn(`Missing data for renewal: ${userId}`);
         return;
     }
 
-    const licenses = licenseDoc.data();
+    const userData = userDoc.exists ? userDoc.data() : {};
     const subscription = subscriptionDoc.data();
     const linkedProducts = subscription.linkedProducts || PRODUCT_IDS;
 
     const batch = db.batch();
     const now = admin.firestore.Timestamp.now();
-    const updates = {};
-    let newExpiry;
+    const currentBalance = userData.creditsBalance || 0;
+    const currentLifetime = userData.creditsLifetime || 0;
+    const nextBillingDate = admin.firestore.Timestamp.fromDate(
+        new Date(Date.now() + SUBSCRIPTION_DAYS * 86400000)
+    );
 
-    linkedProducts.forEach((product) => {
-        const license = licenses[product];
-        if (license) {
-            const date = license.expiryDate.toDate();
-            date.setDate(date.getDate() + SUBSCRIPTION_DAYS);
-            newExpiry = admin.firestore.Timestamp.fromDate(date);
-            updates[`${product}.expiryDate`] = newExpiry;
-            updates[`${product}.isActive`] = true;
-        }
-    });
+    batch.set(db.collection("users").doc(userId), {
+        creditsBalance: currentBalance + SUBSCRIPTION_CREDITS,
+        creditsLifetime: currentLifetime + SUBSCRIPTION_CREDITS,
+        creditsUpdatedAt: now,
+        updatedAt: now,
+    }, {merge: true});
 
-    if (Object.keys(updates).length === 0) return;
-
-    batch.update(db.collection("licenses").doc(userId), updates);
     batch.update(db.collection("subscriptions").doc(subscriptionId), {
-        currentPeriodEnd: newExpiry,
-        nextBillingDate: newExpiry,
+        currentPeriodEnd: nextBillingDate,
+        nextBillingDate,
         status: "ACTIVE",
         updatedAt: now,
     });
@@ -73,11 +70,12 @@ async function renewSubscription(db, userId, subscriptionId) {
         type: "SUBSCRIPTION_RENEWED",
         subscriptionId,
         productIds: linkedProducts,
-        daysGranted: SUBSCRIPTION_DAYS,
+        daysGranted: 0,
+        creditsGranted: SUBSCRIPTION_CREDITS,
         provider: subscription.provider,
         timestamp: now,
         performedBy: "paypal_webhook",
-        metadata: {plan: subscription.plan},
+        metadata: {plan: subscription.plan, credits: SUBSCRIPTION_CREDITS},
     });
 
     await batch.commit();
@@ -105,28 +103,15 @@ async function updateSubscriptionStatus(db, userId, subscriptionId, status) {
 }
 
 async function expireSubscription(db, userId, subscriptionId) {
-    const [licenseDoc, subscriptionDoc] = await Promise.all([
-        db.collection("licenses").doc(userId).get(),
-        db.collection("subscriptions").doc(subscriptionId).get(),
-    ]);
+    const subscriptionDoc = await db.collection("subscriptions").doc(subscriptionId).get();
+    if (!subscriptionDoc.exists) return;
 
-    if (!licenseDoc.exists) return;
-
-    const licenses = licenseDoc.data();
     const subscription = subscriptionDoc.data();
     const linkedProducts = subscription?.linkedProducts || PRODUCT_IDS;
 
     const batch = db.batch();
     const now = admin.firestore.Timestamp.now();
-    const updates = {};
 
-    linkedProducts.forEach((product) => {
-        if (licenses[product]) updates[`${product}.isActive`] = false;
-    });
-
-    if (Object.keys(updates).length === 0) return;
-
-    batch.update(db.collection("licenses").doc(userId), updates);
     batch.update(db.collection("subscriptions").doc(subscriptionId), {status: "EXPIRED", updatedAt: now});
     batch.set(db.collection("transactions").doc(), {
         userId,
@@ -144,28 +129,15 @@ async function expireSubscription(db, userId, subscriptionId) {
 }
 
 async function handleChargeback(db, userId, subscriptionId) {
-    const [licenseDoc, subscriptionDoc] = await Promise.all([
-        db.collection("licenses").doc(userId).get(),
-        db.collection("subscriptions").doc(subscriptionId).get(),
-    ]);
+    const subscriptionDoc = await db.collection("subscriptions").doc(subscriptionId).get();
+    if (!subscriptionDoc.exists) return;
 
-    if (!licenseDoc.exists) return;
-
-    const licenses = licenseDoc.data();
     const subscription = subscriptionDoc.data();
     const linkedProducts = subscription?.linkedProducts || PRODUCT_IDS;
 
     const batch = db.batch();
     const now = admin.firestore.Timestamp.now();
-    const updates = {};
 
-    linkedProducts.forEach((product) => {
-        if (licenses[product]) updates[`${product}.isActive`] = false;
-    });
-
-    if (Object.keys(updates).length === 0) return;
-
-    batch.update(db.collection("licenses").doc(userId), updates);
     batch.update(db.collection("subscriptions").doc(subscriptionId), {status: "CHARGEBACK", updatedAt: now});
     batch.set(db.collection("transactions").doc(), {
         userId,

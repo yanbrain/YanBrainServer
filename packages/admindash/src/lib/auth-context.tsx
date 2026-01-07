@@ -31,30 +31,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setUser(user)
 
-            if (user) {
-                // Check if user has admin custom claim
-                const idTokenResult = await user.getIdTokenResult()
-                const hasAdminClaim = !!idTokenResult.claims.admin
-                setIsAdmin(hasAdminClaim)
+            try {
+                if (user) {
+                    // Check if user has admin custom claim
+                    const idTokenResult = await user.getIdTokenResult()
+                    const hasAdminClaim = !!idTokenResult.claims.admin
+                    setIsAdmin(hasAdminClaim)
 
-                if (hasAdminClaim) {
-                    // Get fresh ID token and store in cookies for server actions
-                    const idToken = await user.getIdToken()
-                    document.cookie = `firebase-auth=true; path=/; max-age=3600; SameSite=Strict`
-                    document.cookie = `firebase-token=${idToken}; path=/; max-age=3600; SameSite=Strict`
+                    if (hasAdminClaim) {
+                        // Get fresh ID token and store in cookies for server actions
+                        const idToken = await user.getIdToken()
+                        document.cookie = `firebase-auth=true; path=/; max-age=3600; SameSite=Strict`
+                        document.cookie = `firebase-token=${idToken}; path=/; max-age=3600; SameSite=Strict`
+                    } else {
+                        console.warn('[AuthProvider] User lacks admin claim', { uid: user.uid })
+                        // Clear cookies if not admin
+                        document.cookie = 'firebase-auth=; path=/; max-age=0'
+                        document.cookie = 'firebase-token=; path=/; max-age=0'
+                    }
                 } else {
-                    // Clear cookies if not admin
+                    setIsAdmin(false)
+                    // Clear cookies on sign out
                     document.cookie = 'firebase-auth=; path=/; max-age=0'
                     document.cookie = 'firebase-token=; path=/; max-age=0'
                 }
-            } else {
+            } catch (error) {
+                console.error('[AuthProvider] Failed to read token claims', error)
                 setIsAdmin(false)
-                // Clear cookies on sign out
                 document.cookie = 'firebase-auth=; path=/; max-age=0'
                 document.cookie = 'firebase-token=; path=/; max-age=0'
+            } finally {
+                setLoading(false)
             }
-
-            setLoading(false)
         })
 
         return () => unsubscribe()
@@ -66,6 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Check if user is admin
         const idTokenResult = await userCredential.user.getIdTokenResult()
         if (!idTokenResult.claims.admin) {
+            console.warn('[AuthProvider] Sign-in blocked: missing admin claim', { uid: userCredential.user.uid })
             await firebaseSignOut(auth)
             throw new Error('You do not have admin access')
         }

@@ -30,7 +30,7 @@ app.use(express.json({limit: "1mb"}));
 app.get("/health", (req, res) => res.json({status: "ok"}));
 
 // Routes
-app.use("/licenses", require("./routes/licenses"));
+app.use("/credits", require("./routes/credits"));
 app.use("/subscriptions", require("./routes/subscriptions"));
 app.use("/users", require("./routes/users"));
 app.use("/me", require("./routes/me"));

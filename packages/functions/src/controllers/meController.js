@@ -15,17 +15,6 @@ function normalizeTimestamp(value) {
     return null;
 }
 
-function normalizeLicense(license) {
-    if (!license || typeof license !== "object") return license;
-
-    return {
-        ...license,
-        activatedAt: normalizeTimestamp(license.activatedAt),
-        expiryDate: normalizeTimestamp(license.expiryDate),
-        revokedAt: normalizeTimestamp(license.revokedAt),
-    };
-}
-
 function normalizeCollection(documents) {
     return documents.map((doc) => {
         const data = doc.data();
@@ -48,26 +37,35 @@ const getMe = asyncHandler(async (req, res) => {
 
     if (!userId) return sendError(res, 401, "Unauthorized");
 
-    const [userDoc, licenseDoc, transactionsSnap, subscriptionsSnap] = await Promise.all([
+    const [userDoc, transactionsSnap, subscriptionsSnap, usageSnap] = await Promise.all([
         db.collection("users").doc(userId).get(),
-        db.collection("licenses").doc(userId).get(),
         db.collection("transactions").where("userId", "==", userId).orderBy("timestamp", "desc").limit(50).get(),
         db.collection("subscriptions").where("userId", "==", userId).get(),
+        db.collection("usage_daily").where("userId", "==", userId).orderBy("date", "desc").limit(30).get(),
     ]);
 
     const userData = userDoc.exists
         ? {id: userId, ...userDoc.data()}
         : {id: userId, email: req.user.email || null};
 
-    const licensesData = licenseDoc.exists ? licenseDoc.data() : null;
-    const normalizedLicenses = licensesData
-        ? Object.fromEntries(
-            Object.entries(licensesData).map(([productId, license]) => [
-                productId,
-                normalizeLicense(license),
-            ])
-        )
-        : null;
+    const usageDaily = usageSnap.docs
+        .map((doc) => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                date: data.date,
+                totals: data.totals || {},
+                totalCredits: data.totalCredits || 0,
+            };
+        })
+        .reverse();
+
+    const totalsByProduct = usageDaily.reduce((acc, entry) => {
+        Object.entries(entry.totals || {}).forEach(([productId, amount]) => {
+            acc[productId] = (acc[productId] || 0) + Number(amount || 0);
+        });
+        return acc;
+    }, {});
 
     return sendSuccess(res, {
         user: {
@@ -75,7 +73,15 @@ const getMe = asyncHandler(async (req, res) => {
             createdAt: normalizeTimestamp(userData.createdAt),
             updatedAt: normalizeTimestamp(userData.updatedAt),
         },
-        licenses: normalizedLicenses,
+        credits: {
+            balance: userData.creditsBalance || 0,
+            lifetime: userData.creditsLifetime || 0,
+            updatedAt: normalizeTimestamp(userData.creditsUpdatedAt),
+        },
+        usage: {
+            totalsByProduct,
+            usageDaily,
+        },
         subscriptions: normalizeCollection(subscriptionsSnap.docs),
         transactions: normalizeCollection(transactionsSnap.docs),
     });

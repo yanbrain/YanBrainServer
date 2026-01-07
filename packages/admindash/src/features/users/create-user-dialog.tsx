@@ -43,7 +43,7 @@ export function CreateUserDialog({ open, onOpenChange, onSuccess }: CreateUserDi
                 <DialogHeader>
                     <DialogTitle>Create New User</DialogTitle>
                     <DialogDescription>
-                        Add a new user to the system. They will start with no licenses.
+                        Add a new user to the system. They will start with zero credits.
                     </DialogDescription>
                 </DialogHeader>
 

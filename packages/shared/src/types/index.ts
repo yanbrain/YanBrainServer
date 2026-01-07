@@ -3,18 +3,25 @@ export interface User {
     email: string;
     isSuspended: boolean;
     createdAt: string | null;
-    hasActiveLicense?: boolean;
+    creditsBalance?: number;
 }
 
-export interface License {
-    isActive: boolean;
-    activatedAt: string | null;
-    expiryDate: string | null;
-    revokedAt?: string | null;
+export interface UserCredits {
+    balance: number;
+    lifetime: number;
+    updatedAt: string | null;
 }
 
-export interface UserLicenses {
-    [productId: string]: License;
+export interface UsageDailyEntry {
+    id: string;
+    date: string;
+    totals: Record<string, number>;
+    totalCredits: number;
+}
+
+export interface UsageSummary {
+    totalsByProduct: Record<string, number>;
+    usageDaily: UsageDailyEntry[];
 }
 
 export interface Transaction {
@@ -24,6 +31,8 @@ export interface Transaction {
     performedBy: string;
     productIds: string[];
     daysGranted: number;
+    creditsGranted?: number;
+    creditsSpent?: number;
     subscriptionId?: string;
     provider?: string;
 }
@@ -39,7 +48,8 @@ export interface Subscription {
 
 export interface UserDetails {
     user: User;
-    licenses: UserLicenses | null;
+    credits: UserCredits | null;
+    usage?: UsageSummary;
     transactions: Transaction[];
     subscriptions: Subscription[];
 }

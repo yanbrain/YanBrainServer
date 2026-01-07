@@ -20,19 +20,25 @@ const PRODUCTS = [
   { id: 'yanPhotobooth', name: 'Yan Photobooth' }
 ]
 
-type LicenseRecord = {
-  isActive?: boolean
-  activatedAt?: string | null
-  expiryDate?: string | null
-  revokedAt?: string | null
-}
-
 type MeResponse = {
   user: {
     id: string
     email?: string | null
   }
-  licenses: Record<string, LicenseRecord> | null
+  credits?: {
+    balance: number
+    lifetime: number
+    updatedAt?: string | null
+  }
+  usage?: {
+    totalsByProduct?: Record<string, number>
+    usageDaily?: Array<{
+      id: string
+      date: string
+      totals: Record<string, number>
+      totalCredits: number
+    }>
+  }
 }
 
 function formatDate(value?: string | null) {
@@ -40,16 +46,6 @@ function formatDate(value?: string | null) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return '—'
   return date.toLocaleDateString()
-}
-
-function formatTimeLeft(value?: string | null) {
-  if (!value) return 'No expiry date'
-  const expiry = new Date(value)
-  if (Number.isNaN(expiry.getTime())) return 'No expiry date'
-  const diffMs = expiry.getTime() - Date.now()
-  if (diffMs <= 0) return 'Expired'
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
-  return diffDays === 1 ? '1 day left' : `${diffDays} days left`
 }
 
 export default function DashboardPage() {
@@ -69,18 +65,13 @@ export default function DashboardPage() {
   const [newPassword, setNewPassword] = useState('')
   const [actionMessage, setActionMessage] = useState<string | null>(null)
 
-  const licenseList = useMemo(() => {
-    const licenses = data?.licenses || {}
+  const usageSummary = useMemo(() => {
+    const totals = data?.usage?.totalsByProduct || {}
     return PRODUCTS.map((product) => ({
       ...product,
-      license: licenses[product.id]
+      total: totals[product.id] || 0
     }))
   }, [data])
-
-  const activeLicenses = useMemo(
-    () => licenseList.filter(({ license }) => license?.isActive),
-    [licenseList]
-  )
 
   async function loadDashboard(currentUser: User) {
     setLoading(true)
@@ -208,7 +199,7 @@ export default function DashboardPage() {
     return (
       <AuthCard
         title={authMode === 'login' ? 'Sign in' : 'Create your account'}
-        description="Use your email and password to access your licenses and account settings."
+        description="Use your email and password to access your credits and account settings."
       >
         {error && (
           <div className="mb-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
@@ -257,7 +248,7 @@ export default function DashboardPage() {
 
           {apiBase === '' && (
             <span className="text-xs text-slate-400">
-              Set NEXT_PUBLIC_API_BASE_URL to load licenses.
+              Set NEXT_PUBLIC_API_BASE_URL to load credits.
             </span>
           )}
         </div>
@@ -271,7 +262,7 @@ export default function DashboardPage() {
         <header className="flex flex-col items-end gap-3 text-right">
           <h1 className="text-3xl font-semibold">User Dashboard</h1>
           <p className="text-sm text-slate-300">
-            Manage your account, update your email or password, and review your current licenses.
+            Manage your account, update your email or password, and review your current credits.
           </p>
         </header>
 
@@ -336,27 +327,53 @@ export default function DashboardPage() {
 
             <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Licenses</h2>
+                <h2 className="text-xl font-semibold">Credits</h2>
                 <Button variant="outline" onClick={() => user && loadDashboard(user)} disabled={loading}>
                   {loading ? 'Refreshing...' : 'Refresh'}
                 </Button>
               </div>
 
               <div className="mt-6 grid gap-4 md:grid-cols-3">
-                {activeLicenses.length ? (
-                  activeLicenses.map(({ id, name, license }) => (
-                    <div key={id} className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                      <h3 className="text-base font-semibold">{name}</h3>
-                      <p className="mt-2 text-sm text-emerald-300">Active</p>
-                      <p className="text-sm text-slate-400">
-                        Time left: {formatTimeLeft(license?.expiryDate)}
-                      </p>
-                      <p className="text-sm text-slate-500">Expiry: {formatDate(license?.expiryDate)}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-slate-400">No active licenses.</p>
-                )}
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                  <h3 className="text-base font-semibold">Current balance</h3>
+                  <p className="mt-2 text-2xl font-semibold text-emerald-200">{data?.credits?.balance ?? 0}</p>
+                  <p className="text-sm text-slate-400">Lifetime: {data?.credits?.lifetime ?? 0}</p>
+                </div>
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                  <h3 className="text-base font-semibold">Usage overview</h3>
+                  <div className="mt-3 space-y-2 text-sm text-slate-300">
+                    {usageSummary.map((product) => (
+                      <div key={product.id} className="flex items-center justify-between">
+                        <span>{product.name}</span>
+                        <span className="font-medium">{product.total}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                  <h3 className="text-base font-semibold">Last updated</h3>
+                  <p className="mt-2 text-sm text-slate-400">
+                    {formatDate(data?.credits?.updatedAt || null)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
+                  Usage by day
+                </h3>
+                <div className="mt-3 space-y-3 text-sm text-slate-300">
+                  {data?.usage?.usageDaily?.length ? (
+                    data.usage.usageDaily.map((entry) => (
+                      <div key={entry.id} className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950 px-4 py-2">
+                        <span>{entry.date}</span>
+                        <span className="font-medium">{entry.totalCredits} credits</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-slate-400">No usage yet.</p>
+                  )}
+                </div>
               </div>
             </section>
         </>

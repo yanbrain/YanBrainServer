@@ -5,6 +5,7 @@ const {validate, sendError, sendSuccess, asyncHandler, calculateExpiry} = requir
 // Constants
 const PRODUCT_IDS = ["yanAvatar", "yanDraw", "yanPhotobooth"];
 const SUBSCRIPTION_DAYS = 30;
+const SUBSCRIPTION_CREDITS = 100;
 
 function validateProduct(productId) {
     if (!PRODUCT_IDS.includes(productId)) {
@@ -79,38 +80,25 @@ const activate = asyncHandler(async (req, res) => {
 
     const batch = db.batch();
     const now = admin.firestore.Timestamp.now();
-    const licenseRef = db.collection("licenses").doc(userId);
-    const licenseDoc = await licenseRef.get();
-    const existingLicenses = licenseDoc.data() || {};
+    const userRef = db.collection("users").doc(userId);
+    const userDoc = await userRef.get();
+    const userData = userDoc.exists ? userDoc.data() : {};
+    const currentBalance = userData.creditsBalance || 0;
+    const currentLifetime = userData.creditsLifetime || 0;
 
-    const newLicenses = {};
-    products.forEach((product) => {
-        const existing = existingLicenses[product];
-        let finalExpiry;
-
-        if (existing?.expiryDate && existing.isActive) {
-            const date = existing.expiryDate.toDate();
-            date.setDate(date.getDate() + SUBSCRIPTION_DAYS);
-            finalExpiry = admin.firestore.Timestamp.fromDate(date);
-        } else {
-            finalExpiry = calculateExpiry(SUBSCRIPTION_DAYS, admin);
-        }
-
-        newLicenses[product] = {
-            isActive: true,
-            activatedAt: existing?.activatedAt || now,
-            expiryDate: finalExpiry,
-        };
-    });
-
-    batch.set(licenseRef, newLicenses, {merge: true});
+    batch.set(userRef, {
+        creditsBalance: currentBalance + SUBSCRIPTION_CREDITS,
+        creditsLifetime: currentLifetime + SUBSCRIPTION_CREDITS,
+        creditsUpdatedAt: now,
+        updatedAt: now,
+    }, {merge: true});
 
     batch.update(db.collection("subscriptions").doc(subscriptionId), {
         status: "ACTIVE",
         linkedProducts: products,
         currentPeriodStart: now,
-        currentPeriodEnd: newLicenses[products[0]].expiryDate,
-        nextBillingDate: newLicenses[products[0]].expiryDate,
+        currentPeriodEnd: calculateExpiry(SUBSCRIPTION_DAYS, admin),
+        nextBillingDate: calculateExpiry(SUBSCRIPTION_DAYS, admin),
         updatedAt: now,
     });
 
@@ -119,17 +107,18 @@ const activate = asyncHandler(async (req, res) => {
         type: "SUBSCRIPTION_ACTIVATED",
         subscriptionId,
         productIds: products,
-        daysGranted: SUBSCRIPTION_DAYS,
+        daysGranted: 0,
+        creditsGranted: SUBSCRIPTION_CREDITS,
         provider,
         timestamp: now,
         performedBy: "user",
-        metadata: {plan: subscription.plan || "standard"},
+        metadata: {plan: subscription.plan || "standard", credits: SUBSCRIPTION_CREDITS},
     });
 
     await batch.commit();
 
     logger.info(`Subscription activated: ${userId}/${subscriptionId}`);
-    return sendSuccess(res, {status: "ACTIVE", expiryDate: newLicenses[products[0]].expiryDate});
+    return sendSuccess(res, {status: "ACTIVE", creditsGranted: SUBSCRIPTION_CREDITS});
 });
 
 const cancel = asyncHandler(async (req, res) => {

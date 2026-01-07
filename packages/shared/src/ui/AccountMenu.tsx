@@ -49,7 +49,7 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
     <div ref={menuRef} className={cn('relative', className)}>
       <button
         type="button"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition hover:text-white"
+        className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-white/80 transition hover:text-white focus-visible:outline-none"
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
@@ -69,7 +69,7 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
           ) : null}
           {items.map((item) => {
             const content = (
-              <span className="block w-full rounded-lg px-3 py-2 text-right text-white/80 transition hover:bg-white/5 hover:text-white">
+              <span className="inline-flex rounded-lg px-3 py-2 text-right text-white/80 transition hover:bg-white/5 hover:text-white">
                 {item.label}
               </span>
             )
@@ -79,7 +79,7 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
                 <a
                   key={item.label}
                   href={item.href}
-                  className="block"
+                  className="flex justify-end"
                   onClick={() => setOpen(false)}
                 >
                   {content}
@@ -91,7 +91,7 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
               <button
                 key={item.label}
                 type="button"
-                className="block w-full text-left"
+                className="flex w-full justify-end text-left"
                 onClick={() => {
                   setOpen(false)
                   item.onSelect?.()

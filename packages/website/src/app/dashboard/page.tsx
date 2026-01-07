@@ -230,6 +230,7 @@ export default function DashboardPage() {
             onChange={(event) => setEmail(event.target.value)}
             required
             wrapperClassName="grid gap-2 text-sm"
+            inputClassName="border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
           />
           <FormField
             label="Password"
@@ -238,6 +239,7 @@ export default function DashboardPage() {
             onChange={(event) => setPassword(event.target.value)}
             required
             wrapperClassName="grid gap-2 text-sm"
+            inputClassName="border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
           />
           <Button type="submit">
             {authMode === 'login' ? 'Sign in' : 'Create account'}

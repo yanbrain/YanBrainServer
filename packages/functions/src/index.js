@@ -1,13 +1,9 @@
-const functions = require("firebase-functions");
-const {defineSecret} = require("firebase-functions/params");
+const {onRequest} = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const express = require("express");
 const cors = require("cors");
 
 admin.initializeApp();
-
-const breakglassSecret = defineSecret("BREAKGLASS_SECRET");
-const breakglassAllowlist = defineSecret("BREAKGLASS_ALLOWLIST");
 
 const app = express();
 
@@ -24,7 +20,7 @@ const corsOptions = {
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-breakglass-secret"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
@@ -38,7 +34,6 @@ app.use("/licenses", require("./routes/licenses"));
 app.use("/subscriptions", require("./routes/subscriptions"));
 app.use("/users", require("./routes/users"));
 app.use("/webhooks", require("./routes/webhooks"));
-app.use("/admin", require("./routes/admin"));
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -47,6 +42,4 @@ app.use((err, req, res, next) => {
     res.status(500).json({success: false, error: "Internal server error"});
 });
 
-exports.api = functions
-    .runWith({secrets: [breakglassSecret, breakglassAllowlist]})
-    .https.onRequest(app);
+exports.api = onRequest(app);

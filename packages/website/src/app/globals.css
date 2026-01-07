@@ -38,6 +38,10 @@
     transition: opacity 0.3s ease;
 }
 
+.electric-layer-base {
+    opacity: 1;
+}
+
 .group:hover .electric-layer {
     opacity: 1;
 }

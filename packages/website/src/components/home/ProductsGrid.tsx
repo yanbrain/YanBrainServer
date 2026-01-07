@@ -70,9 +70,9 @@ export function ProductsGrid() {
                             }}
                         >
                             <div className="electric-card relative aspect-video w-full">
-                            <div className="electric-border-outer electric-layer pointer-events-none">
-                                <div className="electric-border-main" />
-                            </div>
+                                <div className="electric-border-outer electric-layer electric-layer-base pointer-events-none">
+                                    <div className="electric-border-main" />
+                                </div>
                                 <div className="electric-glow electric-glow-1 electric-layer pointer-events-none" />
                                 <div className="electric-glow electric-glow-2 electric-layer pointer-events-none" />
                                 <div className="electric-overlay electric-overlay-1 electric-layer pointer-events-none" />

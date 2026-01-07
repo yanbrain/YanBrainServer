@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 import { sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '@/lib/firebase-client'
 import { useAuth } from '@/lib/auth-context'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { AuthCard } from '@yanbrain/shared/ui'
 
 function LoginForm() {
     const [email, setEmail] = useState('')
@@ -85,101 +85,88 @@ function LoginForm() {
 
     if (showForgotPassword) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-background p-4">
-                <Card className="w-full max-w-md">
-                    <CardHeader>
-                        <CardTitle>Reset Password</CardTitle>
-                        <CardDescription>Enter your email to receive a password reset link</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleForgotPassword} className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Email</label>
-                                <Input
-                                    type="email"
-                                    placeholder="admin@example.com"
-                                    value={resetEmail}
-                                    onChange={(e) => setResetEmail(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="flex gap-2">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="flex-1"
-                                    onClick={() => setShowForgotPassword(false)}
-                                    disabled={resetLoading}
-                                >
-                                    Back to Login
-                                </Button>
-                                <Button type="submit" className="flex-1" disabled={resetLoading}>
-                                    {resetLoading ? 'Sending...' : 'Send Reset Link'}
-                                </Button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
-            </div>
+            <AuthCard
+                title="Reset Password"
+                description="Enter your email to receive a password reset link"
+            >
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Email</label>
+                        <Input
+                            type="email"
+                            placeholder="admin@example.com"
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="flex gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => setShowForgotPassword(false)}
+                            disabled={resetLoading}
+                        >
+                            Back to Login
+                        </Button>
+                        <Button type="submit" className="flex-1" disabled={resetLoading}>
+                            {resetLoading ? 'Sending...' : 'Send Reset Link'}
+                        </Button>
+                    </div>
+                </form>
+            </AuthCard>
         )
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-background p-4">
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle>Admin Login</CardTitle>
-                    <CardDescription>Sign in to access the admin panel</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Email</label>
-                            <Input
-                                type="email"
-                                placeholder="admin@example.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                autoComplete="email"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Password</label>
-                            <Input
-                                type="password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                autoComplete="current-password"
-                            />
-                        </div>
+        <AuthCard title="Admin Login" description="Sign in to access the admin panel">
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                    <label className="text-sm font-medium">Email</label>
+                    <Input
+                        type="email"
+                        placeholder="admin@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        autoComplete="email"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <label className="text-sm font-medium">Password</label>
+                    <Input
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                    />
+                </div>
 
-                        <div className="flex items-center justify-end">
-                            <button
-                                type="button"
-                                onClick={() => setShowForgotPassword(true)}
-                                className="text-sm text-primary hover:underline"
-                            >
-                                Forgot password?
-                            </button>
-                        </div>
+                <div className="flex items-center justify-end">
+                    <button
+                        type="button"
+                        onClick={() => setShowForgotPassword(true)}
+                        className="text-sm text-primary hover:underline"
+                    >
+                        Forgot password?
+                    </button>
+                </div>
 
-                        <Button type="submit" className="w-full" disabled={loading}>
-                            {loading ? 'Signing in...' : 'Sign In'}
-                        </Button>
-                    </form>
+                <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Signing in...' : 'Sign In'}
+                </Button>
+            </form>
 
-                    {process.env.NODE_ENV === 'development' && (
-                        <div className="mt-4 rounded border border-muted p-2 text-xs text-muted-foreground">
-                            <p className="font-semibold">Debug Info:</p>
-                            <p>Check browser console for detailed error logs</p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-        </div>
+            {process.env.NODE_ENV === 'development' && (
+                <div className="mt-4 rounded border border-muted p-2 text-xs text-muted-foreground">
+                    <p className="font-semibold">Debug Info:</p>
+                    <p>Check browser console for detailed error logs</p>
+                </div>
+            )}
+        </AuthCard>
     )
 }
 

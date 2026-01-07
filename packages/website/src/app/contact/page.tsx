@@ -12,9 +12,11 @@ export default function ContactPage() {
             Have questions about our products? We'd love to hear from you.
           </p>
         </div>
-        <div className="grid gap-12 lg:grid-cols-2">
+        <div className="grid items-start gap-12 lg:grid-cols-2">
           <ContactInfo />
-          <ContactForm />
+          <div className="lg:pt-2">
+            <ContactForm />
+          </div>
         </div>
       </div>
     </Container>

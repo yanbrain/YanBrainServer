@@ -4,9 +4,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Label } from '@/components/ui/Label'
+import { InputField } from '@yanbrain/shared/ui'
 
 const formSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -32,19 +32,19 @@ export function ContactForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
         <Label htmlFor="name">Name</Label>
-        <Input id="name" {...register('name')} placeholder="Your name" className="mt-2" />
+        <InputField id="name" {...register('name')} placeholder="Your name" className="mt-2" />
         {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>}
       </div>
 
       <div>
         <Label htmlFor="email">Email</Label>
-        <Input id="email" type="email" {...register('email')} placeholder="your@email.com" className="mt-2" />
+        <InputField id="email" type="email" {...register('email')} placeholder="your@email.com" className="mt-2" />
         {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>}
       </div>
 
       <div>
         <Label htmlFor="subject">Subject</Label>
-        <Input id="subject" {...register('subject')} placeholder="How can we help?" className="mt-2" />
+        <InputField id="subject" {...register('subject')} placeholder="How can we help?" className="mt-2" />
         {errors.subject && <p className="mt-1 text-sm text-red-500">{errors.subject.message}</p>}
       </div>
 

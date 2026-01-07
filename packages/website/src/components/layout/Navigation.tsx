@@ -2,6 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
+import { onAuthStateChanged, signOut, type User } from 'firebase/auth'
+import { User as UserIcon } from 'lucide-react'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,9 +16,30 @@ import {
 import { SITE_CONFIG } from '@/config/site'
 import { PRODUCTS } from '@/config/products'
 import { cn } from '@/lib/utils'
+import { auth } from '@/lib/firebase'
+import { AccountMenu } from '@yanbrain/shared/ui'
 
 export function Navigation() {
   const pathname = usePathname()
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    if (!auth) return
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser)
+    })
+    return () => unsubscribe()
+  }, [])
+
+  const accountItems = useMemo(() => {
+    if (user) {
+      return [
+        { label: 'Account', href: '/dashboard' },
+        { label: 'Logout', onSelect: () => auth && signOut(auth) }
+      ]
+    }
+    return [{ label: 'Login', href: '/dashboard' }]
+  }, [user])
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black">
@@ -77,6 +101,12 @@ export function Navigation() {
               Contact
             </Link>
           </div>
+
+          <AccountMenu
+            summary={user?.email ?? 'Guest'}
+            trigger={<UserIcon className="h-4 w-4" />}
+            items={accountItems}
+          />
         </div>
       </div>
     </nav>

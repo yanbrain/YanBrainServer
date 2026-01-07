@@ -1,5 +1,4 @@
 const admin = require("firebase-admin");
-const path = require("path");
 
 const uid = process.argv[2];
 if (!uid) {
@@ -7,10 +6,8 @@ if (!uid) {
     process.exit(1);
 }
 
-const serviceAccountPath = path.resolve(process.cwd(), "serviceAccount.json");
-
 admin.initializeApp({
-    credential: admin.credential.cert(require(serviceAccountPath)),
+    credential: admin.credential.cert(require("../../serviceAccount.json")),
 });
 
 (async () => {

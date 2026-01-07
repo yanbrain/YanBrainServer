@@ -79,6 +79,7 @@ export function Navigation() {
         setAuthMessage('Account created successfully.')
       }
       setPassword('')
+      setModalOpen(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Authentication failed'
       setAuthError(message)
@@ -170,6 +171,8 @@ export function Navigation() {
               Contact
             </Link>
 
+            <span className="h-5 w-px bg-white/10" aria-hidden="true" />
+
             {user ? (
               <AccountMenu
                 summary={user?.email ?? 'Guest'}
@@ -201,12 +204,6 @@ export function Navigation() {
               </div>
             )}
           </div>
-
-          <AccountMenu
-            summary={user?.email ?? 'Guest'}
-            trigger={<UserIcon className="h-4 w-4" />}
-            items={accountItems}
-          />
         </div>
       </div>
 

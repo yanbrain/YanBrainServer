@@ -24,9 +24,6 @@ function normalizeCollection(documents) {
             createdAt: normalizeTimestamp(data.createdAt),
             updatedAt: normalizeTimestamp(data.updatedAt),
             timestamp: normalizeTimestamp(data.timestamp),
-            currentPeriodStart: normalizeTimestamp(data.currentPeriodStart),
-            currentPeriodEnd: normalizeTimestamp(data.currentPeriodEnd),
-            nextBillingDate: normalizeTimestamp(data.nextBillingDate),
         };
     });
 }

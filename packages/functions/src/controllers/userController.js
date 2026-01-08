@@ -158,10 +158,6 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     batch.delete(userRef);
 
-    const rateLimitsSnap = await db.collection("rate_limits").where("userId", "==", userId).get();
-
-    rateLimitsSnap.docs.forEach((doc) => batch.delete(doc.ref));
-
     await batch.commit();
 
     await db.collection("transactions").add({

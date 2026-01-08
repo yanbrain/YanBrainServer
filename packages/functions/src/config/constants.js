@@ -6,10 +6,9 @@ const CREDIT_COSTS = {
 
 const PRODUCT_IDS = Object.keys(CREDIT_COSTS);
 
-const PRODUCTS = [...PRODUCT_IDS];
+const PRODUCT_IDS = Object.keys(CREDIT_COSTS);
 
 module.exports = {
     CREDIT_COSTS,
     PRODUCT_IDS,
-    PRODUCTS,
 };

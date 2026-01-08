@@ -4,7 +4,11 @@ const CREDIT_COSTS = {
     yanPhotobooth: 1,
 };
 
+const PRODUCT_IDS = Object.keys(CREDIT_COSTS);
+
+const PRODUCT_IDS = Object.keys(CREDIT_COSTS);
+
 module.exports = {
     CREDIT_COSTS,
-    PRODUCT_IDS: Object.keys(CREDIT_COSTS),
+    PRODUCT_IDS,
 };

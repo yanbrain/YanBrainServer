@@ -10,9 +10,9 @@ async function getToken(): Promise<string> {
 }
 
 async function callApi(endpoint: string, method: string = 'POST', body?: any) {
-    const token = await getToken()
-
     try {
+        const token = await getToken()
+
         const response = await fetch(`${CLOUD_FUNCTIONS_URL}${endpoint}`, {
             method,
             headers: {
@@ -25,19 +25,19 @@ async function callApi(endpoint: string, method: string = 'POST', body?: any) {
         const data = await response.json()
 
         if (!response.ok) {
-            throw new Error(data.error || `API error: ${response.status}`)
+            return { success: false, error: data.error || `API error: ${response.status}` }
         }
 
-        return data
+        return { success: true, ...data }
     } catch (error) {
         console.error('API call failed:', error)
-        throw error
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
     }
 }
 
 // User Actions
-export async function createUser(email: string, password: string) {
-    return callApi('/users', 'POST', { email, password })
+export async function createUser(userId: string, email: string) {
+    return callApi('/users', 'POST', { userId, email })
 }
 
 export async function deleteUser(userId: string) {

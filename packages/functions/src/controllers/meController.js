@@ -36,15 +36,33 @@ const getMe = asyncHandler(async (req, res) => {
 
     const [userDoc, transactionsSnap, usageSnap] = await Promise.all([
         db.collection("users").doc(userId).get(),
-        db.collection("transactions").where("userId", "==", userId).orderBy("timestamp", "desc").limit(50).get(),
-        db.collection("usage").where("userId", "==", userId).orderBy("period", "desc").limit(6).get(),
+        db.collection("transactions").where("userId", "==", userId).get(),
+        db.collection("usage").where("userId", "==", userId).get(),
     ]);
 
     const userData = userDoc.exists
         ? {id: userId, ...userDoc.data()}
         : {id: userId, email: req.user.email || null};
 
-    const usagePeriods = usageSnap.docs
+    // Sort and limit transactions in memory
+    const sortedTransactions = transactionsSnap.docs
+        .map((doc) => ({doc, timestamp: doc.data().timestamp}))
+        .sort((a, b) => {
+            const aTime = a.timestamp?._seconds || 0;
+            const bTime = b.timestamp?._seconds || 0;
+            return bTime - aTime;
+        })
+        .slice(0, 50)
+        .map((item) => item.doc);
+
+    // Sort and limit usage in memory
+    const sortedUsage = usageSnap.docs
+        .map((doc) => ({doc, period: doc.data().period}))
+        .sort((a, b) => (b.period || "").localeCompare(a.period || ""))
+        .slice(0, 6)
+        .map((item) => item.doc);
+
+    const usagePeriods = sortedUsage
         .map((doc) => {
             const data = doc.data();
             return {
@@ -78,7 +96,7 @@ const getMe = asyncHandler(async (req, res) => {
             totalsByProduct,
             usagePeriods,
         },
-        transactions: normalizeCollection(transactionsSnap.docs),
+        transactions: normalizeCollection(sortedTransactions),
     });
 });
 

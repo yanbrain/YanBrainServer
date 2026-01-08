@@ -15,14 +15,6 @@
         { "fieldPath": "userId", "order": "ASCENDING" },
         { "fieldPath": "period", "order": "DESCENDING" }
       ]
-    },
-    {
-      "collectionGroup": "usage_daily",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "userId", "order": "ASCENDING" },
-        { "fieldPath": "date", "order": "DESCENDING" }
-      ]
     }
   ],
   "fieldOverrides": []

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import * as LucideIcons from 'lucide-react'
 import { Product } from '@/types'
+import { GlowingCard } from '@/components/ui/GlowingCard'
 
 export function ProductFeatures({ product }: { product: Product }) {
   return (
@@ -44,14 +45,19 @@ export function ProductFeatures({ product }: { product: Product }) {
             </div>
             <div className={`flex items-center justify-center ${resolvedImageOrder}`}>
               <div className={`w-full ${isPortrait ? 'max-w-sm' : ''}`}>
-                <div className={`${isPortrait ? 'aspect-[9/16]' : 'aspect-video'} relative w-full overflow-hidden rounded-lg bg-secondary`}>
+                <GlowingCard
+                  primaryColor={product.colors.primary}
+                  secondaryColor={product.colors.secondary}
+                  isPortrait={isPortrait}
+                  disableGlow
+                >
                   <Image
                     src={featureImageSrc}
                     alt={feature.title}
                     fill
                     className="object-cover"
                   />
-                </div>
+                </GlowingCard>
               </div>
             </div>
           </motion.div>

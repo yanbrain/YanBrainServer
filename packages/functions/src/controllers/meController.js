@@ -24,9 +24,6 @@ function normalizeCollection(documents) {
             createdAt: normalizeTimestamp(data.createdAt),
             updatedAt: normalizeTimestamp(data.updatedAt),
             timestamp: normalizeTimestamp(data.timestamp),
-            currentPeriodStart: normalizeTimestamp(data.currentPeriodStart),
-            currentPeriodEnd: normalizeTimestamp(data.currentPeriodEnd),
-            nextBillingDate: normalizeTimestamp(data.nextBillingDate),
         };
     });
 }
@@ -40,26 +37,26 @@ const getMe = asyncHandler(async (req, res) => {
     const [userDoc, transactionsSnap, usageSnap] = await Promise.all([
         db.collection("users").doc(userId).get(),
         db.collection("transactions").where("userId", "==", userId).orderBy("timestamp", "desc").limit(50).get(),
-        db.collection("usage_daily").where("userId", "==", userId).orderBy("date", "desc").limit(30).get(),
+        db.collection("usage").where("userId", "==", userId).orderBy("period", "desc").limit(6).get(),
     ]);
 
     const userData = userDoc.exists
         ? {id: userId, ...userDoc.data()}
         : {id: userId, email: req.user.email || null};
 
-    const usageDaily = usageSnap.docs
+    const usagePeriods = usageSnap.docs
         .map((doc) => {
             const data = doc.data();
             return {
                 id: doc.id,
-                date: data.date,
+                period: data.period,
                 totals: data.totals || {},
                 totalCredits: data.totalCredits || 0,
             };
         })
         .reverse();
 
-    const totalsByProduct = usageDaily.reduce((acc, entry) => {
+    const totalsByProduct = usagePeriods.reduce((acc, entry) => {
         Object.entries(entry.totals || {}).forEach(([productId, amount]) => {
             acc[productId] = (acc[productId] || 0) + Number(amount || 0);
         });
@@ -79,7 +76,7 @@ const getMe = asyncHandler(async (req, res) => {
         },
         usage: {
             totalsByProduct,
-            usageDaily,
+            usagePeriods,
         },
         transactions: normalizeCollection(transactionsSnap.docs),
     });

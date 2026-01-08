@@ -13,12 +13,7 @@ import {
 import { auth } from '@/lib/firebase'
 import { Button } from '@/components/ui/Button'
 import { AuthCard, FormField } from '@yanbrain/shared/ui'
-
-const PRODUCTS = [
-  { id: 'yanAvatar', name: 'Yan Avatar' },
-  { id: 'yanDraw', name: 'Yan Draw' },
-  { id: 'yanPhotobooth', name: 'Yan Photobooth' }
-]
+import { PRODUCTS } from '@yanbrain/shared'
 
 type MeResponse = {
   user: {
@@ -32,9 +27,9 @@ type MeResponse = {
   }
   usage?: {
     totalsByProduct?: Record<string, number>
-    usageDaily?: Array<{
+    usagePeriods?: Array<{
       id: string
-      date: string
+      period: string
       totals: Record<string, number>
       totalCredits: number
     }>
@@ -46,6 +41,13 @@ function formatDate(value?: string | null) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return '—'
   return date.toLocaleDateString()
+}
+
+function formatPeriod(value?: string | null) {
+  if (!value) return '—'
+  const date = new Date(`${value}-01T00:00:00Z`)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
 }
 
 export default function DashboardPage() {
@@ -360,13 +362,13 @@ export default function DashboardPage() {
 
               <div className="mt-8">
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
-                  Usage by day
+                  Usage by month
                 </h3>
                 <div className="mt-3 space-y-3 text-sm text-slate-300">
-                  {data?.usage?.usageDaily?.length ? (
-                    data.usage.usageDaily.map((entry) => (
+                  {data?.usage?.usagePeriods?.length ? (
+                    data.usage.usagePeriods.map((entry) => (
                       <div key={entry.id} className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950 px-4 py-2">
-                        <span>{entry.date}</span>
+                        <span>{formatPeriod(entry.period)}</span>
                         <span className="font-medium">{entry.totalCredits} credits</span>
                       </div>
                     ))

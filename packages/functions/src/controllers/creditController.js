@@ -6,15 +6,14 @@ const {PRODUCT_IDS, CREDIT_COSTS} = require("../config/constants");
 function formatDateKey(date = new Date()) {
     const year = date.getUTCFullYear();
     const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+    return `${year}-${month}`;
 }
 
-function normalizeUsageDaily(doc) {
+function normalizeUsagePeriod(doc) {
     const data = doc.data();
     return {
         id: doc.id,
-        date: data.date,
+        period: data.period,
         totals: data.totals || {},
         totalCredits: data.totalCredits || 0,
     };
@@ -40,33 +39,33 @@ async function getBalance(req, res) {
 async function getUsage(req, res) {
     const db = admin.firestore();
     const userId = req.user?.uid;
-    const limit = Math.min(parseInt(req.query.limit) || 30, 365);
+    const limit = Math.min(parseInt(req.query.limit) || 6, 12);
 
     if (!userId) return sendError(res, 401, "Unauthorized");
 
     const usageSnap = await db
-        .collection("usage_daily")
+        .collection("usage")
         .where("userId", "==", userId)
-        .orderBy("date", "desc")
+        .orderBy("period", "desc")
         .limit(limit)
         .get();
 
-    const usageDaily = usageSnap.docs.map(normalizeUsageDaily).reverse();
+    const usagePeriods = usageSnap.docs.map(normalizeUsagePeriod).reverse();
 
-    const totalsByProduct = usageDaily.reduce((acc, entry) => {
+    const totalsByProduct = usagePeriods.reduce((acc, entry) => {
         Object.entries(entry.totals || {}).forEach(([productId, amount]) => {
             acc[productId] = (acc[productId] || 0) + Number(amount || 0);
         });
         return acc;
     }, {});
 
-    const totalCredits = usageDaily.reduce((sum, entry) => sum + Number(entry.totalCredits || 0), 0);
+    const totalCredits = usagePeriods.reduce((sum, entry) => sum + Number(entry.totalCredits || 0), 0);
 
     return sendSuccess(res, {
         userId,
         totalsByProduct,
         totalCredits,
-        usageDaily,
+        usagePeriods,
     });
 }
 
@@ -99,9 +98,8 @@ async function consume(req, res) {
 
         const userRef = db.collection("users").doc(userId);
         const ledgerRef = db.collection("credit_ledger").doc();
-        const usageEventRef = db.collection("usage_events").doc();
-        const dateKey = formatDateKey();
-        const usageDailyRef = db.collection("usage_daily").doc(`${userId}_${dateKey}`);
+        const periodKey = formatMonthKey();
+        const usageRef = db.collection("usage").doc(`${userId}_${periodKey}`);
         const now = admin.firestore.Timestamp.now();
         const increment = admin.firestore.FieldValue.increment(creditsNum);
 
@@ -145,18 +143,11 @@ async function consume(req, res) {
                 timestamp: now,
             });
 
-            transaction.set(usageEventRef, {
-                userId,
-                productId,
-                creditsSpent: creditsNum,
-                timestamp: now,
-            });
-
             transaction.set(
-                usageDailyRef,
+                usageRef,
                 {
                     userId,
-                    date: dateKey,
+                    period: periodKey,
                     totals: {[productId]: increment},
                     totalCredits: increment,
                     updatedAt: now,

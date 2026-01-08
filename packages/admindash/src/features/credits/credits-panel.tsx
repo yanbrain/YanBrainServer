@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { CreditsGrid } from './credits-grid'
-import { CLOUD_FUNCTIONS_URL, UsageDailyEntry, UserCredits } from '@yanbrain/shared'
+import { CLOUD_FUNCTIONS_URL, UsageSummary, UserCredits } from '@yanbrain/shared'
 
 interface CreditsPanelProps {
     userId: string
@@ -13,13 +13,14 @@ interface CreditsPanelProps {
 }
 
 type CreditsResponse = {
+    success: boolean
     credits: UserCredits
-    usage?: UsageDailyEntry[]
+    usage?: UsageSummary
 }
 
 export function CreditsPanel({ userId, isSuspended, token, refreshKey, onRefresh }: CreditsPanelProps) {
     const [credits, setCredits] = useState<UserCredits>({ balance: 0, lifetime: 0, updatedAt: null })
-    const [usage, setUsage] = useState<UsageDailyEntry[]>([])
+    const [usage, setUsage] = useState<UsageSummary>({ totalsByProduct: {}, usagePeriods: [] })
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -33,11 +34,11 @@ export function CreditsPanel({ userId, isSuspended, token, refreshKey, onRefresh
                         'Content-Type': 'application/json',
                     },
                 })
-                const data = await res.json()
+                const data: CreditsResponse = await res.json()
 
                 if (data.success) {
                     setCredits(data.credits || { balance: 0, lifetime: 0, updatedAt: null })
-                    setUsage(data.usage || [])
+                    setUsage(data.usage || { totalsByProduct: {}, usagePeriods: [] })
                 }
             } catch (error) {
                 console.error('Failed to fetch credits:', error)

@@ -16,7 +16,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
     }
 
     const getIcon = (type: string) => {
-        const positiveTypes = ['SUBSCRIPTION_CREATED', 'SUBSCRIPTION_RENEWED', 'MANUAL_GRANT', 'USER_CREATED', 'ACCOUNT_UNSUSPENDED']
+        const positiveTypes = ['CREDITS_GRANTED', 'MANUAL_GRANT', 'USER_CREATED', 'ACCOUNT_UNSUSPENDED']
         return positiveTypes.includes(type) ? (
             <CheckCircle className="h-4 w-4 text-success" />
         ) : (
@@ -26,12 +26,12 @@ export function TransactionList({ transactions }: TransactionListProps) {
 
     const getDescription = (tx: Transaction) => {
         switch (tx.type) {
-            case 'MANUAL_GRANT':
-                return `Added ${tx.daysGranted} days to ${tx.productIds?.join(', ')}`
-            case 'MANUAL_REDUCTION':
-                return `Removed ${Math.abs(tx.daysGranted || 0)} days from ${tx.productIds?.join(', ')}`
-            case 'MANUAL_REVOKE':
-                return `Revoked ${tx.productIds?.join(', ')}`
+            case 'CREDITS_GRANTED':
+                return `Granted ${tx.creditsGranted ?? 0} credits`
+            case 'CREDITS_DEDUCTED':
+                return `Deducted ${Math.abs(tx.creditsGranted || 0)} credits`
+            case 'CREDITS_SPENT':
+                return `Spent ${tx.creditsSpent ?? 0} credits`
             case 'ACCOUNT_SUSPENDED':
                 return 'Account suspended'
             case 'ACCOUNT_UNSUSPENDED':

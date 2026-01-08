@@ -9,44 +9,6 @@ import { PRODUCTS } from '@/config/products'
 export function ProductsGrid() {
     return (
         <div className="grid gap-8 md:grid-cols-3">
-            <svg className="absolute size-0" aria-hidden="true">
-                <defs>
-                    <filter
-                        id="turbulent-displace"
-                        colorInterpolationFilters="sRGB"
-                        x="-20%"
-                        y="-20%"
-                        width="140%"
-                        height="140%"
-                    >
-                        <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="1" />
-                        <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
-                            <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
-                        </feOffset>
-
-                        <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="1" />
-                        <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
-                            <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
-                        </feOffset>
-
-                        <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise3" seed="2" />
-                        <feOffset in="noise3" dx="0" dy="0" result="offsetNoise3">
-                            <animate attributeName="dx" values="490; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
-                        </feOffset>
-
-                        <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise4" seed="2" />
-                        <feOffset in="noise4" dx="0" dy="0" result="offsetNoise4">
-                            <animate attributeName="dx" values="0; -490" dur="6s" repeatCount="indefinite" calcMode="linear" />
-                        </feOffset>
-
-                        <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
-                        <feComposite in="offsetNoise3" in2="offsetNoise4" result="part2" />
-                        <feBlend in="part1" in2="part2" mode="color-dodge" result="combinedNoise" />
-
-                        <feDisplacementMap in="SourceGraphic" in2="combinedNoise" scale="30" xChannelSelector="R" yChannelSelector="B" />
-                    </filter>
-                </defs>
-            </svg>
             {PRODUCTS.map((product, i) => {
                 // Use landing-hero for yan-avatar, regular hero for others
                 const heroImage = product.slug === 'yan-avatar'
@@ -65,20 +27,11 @@ export function ProductsGrid() {
                             href={`/${product.slug}`}
                             className="group flex flex-col flex-1"
                             style={{
-                                ['--hover-color' as string]: product.colors.primary,
-                                ['--electric-border-color' as string]: product.colors.primary
+                                ['--hover-color' as string]: product.colors.primary
                             }}
                         >
-                            <div className="electric-card relative aspect-video w-full">
-                                <div className="electric-border-outer electric-layer electric-layer-base pointer-events-none">
-                                    <div className="electric-border-main" />
-                                </div>
-                                <div className="electric-glow electric-glow-1 electric-layer pointer-events-none" />
-                                <div className="electric-glow electric-glow-2 electric-layer pointer-events-none" />
-                                <div className="electric-overlay electric-overlay-1 electric-layer pointer-events-none" />
-                                <div className="electric-overlay electric-overlay-2 electric-layer pointer-events-none" />
-                                <div className="electric-bg-glow electric-layer pointer-events-none" />
-                                <div className="electric-card-inner aspect-video w-full">
+                            <div className="product-photo-frame aspect-video w-full">
+                                <div className="product-photo-frame-inner">
                                     <Image
                                         src={heroImage}
                                         alt={product.name}

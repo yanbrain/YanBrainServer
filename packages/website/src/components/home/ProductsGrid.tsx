@@ -25,9 +25,10 @@ export function ProductsGrid() {
                     >
                         <Link
                             href={`/${product.slug}`}
-                            className="group flex flex-col flex-1"
+                            className="product-grid-card group flex flex-col flex-1"
                             style={{
-                                ['--hover-color' as string]: product.colors.primary
+                                ['--hover-color' as string]: product.colors.primary,
+                                ['--product-color' as string]: product.colors.primary
                             }}
                         >
                             <div className="relative aspect-video w-full overflow-hidden rounded-[22px]">

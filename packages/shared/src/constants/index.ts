@@ -1,18 +1,21 @@
+export const CREDIT_COSTS = {
+    yanAvatar: 1,
+    yanDraw: 1,
+    yanPhotobooth: 1,
+} as const;
+
 export const PRODUCTS = [
-    { id: 'yanAvatar', name: 'Yan Avatar' },
-    { id: 'yanDraw', name: 'Yan Draw' },
-    { id: 'yanPhotobooth', name: 'Yan Photobooth' },
+    { id: 'yanAvatar', name: 'Yan Avatar', creditCost: CREDIT_COSTS.yanAvatar },
+    { id: 'yanDraw', name: 'Yan Draw', creditCost: CREDIT_COSTS.yanDraw },
+    { id: 'yanPhotobooth', name: 'Yan Photobooth', creditCost: CREDIT_COSTS.yanPhotobooth },
 ] as const;
 
-export const PRODUCT_IDS = ['yanAvatar', 'yanDraw', 'yanPhotobooth'] as const;
+export const PRODUCT_IDS = Object.keys(CREDIT_COSTS) as Array<keyof typeof CREDIT_COSTS>;
 
 export const TRANSACTION_TYPES: Record<string, string> = {
-    SUBSCRIPTION_CREATED: 'Subscription Created',
-    SUBSCRIPTION_ACTIVATED: 'Subscription Activated',
-    SUBSCRIPTION_RENEWED: 'Subscription Renewed',
-    SUBSCRIPTION_CANCELLED: 'Subscription Cancelled',
-    SUBSCRIPTION_EXPIRED: 'Subscription Expired',
-    SUBSCRIPTION_INITIATED: 'Subscription Initiated',
+    CREDITS_GRANTED: 'Credits Granted',
+    CREDITS_DEDUCTED: 'Credits Deducted',
+    CREDITS_SPENT: 'Credits Spent',
     MANUAL_GRANT: 'Manual Grant',
     MANUAL_REDUCTION: 'Manual Reduction',
     MANUAL_REVOKE: 'Manual Revoke',
@@ -23,8 +26,6 @@ export const TRANSACTION_TYPES: Record<string, string> = {
     CHARGEBACK: 'Chargeback',
     PAYMENT_FAILED: 'Payment Failed',
 };
-
-export const SUBSCRIPTION_DAYS = 30;
 
 export const RATE_LIMIT = {
     MAX: 10,

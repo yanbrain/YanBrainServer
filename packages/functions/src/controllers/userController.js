@@ -18,7 +18,7 @@ const getUser = asyncHandler(async (req, res) => {
     const [userDoc, transactionsSnap, usageSnap] = await Promise.all([
         db.collection("users").doc(userId).get(),
         db.collection("transactions").where("userId", "==", userId).orderBy("timestamp", "desc").limit(50).get(),
-        db.collection("usage_daily").where("userId", "==", userId).orderBy("date", "desc").limit(30).get(),
+        db.collection("usage").where("userId", "==", userId).orderBy("period", "desc").limit(6).get(),
     ]);
 
     if (!userDoc.exists) return sendError(res, 404, "User not found");
@@ -30,7 +30,26 @@ const getUser = asyncHandler(async (req, res) => {
             lifetime: userDoc.data().creditsLifetime || 0,
             updatedAt: userDoc.data().creditsUpdatedAt || null,
         },
-        usage: usageSnap.docs.map((doc) => ({id: doc.id, ...doc.data()})),
+        usage: {
+            totalsByProduct: usageSnap.docs.reduce((acc, doc) => {
+                const data = doc.data();
+                Object.entries(data.totals || {}).forEach(([productId, amount]) => {
+                    acc[productId] = (acc[productId] || 0) + Number(amount || 0);
+                });
+                return acc;
+            }, {}),
+            usagePeriods: usageSnap.docs
+                .map((doc) => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        period: data.period,
+                        totals: data.totals || {},
+                        totalCredits: data.totalCredits || 0,
+                    };
+                })
+                .reverse(),
+        },
         transactions: transactionsSnap.docs.map((doc) => ({id: doc.id, ...doc.data()})),
     });
 });
@@ -89,7 +108,6 @@ const createUser = asyncHandler(async (req, res) => {
         userId: cleanUserId,
         type: "USER_CREATED",
         productIds: [],
-        daysGranted: 0,
         timestamp: now,
         performedBy: "admin",
         metadata: {email: cleanEmail},
@@ -150,7 +168,6 @@ const deleteUser = asyncHandler(async (req, res) => {
         userId,
         type: "USER_DELETED",
         productIds: [],
-        daysGranted: 0,
         timestamp: now,
         performedBy: "admin",
         metadata: {reason: "admin_deletion"},
@@ -179,7 +196,6 @@ const suspendUser = asyncHandler(async (req, res) => {
         userId,
         type: "ACCOUNT_SUSPENDED",
         productIds: [],
-        daysGranted: 0,
         timestamp: now,
         performedBy: "admin",
         metadata: {reason: "admin_action"},
@@ -210,7 +226,6 @@ const unsuspendUser = asyncHandler(async (req, res) => {
         userId,
         type: "ACCOUNT_UNSUSPENDED",
         productIds: [],
-        daysGranted: 0,
         timestamp: now,
         performedBy: "admin",
         metadata: {reason: "admin_action"},

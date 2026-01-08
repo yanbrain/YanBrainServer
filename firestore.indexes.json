@@ -9,11 +9,11 @@
       ]
     },
     {
-      "collectionGroup": "subscriptions",
+      "collectionGroup": "usage",
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "userId", "order": "ASCENDING" },
-        { "fieldPath": "status", "order": "ASCENDING" }
+        { "fieldPath": "period", "order": "DESCENDING" }
       ]
     }
   ],

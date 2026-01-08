@@ -1,8 +1,10 @@
-const PRODUCT_IDS = ["yanAvatar", "yanDraw", "yanPhotobooth"];
-
-const PRODUCTS = [...PRODUCT_IDS];
+const CREDIT_COSTS = {
+    yanAvatar: 1,
+    yanDraw: 1,
+    yanPhotobooth: 1,
+};
 
 module.exports = {
-    PRODUCT_IDS,
-    PRODUCTS,
+    CREDIT_COSTS,
+    PRODUCT_IDS: Object.keys(CREDIT_COSTS),
 };

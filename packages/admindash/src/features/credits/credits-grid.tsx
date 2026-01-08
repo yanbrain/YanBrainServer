@@ -1,32 +1,23 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { PlusCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CreditsGrantDialog } from './grant-credits-dialog'
-import { UserCredits, UsageDailyEntry, PRODUCTS } from '@yanbrain/shared'
+import { UserCredits, UsageSummary, PRODUCTS } from '@yanbrain/shared'
 
 interface CreditsGridProps {
     userId: string
     credits: UserCredits
-    usage: UsageDailyEntry[]
+    usage: UsageSummary
     isSuspended: boolean
     onRefresh: () => void
 }
 
 export function CreditsGrid({ userId, credits, usage, isSuspended, onRefresh }: CreditsGridProps) {
     const [isGranting, setIsGranting] = useState(false)
-
-    const usageSummary = useMemo(() => {
-        const totals: Record<string, number> = {}
-        usage.forEach((entry) => {
-            Object.entries(entry.totals || {}).forEach(([productId, amount]) => {
-                totals[productId] = (totals[productId] || 0) + Number(amount || 0)
-            })
-        })
-        return totals
-    }, [usage])
+    const usageTotals = usage?.totalsByProduct || {}
 
     return (
         <div className="space-y-4">
@@ -53,13 +44,13 @@ export function CreditsGrid({ userId, credits, usage, isSuspended, onRefresh }: 
 
             <Card>
                 <CardHeader className="pb-3">
-                    <CardTitle className="text-base">Usage (last 30 days)</CardTitle>
+                    <CardTitle className="text-base">Usage (last 6 months)</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                     {PRODUCTS.map((product) => (
                         <div key={product.id} className="flex items-center justify-between">
                             <span className="text-muted-foreground">{product.name}</span>
-                            <span className="font-medium">{usageSummary[product.id] || 0}</span>
+                            <span className="font-medium">{usageTotals[product.id] || 0}</span>
                         </div>
                     ))}
                 </CardContent>

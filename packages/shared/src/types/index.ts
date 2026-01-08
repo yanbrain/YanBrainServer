@@ -12,16 +12,16 @@ export interface UserCredits {
     updatedAt: string | null;
 }
 
-export interface UsageDailyEntry {
+export interface UsagePeriodEntry {
     id: string;
-    date: string;
+    period: string;
     totals: Record<string, number>;
     totalCredits: number;
 }
 
 export interface UsageSummary {
     totalsByProduct: Record<string, number>;
-    usageDaily: UsageDailyEntry[];
+    usagePeriods: UsagePeriodEntry[];
 }
 
 export interface Transaction {
@@ -30,10 +30,8 @@ export interface Transaction {
     timestamp: string | null;
     performedBy: string;
     productIds: string[];
-    daysGranted: number;
     creditsGranted?: number;
     creditsSpent?: number;
-    subscriptionId?: string;
     provider?: string;
 }
 

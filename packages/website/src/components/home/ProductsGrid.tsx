@@ -30,15 +30,13 @@ export function ProductsGrid() {
                                 ['--hover-color' as string]: product.colors.primary
                             }}
                         >
-                            <div className="product-photo-frame aspect-video w-full">
-                                <div className="product-photo-frame-inner">
-                                    <Image
-                                        src={heroImage}
-                                        alt={product.name}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                </div>
+                            <div className="relative aspect-video w-full overflow-hidden rounded-[22px]">
+                                <Image
+                                    src={heroImage}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover"
+                                />
                             </div>
 
                             <div className="mt-4 px-2 flex-1 flex flex-col">

@@ -1,8 +1,7 @@
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 const {validate, sendError, sendSuccess} = require("../utils/validation");
-
-const PRODUCT_IDS = ["yanAvatar", "yanDraw", "yanPhotobooth"];
+const {PRODUCT_IDS, CREDIT_COSTS} = require("../config/constants");
 
 function formatDateKey(date = new Date()) {
     const year = date.getUTCFullYear();
@@ -78,15 +77,24 @@ async function consume(req, res) {
 
     try {
         if (!userId) return sendError(res, 401, "Unauthorized");
-        validate(req.body, ["productId", "credits"]);
+        validate(req.body, ["productId"]);
 
         if (!PRODUCT_IDS.includes(productId)) {
             return sendError(res, 400, `Invalid product: ${productId}`);
         }
 
-        const creditsNum = parseInt(credits);
-        if (isNaN(creditsNum) || creditsNum <= 0) {
-            return sendError(res, 400, "Credits must be a positive number");
+        const expectedCredits = CREDIT_COSTS[productId];
+        let creditsNum = expectedCredits;
+
+        if (credits !== undefined) {
+            const parsedCredits = parseInt(credits);
+            if (isNaN(parsedCredits) || parsedCredits <= 0) {
+                return sendError(res, 400, "Credits must be a positive number");
+            }
+            if (parsedCredits !== expectedCredits) {
+                return sendError(res, 400, "Credits do not match product cost");
+            }
+            creditsNum = parsedCredits;
         }
 
         const userRef = db.collection("users").doc(userId);

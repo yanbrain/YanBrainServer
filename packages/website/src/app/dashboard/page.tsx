@@ -13,12 +13,7 @@ import {
 import { auth } from '@/lib/firebase'
 import { Button } from '@/components/ui/Button'
 import { AuthCard, FormField } from '@yanbrain/shared/ui'
-
-const PRODUCTS = [
-  { id: 'yanAvatar', name: 'Yan Avatar' },
-  { id: 'yanDraw', name: 'Yan Draw' },
-  { id: 'yanPhotobooth', name: 'Yan Photobooth' }
-]
+import { PRODUCTS } from '@yanbrain/shared'
 
 type MeResponse = {
   user: {

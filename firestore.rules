@@ -58,6 +58,18 @@ service cloud.firestore {
       allow write: if false; // Only Cloud Functions can write
     }
 
+    // Usage collection - admins can read/write, users can read their own
+    match /usage/{usageId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow write: if false; // Only Cloud Functions can write
+    }
+
+    // Credit ledger collection - admins can read/write, users can read their own
+    match /credit_ledger/{ledgerId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow write: if false; // Only Cloud Functions can write
+    }
+
     // Deny all other access
     match /{document=**} {
       allow read, write: if false;

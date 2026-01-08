@@ -30,6 +30,7 @@ import { AccountMenu, AuthCard, FormField } from '@yanbrain/shared/ui'
 export function Navigation() {
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
+  const [mounted, setMounted] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<'login' | 'register'>('login')
   const [email, setEmail] = useState('')
@@ -39,6 +40,7 @@ export function Navigation() {
   const [authMessage, setAuthMessage] = useState<string | null>(null)
 
   useEffect(() => {
+    setMounted(true)
     if (!auth) return
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
@@ -173,7 +175,9 @@ export function Navigation() {
 
             <span className="h-5 w-px bg-white/10" aria-hidden="true" />
 
-            {user ? (
+            {!mounted ? (
+              <div className="h-9 w-24" aria-hidden="true" />
+            ) : user ? (
               <AccountMenu
                 summary={user?.email ?? 'Guest'}
                 trigger={<UserIcon className="h-4 w-4" />}

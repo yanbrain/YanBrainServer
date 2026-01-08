@@ -98,7 +98,7 @@ async function consume(req, res) {
 
         const userRef = db.collection("users").doc(userId);
         const ledgerRef = db.collection("credit_ledger").doc();
-        const periodKey = formatMonthKey();
+        const periodKey = formatDateKey();
         const usageRef = db.collection("usage").doc(`${userId}_${periodKey}`);
         const now = admin.firestore.Timestamp.now();
         const increment = admin.firestore.FieldValue.increment(creditsNum);

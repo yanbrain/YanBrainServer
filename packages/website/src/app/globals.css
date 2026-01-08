@@ -22,6 +22,7 @@
 .product-photo-frame {
     position: relative;
     border-radius: 1rem;
+    transition: box-shadow 0.3s ease;
 }
 
 .product-photo-frame::before {
@@ -56,4 +57,11 @@
     overflow: hidden;
     border-radius: inherit;
     background: hsl(var(--secondary));
+}
+
+.group:hover .product-photo-frame {
+    box-shadow:
+        0 0 0 1px color-mix(in oklab, var(--hover-color), transparent 70%),
+        0 0 24px color-mix(in oklab, var(--hover-color), transparent 75%),
+        0 20px 40px -24px hsl(var(--foreground) / 0.4);
 }

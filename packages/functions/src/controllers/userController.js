@@ -15,10 +15,9 @@ const getUser = asyncHandler(async (req, res) => {
 
     if (!userId) return sendError(res, 400, "User ID required");
 
-    const [userDoc, transactionsSnap, subscriptionsSnap, usageSnap] = await Promise.all([
+    const [userDoc, transactionsSnap, usageSnap] = await Promise.all([
         db.collection("users").doc(userId).get(),
         db.collection("transactions").where("userId", "==", userId).orderBy("timestamp", "desc").limit(50).get(),
-        db.collection("subscriptions").where("userId", "==", userId).get(),
         db.collection("usage_daily").where("userId", "==", userId).orderBy("date", "desc").limit(30).get(),
     ]);
 
@@ -32,7 +31,6 @@ const getUser = asyncHandler(async (req, res) => {
             updatedAt: userDoc.data().creditsUpdatedAt || null,
         },
         usage: usageSnap.docs.map((doc) => ({id: doc.id, ...doc.data()})),
-        subscriptions: subscriptionsSnap.docs.map((doc) => ({id: doc.id, ...doc.data()})),
         transactions: transactionsSnap.docs.map((doc) => ({id: doc.id, ...doc.data()})),
     });
 });
@@ -142,12 +140,8 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     batch.delete(userRef);
 
-    const [subscriptionsSnap, rateLimitsSnap] = await Promise.all([
-        db.collection("subscriptions").where("userId", "==", userId).get(),
-        db.collection("rate_limits").where("userId", "==", userId).get(),
-    ]);
+    const rateLimitsSnap = await db.collection("rate_limits").where("userId", "==", userId).get();
 
-    subscriptionsSnap.docs.forEach((doc) => batch.update(doc.ref, {status: "DELETED", updatedAt: now}));
     rateLimitsSnap.docs.forEach((doc) => batch.delete(doc.ref));
 
     await batch.commit();

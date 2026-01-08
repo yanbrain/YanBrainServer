@@ -37,21 +37,11 @@ export interface Transaction {
     provider?: string;
 }
 
-export interface Subscription {
-    id: string;
-    userId: string;
-    status: string;
-    provider: string;
-    linkedProducts: string[];
-    createdAt: string | null;
-}
-
 export interface UserDetails {
     user: User;
     credits: UserCredits | null;
     usage?: UsageSummary;
     transactions: Transaction[];
-    subscriptions: Subscription[];
 }
 
 export interface ApiResponse<T = any> {

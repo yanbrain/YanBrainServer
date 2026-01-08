@@ -37,10 +37,9 @@ const getMe = asyncHandler(async (req, res) => {
 
     if (!userId) return sendError(res, 401, "Unauthorized");
 
-    const [userDoc, transactionsSnap, subscriptionsSnap, usageSnap] = await Promise.all([
+    const [userDoc, transactionsSnap, usageSnap] = await Promise.all([
         db.collection("users").doc(userId).get(),
         db.collection("transactions").where("userId", "==", userId).orderBy("timestamp", "desc").limit(50).get(),
-        db.collection("subscriptions").where("userId", "==", userId).get(),
         db.collection("usage_daily").where("userId", "==", userId).orderBy("date", "desc").limit(30).get(),
     ]);
 
@@ -82,7 +81,6 @@ const getMe = asyncHandler(async (req, res) => {
             totalsByProduct,
             usageDaily,
         },
-        subscriptions: normalizeCollection(subscriptionsSnap.docs),
         transactions: normalizeCollection(transactionsSnap.docs),
     });
 });

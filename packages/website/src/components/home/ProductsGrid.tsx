@@ -6,6 +6,17 @@ import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { PRODUCTS } from '@/config/products'
 
+const hexToRgb = (hex: string): string | null => {
+    const normalized = hex.replace('#', '')
+    if (normalized.length !== 6) return null
+    const value = Number.parseInt(normalized, 16)
+    if (Number.isNaN(value)) return null
+    const r = (value >> 16) & 255
+    const g = (value >> 8) & 255
+    const b = value & 255
+    return `${r} ${g} ${b}`
+}
+
 export function ProductsGrid() {
     return (
         <div className="grid gap-8 md:grid-cols-3">
@@ -14,6 +25,7 @@ export function ProductsGrid() {
                 const heroImage = product.slug === 'yan-avatar'
                     ? `/images/products/${product.slug}/hero/${product.slug}_landing-hero.webp`
                     : `/images/products/${product.slug}/hero/${product.slug}_hero.webp`
+                const productColorRgb = hexToRgb(product.colors.primary)
 
                 return (
                     <motion.div
@@ -25,9 +37,11 @@ export function ProductsGrid() {
                     >
                         <Link
                             href={`/${product.slug}`}
-                            className="group flex flex-col flex-1"
+                            className="product-grid-card group flex flex-col flex-1"
                             style={{
-                                ['--hover-color' as string]: product.colors.primary
+                                ['--hover-color' as string]: product.colors.primary,
+                                ['--product-color' as string]: product.colors.primary,
+                                ['--product-color-rgb' as string]: productColorRgb ?? '220 38 120'
                             }}
                         >
                             <div className="relative aspect-video w-full overflow-hidden rounded-[22px]">

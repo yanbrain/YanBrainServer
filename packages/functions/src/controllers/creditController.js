@@ -3,7 +3,7 @@ const logger = require("firebase-functions/logger");
 const {validate, sendError, sendSuccess} = require("../utils/validation");
 const {PRODUCT_IDS, CREDIT_COSTS} = require("../config/constants");
 
-function formatMonthKey(date = new Date()) {
+function formatDateKey(date = new Date()) {
     const year = date.getUTCFullYear();
     const month = String(date.getUTCMonth() + 1).padStart(2, "0");
     return `${year}-${month}`;

@@ -1,0 +1,30 @@
+{
+  "name": "@yanbrain/shared",
+  "version": "1.0.0",
+  "description": "Shared types, constants, and utilities for YanBrain backend",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./globals.css": "./src/styles/globals.css",
+    "./styles/globals.css": "./src/styles/globals.css",
+    "./ui": "./src/ui/index.ts",
+    "./yglassui": "./src/yglassui/index.ts"
+  },
+  "scripts": {
+    "lint": "echo 'Linting shared package...'"
+  },
+  "keywords": [
+    "shared",
+    "types",
+    "constants"
+  ],
+  "author": "YanBrain",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "clsx": "^2.1.1"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

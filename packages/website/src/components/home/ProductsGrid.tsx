@@ -40,8 +40,7 @@ export function ProductsGrid() {
                             className="product-grid-card group flex flex-col flex-1"
                             style={{
                                 ['--hover-color' as string]: product.colors.primary,
-                                ['--product-color' as string]: product.colors.primary,
-                                ['--product-color-rgb' as string]: productColorRgb ?? '220 38 120'
+                                ['--product-color' as string]: product.colors.primary
                             }}
                         >
                             <div className="relative aspect-video w-full overflow-hidden rounded-[22px]">

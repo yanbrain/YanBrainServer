@@ -23,7 +23,6 @@
     position: relative;
     border-radius: 24px;
     isolation: isolate;
-    overflow: visible;
 }
 
 .product-grid-card::before,
@@ -32,21 +31,21 @@
     position: absolute;
     inset: -10px;
     border-radius: inherit;
-    background: radial-gradient(120px 120px at 15% 15%, rgb(var(--product-color-rgb) / 0.35), transparent 70%);
-    opacity: 0.5;
-    filter: blur(22px);
+    background: radial-gradient(120px 120px at 15% 15%, color-mix(in oklab, var(--product-color), transparent 60%), transparent 70%);
+    opacity: 0.35;
+    filter: blur(18px);
     transition: opacity 0.2s ease, filter 0.2s ease;
     z-index: -1;
 }
 
 .product-grid-card::after {
-    background: radial-gradient(140px 140px at 85% 85%, rgb(var(--product-color-rgb) / 0.3), transparent 75%);
+    background: radial-gradient(140px 140px at 85% 85%, color-mix(in oklab, var(--product-color), transparent 65%), transparent 75%);
 }
 
 .product-grid-card:active::before,
 .product-grid-card:active::after {
-    opacity: 0.85;
-    filter: blur(30px);
+    opacity: 0.7;
+    filter: blur(26px);
 }
 
 .product-photo-frame {

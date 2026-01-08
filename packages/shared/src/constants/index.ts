@@ -27,6 +27,11 @@ export const TRANSACTION_TYPES: Record<string, string> = {
     PAYMENT_FAILED: 'Payment Failed',
 };
 
+export const RATE_LIMIT = {
+    MAX: 10,
+    WINDOW: 60, // seconds
+};
+
 export const CLOUD_FUNCTIONS_URL =
     process.env.NEXT_PUBLIC_CLOUD_FUNCTIONS_URL ||
     'https://us-central1-yanbrainserver.cloudfunctions.net/api';

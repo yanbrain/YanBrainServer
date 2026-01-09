@@ -44,12 +44,12 @@ export function ProductsGrid() {
                                 ['--product-color-secondary' as string]: product.colors.secondary ?? product.colors.primary
                             }}
                         >
-                            <div className="relative aspect-video w-full overflow-hidden rounded-[22px]">
+                            <div className="product-grid-image relative aspect-video w-full overflow-hidden rounded-[22px]">
                                 <Image
                                     src={heroImage}
                                     alt={product.name}
                                     fill
-                                    className="object-cover"
+                                    className="object-cover relative z-10"
                                 />
                             </div>
 

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import { GlassPanel } from '@yanbrain/shared/yglassui'
+import { GlassPanel } from '@yanbrain/shared/ui'
 
 const Card = React.forwardRef<
   HTMLDivElement,

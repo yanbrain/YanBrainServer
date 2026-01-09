@@ -12,7 +12,8 @@ import {
 } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { Button } from '@/components/ui/Button'
-import { AuthCard, FormField } from '@yanbrain/shared/ui'
+import { Container } from '@/components/ui/Container'
+import { AuthCard, FormField, GlassPanel } from '@yanbrain/shared/ui'
 import { PRODUCTS } from '@yanbrain/shared'
 
 type MeResponse = {
@@ -66,6 +67,11 @@ export default function DashboardPage() {
   const [newEmail, setNewEmail] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [actionMessage, setActionMessage] = useState<string | null>(null)
+
+  const inputClassName =
+    'border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10'
+  const outlineButtonClassName =
+    'border-white/20 bg-white/5 text-white outline outline-1 outline-white/15 hover:border-white/40 hover:bg-white/10'
 
   const usageSummary = useMemo(() => {
     const totals = data?.usage?.totalsByProduct || {}
@@ -223,7 +229,7 @@ export default function DashboardPage() {
             onChange={(event) => setEmail(event.target.value)}
             required
             wrapperClassName="grid gap-2 text-sm"
-            inputClassName="border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
+            inputClassName={inputClassName}
           />
           <FormField
             label="Password"
@@ -232,9 +238,9 @@ export default function DashboardPage() {
             onChange={(event) => setPassword(event.target.value)}
             required
             wrapperClassName="grid gap-2 text-sm"
-            inputClassName="border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10"
+            inputClassName={inputClassName}
           />
-          <Button type="submit">
+          <Button type="submit" variant="outline" className={outlineButtonClassName}>
             {authMode === 'login' ? 'Sign in' : 'Create account'}
           </Button>
         </form>
@@ -259,127 +265,140 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-6 py-16 text-white">
+    <Container className="py-20">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-10">
-        <header className="flex flex-col items-end gap-3 text-right">
-          <h1 className="text-3xl font-semibold">User Dashboard</h1>
-          <p className="text-sm text-slate-300">
+        <header className="text-center">
+          <h1 className="mb-3 text-4xl font-bold tracking-tight">User Dashboard</h1>
+          <p className="text-lg text-muted-foreground">
             Manage your account, update your email or password, and review your current credits.
           </p>
         </header>
 
         {error && (
-          <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <GlassPanel className="border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
             {error}
-          </div>
+          </GlassPanel>
         )}
 
         {actionMessage && (
-          <div className="rounded-lg border border-emerald-400/40 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">
+          <GlassPanel className="border border-emerald-400/40 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">
             {actionMessage}
-          </div>
+          </GlassPanel>
         )}
 
-        <>
-            <section className="rounded-2xl border border-white/15 bg-slate-900/80 p-8 shadow-xl ring-1 ring-white/10">
-              <div className="flex flex-wrap items-start justify-between gap-6">
-                <div>
-                  <h2 className="text-xl font-semibold">Account</h2>
-                  <p className="text-sm text-slate-400">Signed in as {user.email}</p>
-                </div>
-                <Button variant="outline" onClick={handleSignOut}>
-                  Sign out
-                </Button>
-              </div>
+        <GlassPanel className="p-8">
+          <div className="flex flex-wrap items-start justify-between gap-6">
+            <div>
+              <h2 className="text-xl font-semibold">Account</h2>
+              <p className="text-sm text-muted-foreground">Signed in as {user.email}</p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleSignOut}
+              className={outlineButtonClassName}
+            >
+              Sign out
+            </Button>
+          </div>
 
-              <div className="mt-6 grid gap-6 md:grid-cols-2">
-                <form onSubmit={handleEmailUpdate} className="grid gap-3">
-                  <h3 className="text-sm font-semibold">Change email</h3>
-                  <FormField
-                    label="New email"
-                    type="email"
-                    placeholder="new@email.com"
-                    value={newEmail}
-                    onChange={(event) => setNewEmail(event.target.value)}
-                    labelClassName="text-xs text-white/80"
-                    wrapperClassName="grid gap-2"
-                  />
-                  <Button type="submit" variant="secondary">
-                    Update email
-                  </Button>
-                </form>
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <form onSubmit={handleEmailUpdate} className="grid gap-3">
+              <h3 className="text-sm font-semibold">Change email</h3>
+              <FormField
+                label="New email"
+                type="email"
+                placeholder="new@email.com"
+                value={newEmail}
+                onChange={(event) => setNewEmail(event.target.value)}
+                labelClassName="text-xs text-white/80"
+                wrapperClassName="grid gap-2"
+                inputClassName={inputClassName}
+              />
+              <Button type="submit" variant="outline" className={outlineButtonClassName}>
+                Update email
+              </Button>
+            </form>
 
-                <form onSubmit={handlePasswordUpdate} className="grid gap-3">
-                  <h3 className="text-sm font-semibold">Change password</h3>
-                  <FormField
-                    label="New password"
-                    type="password"
-                    placeholder="New password"
-                    value={newPassword}
-                    onChange={(event) => setNewPassword(event.target.value)}
-                    labelClassName="text-xs text-white/80"
-                    wrapperClassName="grid gap-2"
-                  />
-                  <Button type="submit" variant="secondary">
-                    Update password
-                  </Button>
-                </form>
-              </div>
-            </section>
+            <form onSubmit={handlePasswordUpdate} className="grid gap-3">
+              <h3 className="text-sm font-semibold">Change password</h3>
+              <FormField
+                label="New password"
+                type="password"
+                placeholder="New password"
+                value={newPassword}
+                onChange={(event) => setNewPassword(event.target.value)}
+                labelClassName="text-xs text-white/80"
+                wrapperClassName="grid gap-2"
+                inputClassName={inputClassName}
+              />
+              <Button type="submit" variant="outline" className={outlineButtonClassName}>
+                Update password
+              </Button>
+            </form>
+          </div>
+        </GlassPanel>
 
-            <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Credits</h2>
-                <Button variant="outline" onClick={() => user && loadDashboard(user)} disabled={loading}>
-                  {loading ? 'Refreshing...' : 'Refresh'}
-                </Button>
-              </div>
+        <GlassPanel className="p-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <h2 className="text-xl font-semibold">Credits</h2>
+            <Button
+              variant="outline"
+              onClick={() => user && loadDashboard(user)}
+              disabled={loading}
+              className={outlineButtonClassName}
+            >
+              {loading ? 'Refreshing...' : 'Refresh'}
+            </Button>
+          </div>
 
-              <div className="mt-6 grid gap-4 md:grid-cols-3">
-                <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                  <h3 className="text-base font-semibold">Current balance</h3>
-                  <p className="mt-2 text-2xl font-semibold text-emerald-200">{data?.credits?.balance ?? 0}</p>
-                  <p className="text-sm text-slate-400">Lifetime: {data?.credits?.lifetime ?? 0}</p>
-                </div>
-                <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                  <h3 className="text-base font-semibold">Usage overview</h3>
-                  <div className="mt-3 space-y-2 text-sm text-slate-300">
-                    {usageSummary.map((product) => (
-                      <div key={product.id} className="flex items-center justify-between">
-                        <span>{product.name}</span>
-                        <span className="font-medium">{product.total}</span>
-                      </div>
-                    ))}
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            <GlassPanel className="p-4">
+              <h3 className="text-base font-semibold">Current balance</h3>
+              <p className="mt-2 text-2xl font-semibold text-emerald-200">
+                {data?.credits?.balance ?? 0}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Lifetime: {data?.credits?.lifetime ?? 0}
+              </p>
+            </GlassPanel>
+            <GlassPanel className="p-4">
+              <h3 className="text-base font-semibold">Usage overview</h3>
+              <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+                {usageSummary.map((product) => (
+                  <div key={product.id} className="flex items-center justify-between">
+                    <span>{product.name}</span>
+                    <span className="font-medium text-white">{product.total}</span>
                   </div>
-                </div>
-                <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                  <h3 className="text-base font-semibold">Last updated</h3>
-                  <p className="mt-2 text-sm text-slate-400">
-                    {formatDate(data?.credits?.updatedAt || null)}
-                  </p>
-                </div>
+                ))}
               </div>
+            </GlassPanel>
+            <GlassPanel className="p-4">
+              <h3 className="text-base font-semibold">Last updated</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {formatDate(data?.credits?.updatedAt || null)}
+              </p>
+            </GlassPanel>
+          </div>
 
-              <div className="mt-8">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
-                  Usage by month
-                </h3>
-                <div className="mt-3 space-y-3 text-sm text-slate-300">
-                  {data?.usage?.usagePeriods?.length ? (
-                    data.usage.usagePeriods.map((entry) => (
-                      <div key={entry.id} className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950 px-4 py-2">
-                        <span>{formatPeriod(entry.period)}</span>
-                        <span className="font-medium">{entry.totalCredits} credits</span>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-slate-400">No usage yet.</p>
-                  )}
-                </div>
-              </div>
-            </section>
-        </>
+          <div className="mt-8">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Usage by month
+            </h3>
+            <div className="mt-3 space-y-3 text-sm text-muted-foreground">
+              {data?.usage?.usagePeriods?.length ? (
+                data.usage.usagePeriods.map((entry) => (
+                  <GlassPanel key={entry.id} className="flex items-center justify-between px-4 py-2">
+                    <span>{formatPeriod(entry.period)}</span>
+                    <span className="font-medium text-white">{entry.totalCredits} credits</span>
+                  </GlassPanel>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No usage yet.</p>
+              )}
+            </div>
+          </div>
+        </GlassPanel>
       </div>
-    </div>
+    </Container>
   )
 }

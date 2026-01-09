@@ -72,26 +72,22 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
         <div className="space-y-6">
             <GlassPanel className="flex items-center justify-between px-6 py-5">
                 <div className="flex gap-2">
-                    <Button onClick={() => setShowCreateUser(true)}>
+                    <Button color="slate" appearance="outline" onClick={() => setShowCreateUser(true)}>
                         <UserPlus className="mr-2 h-4 w-4" />
                         Create User
                     </Button>
                     {selectedUser && (
                         <Button
-                            variant={selectedUser.isSuspended ? 'secondary' : 'destructive'}
+                            color={selectedUser.isSuspended ? 'red' : 'red'}
+                            appearance="outline"
                             onClick={selectedUser.isSuspended ? handleUnsuspend : handleSuspend}
                             disabled={loading}
-                            className={
-                                selectedUser.isSuspended
-                                    ? 'bg-emerald-500/20 text-emerald-100 hover:bg-emerald-500/30'
-                                    : ''
-                            }
                         >
                             {selectedUser.isSuspended ? <ShieldCheck className="mr-2 h-4 w-4" /> : <ShieldAlert className="mr-2 h-4 w-4" />}
                             {selectedUser.isSuspended ? 'Unsuspend' : 'Suspend'}
                         </Button>
                     )}
-                    <Button variant="secondary" onClick={handleRefresh}>
+                    <Button color="slate" appearance="outline" onClick={handleRefresh}>
                         <RefreshCw className="mr-2 h-4 w-4" />
                         Refresh
                     </Button>
@@ -100,7 +96,7 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
 
             <div className="grid gap-6 lg:grid-cols-[1fr_350px_350px]">
                 <Card className="p-6">
-                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-10">
                         Users
                     </h2>
                     <UserTable
@@ -111,8 +107,8 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
                 </Card>
 
                 <Card className="p-6">
-                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                        {selectedUser ? `Credits: ${selectedUser.email}` : 'Credits'}
+                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-10">
+                        Credits
                     </h2>
                     {selectedUser ? (
                         <CreditsPanel
@@ -123,14 +119,14 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
                             onRefresh={handleRefresh}
                         />
                     ) : (
-                        <div className="py-12 text-center text-sm text-muted-foreground">
+                        <div className="py-12 text-center text-sm text-slate-10">
                             Select a user to view credits
                         </div>
                     )}
                 </Card>
 
                 <Card className="p-6">
-                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-10">
                         Transactions
                     </h2>
                     {selectedUser ? (
@@ -140,7 +136,7 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
                             refreshKey={refreshKey}
                         />
                     ) : (
-                        <div className="py-12 text-center text-sm text-muted-foreground">
+                        <div className="py-12 text-center text-sm text-slate-10">
                             Select a user to view transactions
                         </div>
                     )}

@@ -2,8 +2,8 @@
 
 import { CheckCircle, XCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Transaction, TRANSACTION_TYPES } from '@yanbrain/shared'
-import { GlassPanel } from '@yanbrain/shared/ui'
 import { formatDate } from '@/lib/utils'
 
 interface TransactionListProps {
@@ -42,24 +42,32 @@ export function TransactionList({ transactions }: TransactionListProps) {
     }
 
     return (
-        <div className="space-y-3">
-            {transactions.map((tx) => (
-                <GlassPanel key={tx.id} className="border-white/10 p-4">
-                    <div className="flex items-start gap-3">
-                        <div className="mt-0.5">{getIcon(tx.type)}</div>
-                        <div className="space-y-1 flex-1">
-                            <div className="flex items-center gap-2">
-                                <span className="font-semibold text-sm">{TRANSACTION_TYPES[tx.type]}</span>
-                                <Badge variant={tx.performedBy === 'admin' ? 'default' : 'secondary'} className="text-xs">
-                                    {tx.performedBy === 'admin' ? 'Admin' : 'System'}
-                                </Badge>
+        <ScrollArea className="h-[440px]">
+            <div className="space-y-3 pr-4">
+                {transactions.map((tx, index) => {
+                    // Debug: log the timestamp to see its structure
+                    if (index === 0) {
+                        console.log('Transaction timestamp:', tx.timestamp, typeof tx.timestamp)
+                    }
+
+                    return (
+                        <div key={tx.id} className="border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                            <div className="flex items-start gap-3">
+                                <div className="mt-0.5">{getIcon(tx.type)}</div>
+                                <div className="space-y-1 flex-1">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="font-semibold text-sm">{TRANSACTION_TYPES[tx.type]}</span>
+                                        <Badge variant={tx.performedBy === 'admin' ? 'default' : 'secondary'} className="text-xs">
+                                            {tx.performedBy === 'admin' ? 'Admin' : 'System'}
+                                        </Badge>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground">{getDescription(tx)}</p>
+                                    <p className="text-xs text-muted-foreground">{formatDate(tx.timestamp)}</p>
+                                </div>
                             </div>
-                            <p className="text-sm text-muted-foreground">{getDescription(tx)}</p>
-                            <p className="text-xs text-muted-foreground">{formatDate(tx.timestamp)}</p>
                         </div>
-                    </div>
-                </GlassPanel>
-            ))}
-        </div>
+                    )})}
+            </div>
+        </ScrollArea>
     )
 }

@@ -27,5 +27,9 @@
     "nextjs"
   ],
   "author": "YanBrain",
-  "license": "YanBrain"
+  "license": "YanBrain",
+  "dependencies": {
+    "@radix-ui/colors": "^3.0.0",
+    "@radix-ui/react-scroll-area": "^1.2.10"
+  }
 }

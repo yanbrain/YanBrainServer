@@ -21,7 +21,13 @@ export function CreditsGrid({ userId, credits, usage, isSuspended, onRefresh }: 
 
     return (
         <div className="space-y-4">
-            <Button onClick={() => setIsGranting(true)} disabled={isSuspended} className="w-full">
+            <Button
+                color="green"
+                appearance="outline"
+                onClick={() => setIsGranting(true)}
+                disabled={isSuspended}
+                className="w-full"
+            >
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Grant Credits
             </Button>
@@ -32,8 +38,7 @@ export function CreditsGrid({ userId, credits, usage, isSuspended, onRefresh }: 
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                     <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Current balance</span>
-                        <span className="font-semibold">{credits.balance ?? 0}</span>
+                        <span className="text-3xl font-bold text-green-10">{credits.balance ?? 0}</span>
                     </div>
                 </CardContent>
             </Card>
@@ -45,8 +50,8 @@ export function CreditsGrid({ userId, credits, usage, isSuspended, onRefresh }: 
                 <CardContent className="space-y-2 text-sm">
                     {PRODUCTS.map((product) => (
                         <div key={product.id} className="flex items-center justify-between">
-                            <span className="text-muted-foreground">{product.name}</span>
-                            <span className="font-medium">{usageTotals[product.id] || 0}</span>
+                            <span className="text-slate-10">{product.name}</span>
+                            <span className="font-medium text-white">{usageTotals[product.id] || 0}</span>
                         </div>
                     ))}
                 </CardContent>

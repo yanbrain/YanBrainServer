@@ -1,42 +1,63 @@
 import * as React from 'react'
 import { cn } from '../utils'
 
-type ButtonVariant = 'default' | 'secondary' | 'outline' | 'destructive' | 'ghost' | 'link'
-type ButtonSize = 'default' | 'sm' | 'lg' | 'icon'
+type ButtonColor = 'slate' | 'red' | 'orange' | 'green'
+type ButtonAppearance = 'filled' | 'outline'
+type ButtonSize = 'sm' | 'default' | 'lg' | 'icon'
 
 const baseClasses =
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-50'
-
-const variantClasses: Record<ButtonVariant, string> = {
-  default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-  secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-  outline:
-    'border border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white',
-  destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-  ghost: 'bg-transparent hover:bg-accent hover:text-accent-foreground',
-  link: 'bg-transparent text-primary underline-offset-4 hover:underline',
-}
+    'inline-flex items-center justify-center whitespace-nowrap rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-8 disabled:pointer-events-none disabled:opacity-50'
 
 const sizeClasses: Record<ButtonSize, string> = {
-  default: 'h-10 px-4 py-2',
-  sm: 'h-9 rounded-md px-3',
-  lg: 'h-11 rounded-md px-8',
-  icon: 'h-10 w-10',
+    sm: 'h-9 px-3 text-sm',
+    default: 'h-10 px-4 text-sm',
+    lg: 'h-11 px-8 text-base',
+    icon: 'h-10 w-10',
+}
+
+// Color + Appearance combinations
+const getVariantClasses = (color: ButtonColor, appearance: ButtonAppearance): string => {
+    const variants = {
+        slate: {
+            filled: 'bg-slate-8 text-white hover:bg-slate-10',
+            outline: 'border border-slate-8 bg-transparent text-slate-10 hover:border-slate-10 hover:text-white',
+        },
+        red: {
+            filled: 'bg-red-8 text-white hover:bg-red-10',
+            outline: 'border border-red-8 bg-transparent text-red-8 hover:border-red-10 hover:text-red-10',
+        },
+        orange: {
+            filled: 'bg-orange-8 text-white hover:bg-orange-10',
+            outline: 'border border-orange-8 bg-transparent text-orange-8 hover:border-orange-10 hover:text-orange-10',
+        },
+        green: {
+            filled: 'bg-green-8 text-white hover:bg-green-10',
+            outline: 'border border-green-8 bg-transparent text-green-8 hover:border-green-10 hover:text-green-10',
+        },
+    }
+
+    return variants[color][appearance]
 }
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant
-  size?: ButtonSize
+    color?: ButtonColor
+    appearance?: ButtonAppearance
+    size?: ButtonSize
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'default', size = 'default', ...props }, ref) => (
-    <button
-      className={cn(baseClasses, variantClasses[variant], sizeClasses[size], className)}
-      ref={ref}
-      {...props}
-    />
-  )
+    ({ className, color = 'slate', appearance = 'filled', size = 'default', ...props }, ref) => (
+        <button
+            className={cn(
+                baseClasses,
+                sizeClasses[size],
+                getVariantClasses(color, appearance),
+                className
+            )}
+            ref={ref}
+            {...props}
+        />
+    )
 )
 
 Button.displayName = 'Button'

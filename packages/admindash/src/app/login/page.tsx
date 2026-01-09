@@ -101,14 +101,21 @@ function LoginForm() {
                     <div className="flex gap-2">
                         <Button
                             type="button"
-                            variant="outline"
+                            color="slate"
+                            appearance="outline"
                             className="flex-1"
                             onClick={() => setShowForgotPassword(false)}
                             disabled={resetLoading}
                         >
                             Back to Login
                         </Button>
-                        <Button type="submit" className="flex-1" disabled={resetLoading}>
+                        <Button
+                            type="submit"
+                            color="slate"
+                            appearance="filled"
+                            className="flex-1"
+                            disabled={resetLoading}
+                        >
                             {resetLoading ? 'Sending...' : 'Send Reset Link'}
                         </Button>
                     </div>
@@ -149,7 +156,13 @@ function LoginForm() {
                     </button>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button
+                    type="submit"
+                    color="slate"
+                    appearance="filled"
+                    className="w-full"
+                    disabled={loading}
+                >
                     {loading ? 'Signing in...' : 'Sign In'}
                 </Button>
             </form>

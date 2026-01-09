@@ -51,15 +51,31 @@ export function CreditsGrantDialog({ open, onOpenChange, userId, onSuccess }: Cr
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Credits</label>
-                        <Input type="number" placeholder="100" {...form.register('credits', { valueAsNumber: true })} />
-                        <p className="text-xs text-muted-foreground">Positive adds credits, negative deducts</p>
+                        <Input
+                            id="credits"
+                            type="number"
+                            placeholder="100"
+                            className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            {...form.register('credits', { valueAsNumber: true })}
+                        />
                     </div>
 
                     <div className="flex justify-end gap-2">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={submitting}>
+                        <Button
+                            type="button"
+                            color="red"
+                            appearance="outline"
+                            onClick={() => onOpenChange(false)}
+                            disabled={submitting}
+                        >
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={submitting}>
+                        <Button
+                            type="submit"
+                            color="green"
+                            appearance="filled"
+                            disabled={submitting}
+                        >
                             {submitting ? 'Saving...' : 'Update Credits'}
                         </Button>
                     </div>

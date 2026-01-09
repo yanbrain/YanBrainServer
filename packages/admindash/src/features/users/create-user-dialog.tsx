@@ -51,6 +51,7 @@ export function CreateUserDialog({ open, onOpenChange, onSuccess }: CreateUserDi
                     <div className="space-y-2">
                         <label className="text-sm font-medium">User ID</label>
                         <Input
+                            id="userId"
                             placeholder="user_123"
                             {...form.register('userId', { required: true })}
                         />
@@ -60,6 +61,7 @@ export function CreateUserDialog({ open, onOpenChange, onSuccess }: CreateUserDi
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Email</label>
                         <Input
+                            id="email"
                             type="email"
                             placeholder="user@example.com"
                             {...form.register('email', { required: true })}
@@ -69,13 +71,19 @@ export function CreateUserDialog({ open, onOpenChange, onSuccess }: CreateUserDi
                     <div className="flex justify-end gap-2">
                         <Button
                             type="button"
-                            variant="outline"
+                            color="red"
+                            appearance="outline"
                             onClick={() => onOpenChange(false)}
                             disabled={submitting}
                         >
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={submitting}>
+                        <Button
+                            type="submit"
+                            color="green"
+                            appearance="filled"
+                            disabled={submitting}
+                        >
                             {submitting ? 'Creating...' : 'Create User'}
                         </Button>
                     </div>

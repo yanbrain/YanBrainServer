@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
-import { GlassPanel } from '@yanbrain/shared/yglassui'
+import { GlassPanel } from '@yanbrain/shared/ui'
 
 export function Footer() {
   return (

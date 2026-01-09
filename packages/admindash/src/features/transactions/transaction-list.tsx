@@ -3,7 +3,7 @@
 import { CheckCircle, XCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Transaction, TRANSACTION_TYPES } from '@yanbrain/shared'
-import { GlassPanel } from '@yanbrain/shared/yglassui'
+import { GlassPanel } from '@yanbrain/shared/ui'
 import { formatDate } from '@/lib/utils'
 
 interface TransactionListProps {

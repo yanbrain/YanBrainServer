@@ -7,8 +7,7 @@
     ".": "./src/index.ts",
     "./globals.css": "./src/styles/globals.css",
     "./styles/globals.css": "./src/styles/globals.css",
-    "./ui": "./src/ui/index.ts",
-    "./yglassui": "./src/yglassui/index.ts"
+    "./ui": "./src/ui/index.ts"
   },
   "scripts": {
     "lint": "echo 'Linting shared package...'"

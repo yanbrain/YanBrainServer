@@ -38,8 +38,6 @@ const DropdownMenuSubContent = React.forwardRef<
 >(({ className, sideOffset = 4, ...props }, ref) => (
   <DropdownMenuPrimitive.SubContent
     ref={ref}
-    side="left"
-    align="start"
     sideOffset={sideOffset}
     collisionPadding={8}
     className={cn(

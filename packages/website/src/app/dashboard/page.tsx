@@ -282,9 +282,6 @@ export default function DashboardPage() {
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-10">
         <header className="text-center">
           <h1 className="mb-3 text-4xl font-bold tracking-tight">User Dashboard</h1>
-          <p className="text-lg text-muted-foreground">
-            Manage your account, update your email or password, and review your current credits.
-          </p>
         </header>
 
         {error && (
@@ -303,7 +300,6 @@ export default function DashboardPage() {
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div>
               <h2 className="text-xl font-semibold">Account</h2>
-              <p className="text-sm text-muted-foreground">Signed in as {user.email}</p>
             </div>
             <Button
               variant="outline"
@@ -314,40 +310,41 @@ export default function DashboardPage() {
             </Button>
           </div>
 
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            <form onSubmit={handleEmailUpdate} className="grid gap-3">
-              <h3 className="text-sm font-semibold">Change email</h3>
-              <FormField
-                label="New email"
-                type="email"
-                placeholder="new@email.com"
-                value={newEmail}
-                onChange={(event) => setNewEmail(event.target.value)}
-                labelClassName="text-xs text-white/80"
-                wrapperClassName="grid gap-2"
-                inputClassName={INPUT_CLASS_NAME}
-              />
-              <Button type="submit" variant="outline" className={OUTLINE_BUTTON_CLASS_NAME}>
-                Update email
+          <div className="mt-6 grid gap-4 text-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="grid gap-1">
+                <span className="text-xs uppercase tracking-wide text-white/60">Email</span>
+                <span className="text-base font-medium text-white">
+                  {user.email ?? '—'}
+                </span>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className={OUTLINE_BUTTON_CLASS_NAME}
+                onClick={() => {
+                  setNewEmail(user.email ?? '')
+                  setShowEmailModal(true)
+                }}
+              >
+                Edit
               </Button>
-            </form>
+            </div>
 
-            <form onSubmit={handlePasswordUpdate} className="grid gap-3">
-              <h3 className="text-sm font-semibold">Change password</h3>
-              <FormField
-                label="New password"
-                type="password"
-                placeholder="New password"
-                value={newPassword}
-                onChange={(event) => setNewPassword(event.target.value)}
-                labelClassName="text-xs text-white/80"
-                wrapperClassName="grid gap-2"
-                inputClassName={INPUT_CLASS_NAME}
-              />
-              <Button type="submit" variant="outline" className={OUTLINE_BUTTON_CLASS_NAME}>
-                Update password
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="grid gap-1">
+                <span className="text-xs uppercase tracking-wide text-white/60">Password</span>
+                <span className="text-base font-medium text-white">******</span>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className={OUTLINE_BUTTON_CLASS_NAME}
+                onClick={() => setShowPasswordModal(true)}
+              >
+                Edit
               </Button>
-            </form>
+            </div>
           </div>
         </GlassPanel>
 
@@ -411,6 +408,118 @@ export default function DashboardPage() {
             </div>
           </div>
         </GlassPanel>
+
+        {showEmailModal ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-6 backdrop-blur-2xl"
+            onClick={() => setShowEmailModal(false)}
+          >
+            <div
+              className="relative w-full max-w-md"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <AuthCard
+                title="Update email"
+                description="Enter the new email address for your account."
+                variant="modal"
+              >
+                <form onSubmit={handleEmailUpdate} className="grid gap-4">
+                  <FormField
+                    label="New email"
+                    type="email"
+                    placeholder="new@email.com"
+                    value={newEmail}
+                    onChange={(event) => setNewEmail(event.target.value)}
+                    labelClassName="text-white/80"
+                    wrapperClassName="grid gap-2 text-sm"
+                    inputClassName={INPUT_CLASS_NAME}
+                    required
+                  />
+                  <div className="flex flex-wrap gap-3">
+                    <Button type="submit" variant="outline" className={OUTLINE_BUTTON_CLASS_NAME}>
+                      Save
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="text-white/70 hover:text-white"
+                      onClick={() => setShowEmailModal(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </AuthCard>
+            </div>
+          </div>
+        ) : null}
+
+        {showPasswordModal ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-6 backdrop-blur-2xl"
+            onClick={() => setShowPasswordModal(false)}
+          >
+            <div
+              className="relative w-full max-w-md"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <AuthCard
+                title="Update password"
+                description="Enter your current password and choose a new one."
+                variant="modal"
+              >
+                <form onSubmit={handlePasswordUpdate} className="grid gap-4">
+                  <FormField
+                    label="Current password"
+                    type="password"
+                    placeholder="Current password"
+                    value={currentPassword}
+                    onChange={(event) => setCurrentPassword(event.target.value)}
+                    labelClassName="text-white/80"
+                    wrapperClassName="grid gap-2 text-sm"
+                    inputClassName={INPUT_CLASS_NAME}
+                    required
+                  />
+                  <FormField
+                    label="New password"
+                    type="password"
+                    placeholder="New password"
+                    value={newPassword}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                    labelClassName="text-white/80"
+                    wrapperClassName="grid gap-2 text-sm"
+                    inputClassName={INPUT_CLASS_NAME}
+                    required
+                  />
+                  <FormField
+                    label="Confirm new password"
+                    type="password"
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    labelClassName="text-white/80"
+                    wrapperClassName="grid gap-2 text-sm"
+                    inputClassName={INPUT_CLASS_NAME}
+                    required
+                  />
+                  <div className="flex flex-wrap gap-3">
+                    <Button type="submit" variant="outline" className={OUTLINE_BUTTON_CLASS_NAME}>
+                      Save
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="text-white/70 hover:text-white"
+                      onClick={() => setShowPasswordModal(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </AuthCard>
+            </div>
+          </div>
+        ) : null}
       </div>
     </Container>
   )

@@ -42,3 +42,7 @@ app.use((err, req, res, next) => {
 });
 
 exports.api = onRequest(app);
+
+// Auth trigger - auto-creates user doc and grants 5 credits to new users
+const {onAuthUserCreated} = require("./authTriggers");
+exports.onAuthUserCreated = onAuthUserCreated;

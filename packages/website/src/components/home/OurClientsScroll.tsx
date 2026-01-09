@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { GlassPanel } from '@yanbrain/shared/yglassui'
+import { GlassPanel } from '@yanbrain/shared/ui'
 
 interface Client {
     name: string

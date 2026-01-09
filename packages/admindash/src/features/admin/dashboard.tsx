@@ -10,7 +10,7 @@ import { CreditsPanel } from '@/features/credits/credits-panel'
 import { TransactionPanel } from '@/features/transactions/transaction-panel'
 import { CreateUserDialog } from '@/features/users/create-user-dialog'
 import { User } from '@yanbrain/shared'
-import { GlassPanel } from '@yanbrain/shared/yglassui'
+import { GlassPanel } from '@yanbrain/shared/ui'
 import { suspendUser, unsuspendUser } from '@/lib/api-client'
 import { toast } from 'sonner'
 

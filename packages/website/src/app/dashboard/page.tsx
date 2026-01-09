@@ -66,7 +66,16 @@ export default function DashboardPage() {
   const [password, setPassword] = useState('')
   const [newEmail, setNewEmail] = useState('')
   const [newPassword, setNewPassword] = useState('')
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [actionMessage, setActionMessage] = useState<string | null>(null)
+  const [showEmailModal, setShowEmailModal] = useState(false)
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+
+  const inputClassName =
+    'border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10'
+  const outlineButtonClassName =
+    'border-white/20 bg-white/5 text-white outline outline-1 outline-white/15 hover:border-white/40 hover:bg-white/10'
 
   const inputClassName =
     'border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10'
@@ -172,6 +181,7 @@ export default function DashboardPage() {
       await updateEmail(user, newEmail)
       setActionMessage('Email updated successfully.')
       setNewEmail('')
+      setShowEmailModal(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Email update failed'
       setError(message)
@@ -183,12 +193,20 @@ export default function DashboardPage() {
     setError(null)
     setActionMessage(null)
 
-    if (!user || !newPassword) return
+    if (!user || !newPassword || !currentPassword || !confirmPassword) return
+    if (newPassword !== confirmPassword) {
+      setError('New password and confirmation do not match.')
+      return
+    }
 
     try {
+      await signInWithEmailAndPassword(auth, user.email ?? '', currentPassword)
       await updatePassword(user, newPassword)
       setActionMessage('Password updated successfully.')
       setNewPassword('')
+      setCurrentPassword('')
+      setConfirmPassword('')
+      setShowPasswordModal(false)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Password update failed'
       setError(message)

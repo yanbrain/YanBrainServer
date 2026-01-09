@@ -130,7 +130,7 @@ export function Navigation() {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="mt-3">
                     <div className="rounded-2xl border border-white/10 bg-black p-2 text-sm text-white shadow-xl outline outline-1 outline-white/10">
-                      <div className="rounded-xl border border-white/5 bg-black/95">
+                      <div className="rounded-xl border border-white/5 bg-white/5">
                         <ul className="w-64 space-y-2 p-2">
                           {PRODUCTS.map((product) => (
                             <li key={product.slug}>
@@ -138,9 +138,10 @@ export function Navigation() {
                                 <Link
                                   href={`/${product.slug}`}
                                   className={cn(
-                                    "group flex flex-col gap-1 rounded-lg border border-white/10 px-4 py-3 transition-colors hover:border-white/30 hover:bg-white/5",
-                                    pathname === `/${product.slug}` && "border-white/40 bg-white/10"
+                                    "group flex flex-col gap-1 rounded-lg border-2 px-4 py-3 transition-colors hover:bg-white/5",
+                                    pathname === `/${product.slug}` && "bg-white/10"
                                   )}
+                                  style={{ borderColor: product.colors.primary }}
                                 >
                                   <div className={cn(
                                     "text-sm font-medium transition-colors",

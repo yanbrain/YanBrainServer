@@ -49,7 +49,7 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
     <div ref={menuRef} className={cn('relative', className)}>
       <button
         type="button"
-        className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-white/80 transition hover:text-white outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+        className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-white/80 transition hover:text-white outline-none ring-0 focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}

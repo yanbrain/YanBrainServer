@@ -71,7 +71,6 @@ const getMe = asyncHandler(async (req, res) => {
         },
         credits: {
             balance: userData.creditsBalance || 0,
-            lifetime: userData.creditsLifetime || 0,
             updatedAt: normalizeTimestamp(userData.creditsUpdatedAt),
         },
         usage: {

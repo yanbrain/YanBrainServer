@@ -27,7 +27,6 @@ const getUser = asyncHandler(async (req, res) => {
         user: {id: userId, ...userDoc.data()},
         credits: {
             balance: userDoc.data().creditsBalance || 0,
-            lifetime: userDoc.data().creditsLifetime || 0,
             updatedAt: userDoc.data().creditsUpdatedAt || null,
         },
         usage: {
@@ -99,7 +98,6 @@ const createUser = asyncHandler(async (req, res) => {
         isActive: true,
         isSuspended: false,
         creditsBalance: 0,
-        creditsLifetime: 0,
         creditsUpdatedAt: now,
         ...(customData || {}),
     });

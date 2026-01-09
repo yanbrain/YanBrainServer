@@ -8,7 +8,6 @@ export interface User {
 
 export interface UserCredits {
     balance: number;
-    lifetime: number;
     updatedAt: string | null;
 }
 

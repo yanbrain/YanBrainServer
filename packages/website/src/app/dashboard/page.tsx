@@ -23,7 +23,6 @@ type MeResponse = {
   }
   credits?: {
     balance: number
-    lifetime: number
     updatedAt?: string | null
   }
   usage?: {
@@ -366,9 +365,6 @@ export default function DashboardPage() {
               <h3 className="text-base font-semibold">Current balance</h3>
               <p className="mt-2 text-2xl font-semibold text-emerald-200">
                 {data?.credits?.balance ?? 0}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Lifetime: {data?.credits?.lifetime ?? 0}
               </p>
             </GlassPanel>
             <GlassPanel className="p-4">

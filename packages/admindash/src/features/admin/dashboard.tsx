@@ -72,22 +72,26 @@ export function Dashboard({ users, token, onRefresh }: DashboardProps) {
         <div className="space-y-6">
             <GlassPanel className="flex items-center justify-between px-6 py-5">
                 <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setShowCreateUser(true)}>
+                    <Button onClick={() => setShowCreateUser(true)}>
                         <UserPlus className="mr-2 h-4 w-4" />
                         Create User
                     </Button>
                     {selectedUser && (
                         <Button
-                            variant="outline"
+                            variant={selectedUser.isSuspended ? 'secondary' : 'destructive'}
                             onClick={selectedUser.isSuspended ? handleUnsuspend : handleSuspend}
                             disabled={loading}
-                            className={selectedUser.isSuspended ? "border-green-500 text-green-500" : "border-red-500 text-red-500"}
+                            className={
+                                selectedUser.isSuspended
+                                    ? 'bg-emerald-500/20 text-emerald-100 hover:bg-emerald-500/30'
+                                    : ''
+                            }
                         >
                             {selectedUser.isSuspended ? <ShieldCheck className="mr-2 h-4 w-4" /> : <ShieldAlert className="mr-2 h-4 w-4" />}
                             {selectedUser.isSuspended ? 'Unsuspend' : 'Suspend'}
                         </Button>
                     )}
-                    <Button variant="outline" onClick={handleRefresh}>
+                    <Button variant="secondary" onClick={handleRefresh}>
                         <RefreshCw className="mr-2 h-4 w-4" />
                         Refresh
                     </Button>

@@ -77,16 +77,6 @@ export default function DashboardPage() {
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
 
-  const inputClassName =
-    'border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10'
-  const outlineButtonClassName =
-    'border-white/20 bg-white/5 text-white outline outline-1 outline-white/15 hover:border-white/40 hover:bg-white/10'
-
-  const inputClassName =
-    'border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10'
-  const outlineButtonClassName =
-    'border-white/20 bg-white/5 text-white outline outline-1 outline-white/15 hover:border-white/40 hover:bg-white/10'
-
   const usageSummary = useMemo(() => {
     const totals = data?.usage?.totalsByProduct || {}
     return PRODUCTS.map((product) => ({
@@ -252,7 +242,7 @@ export default function DashboardPage() {
             onChange={(event) => setEmail(event.target.value)}
             required
             wrapperClassName="grid gap-2 text-sm"
-            inputClassName={inputClassName}
+            inputClassName={INPUT_CLASS_NAME}
           />
           <FormField
             label="Password"
@@ -261,9 +251,9 @@ export default function DashboardPage() {
             onChange={(event) => setPassword(event.target.value)}
             required
             wrapperClassName="grid gap-2 text-sm"
-            inputClassName={inputClassName}
+            inputClassName={INPUT_CLASS_NAME}
           />
-          <Button type="submit" variant="outline" className={outlineButtonClassName}>
+          <Button type="submit" variant="outline" className={OUTLINE_BUTTON_CLASS_NAME}>
             {authMode === 'login' ? 'Sign in' : 'Create account'}
           </Button>
         </form>
@@ -318,7 +308,7 @@ export default function DashboardPage() {
             <Button
               variant="outline"
               onClick={handleSignOut}
-              className={outlineButtonClassName}
+              className={OUTLINE_BUTTON_CLASS_NAME}
             >
               Sign out
             </Button>
@@ -335,9 +325,9 @@ export default function DashboardPage() {
                 onChange={(event) => setNewEmail(event.target.value)}
                 labelClassName="text-xs text-white/80"
                 wrapperClassName="grid gap-2"
-                inputClassName={inputClassName}
+                inputClassName={INPUT_CLASS_NAME}
               />
-              <Button type="submit" variant="outline" className={outlineButtonClassName}>
+              <Button type="submit" variant="outline" className={OUTLINE_BUTTON_CLASS_NAME}>
                 Update email
               </Button>
             </form>
@@ -352,9 +342,9 @@ export default function DashboardPage() {
                 onChange={(event) => setNewPassword(event.target.value)}
                 labelClassName="text-xs text-white/80"
                 wrapperClassName="grid gap-2"
-                inputClassName={inputClassName}
+                inputClassName={INPUT_CLASS_NAME}
               />
-              <Button type="submit" variant="outline" className={outlineButtonClassName}>
+              <Button type="submit" variant="outline" className={OUTLINE_BUTTON_CLASS_NAME}>
                 Update password
               </Button>
             </form>
@@ -368,7 +358,7 @@ export default function DashboardPage() {
               variant="outline"
               onClick={() => user && loadDashboard(user)}
               disabled={loading}
-              className={outlineButtonClassName}
+              className={OUTLINE_BUTTON_CLASS_NAME}
             >
               {loading ? 'Refreshing...' : 'Refresh'}
             </Button>

@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/lib/auth-context'
 import { User } from 'lucide-react'
-import { AccountMenu, GlassPanel } from '@yanbrain/shared/yglassui'
+import { AccountMenu, GlassPanel } from '@yanbrain/shared/ui'
 
 export function Topbar() {
     const { user, signOut } = useAuth()

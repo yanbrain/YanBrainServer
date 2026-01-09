@@ -53,6 +53,6 @@ export async function unsuspendUser(userId: string) {
 }
 
 // Credit Actions
-export async function grantCredits(userId: string, credits: number, reason?: string, productId?: string | null) {
-    return callApi('/credits/grant', 'POST', { userId, credits, reason, productId })
+export async function grantCredits(userId: string, credits: number) {
+    return callApi('/credits/grant', 'POST', { userId, credits })
 }

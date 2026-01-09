@@ -19,7 +19,7 @@ type CreditsResponse = {
 }
 
 export function CreditsPanel({ userId, isSuspended, token, refreshKey, onRefresh }: CreditsPanelProps) {
-    const [credits, setCredits] = useState<UserCredits>({ balance: 0, lifetime: 0, updatedAt: null })
+    const [credits, setCredits] = useState<UserCredits>({ balance: 0, updatedAt: null })
     const [usage, setUsage] = useState<UsageSummary>({ totalsByProduct: {}, usagePeriods: [] })
     const [loading, setLoading] = useState(true)
 
@@ -37,7 +37,7 @@ export function CreditsPanel({ userId, isSuspended, token, refreshKey, onRefresh
                 const data: CreditsResponse = await res.json()
 
                 if (data.success) {
-                    setCredits(data.credits || { balance: 0, lifetime: 0, updatedAt: null })
+                    setCredits(data.credits || { balance: 0, updatedAt: null })
                     setUsage(data.usage || { totalsByProduct: {}, usagePeriods: [] })
                 }
             } catch (error) {

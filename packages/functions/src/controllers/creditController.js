@@ -31,7 +31,6 @@ async function getBalance(req, res) {
     return sendSuccess(res, {
         userId,
         creditsBalance: userData.creditsBalance || 0,
-        creditsLifetime: userData.creditsLifetime || 0,
         creditsUpdatedAt: userData.creditsUpdatedAt || null,
     });
 }
@@ -115,7 +114,6 @@ async function consume(req, res) {
                     isActive: true,
                     isSuspended: false,
                     creditsBalance: 0,
-                    creditsLifetime: 0,
                     creditsUpdatedAt: now,
                 });
             }
@@ -176,7 +174,8 @@ async function consume(req, res) {
 
 async function grant(req, res) {
     const db = admin.firestore();
-    const {userId, credits, reason = "ADMIN_GRANT", productId = null} = req.body;
+    const {userId, credits} = req.body;
+    const reason = "ADMIN_GRANT";
 
     try {
         validate(req.body, ["userId", "credits"]);
@@ -184,10 +183,6 @@ async function grant(req, res) {
         const creditsNum = parseInt(credits);
         if (isNaN(creditsNum) || creditsNum === 0) {
             return sendError(res, 400, "Credits must be a non-zero number");
-        }
-
-        if (productId && !PRODUCT_IDS.includes(productId)) {
-            return sendError(res, 400, `Invalid product: ${productId}`);
         }
 
         const userRef = db.collection("users").doc(userId);
@@ -199,8 +194,6 @@ async function grant(req, res) {
             const userDoc = await transaction.get(userRef);
             const userData = userDoc.exists ? userDoc.data() : {};
             const currentBalance = userData?.creditsBalance || 0;
-            const currentLifetime = userData?.creditsLifetime || 0;
-
             if (!userDoc.exists) {
                 transaction.set(userRef, {
                     email: "unknown",
@@ -209,14 +202,12 @@ async function grant(req, res) {
                     isActive: true,
                     isSuspended: false,
                     creditsBalance: 0,
-                    creditsLifetime: 0,
                     creditsUpdatedAt: now,
                 });
             }
 
             transaction.update(userRef, {
                 creditsBalance: currentBalance + creditsNum,
-                creditsLifetime: currentLifetime + Math.max(creditsNum, 0),
                 creditsUpdatedAt: now,
                 updatedAt: now,
             });
@@ -224,7 +215,6 @@ async function grant(req, res) {
             transaction.set(ledgerRef, {
                 userId,
                 amount: creditsNum,
-                productId,
                 reason,
                 timestamp: now,
                 performedBy: "admin",
@@ -234,7 +224,6 @@ async function grant(req, res) {
         await db.collection("transactions").add({
             userId,
             type: creditsNum > 0 ? "CREDITS_GRANTED" : "CREDITS_DEDUCTED",
-            productIds: productId ? [productId] : [],
             creditsGranted: creditsNum,
             timestamp: now,
             performedBy: "admin",

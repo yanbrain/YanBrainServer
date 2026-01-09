@@ -35,10 +35,6 @@ export function CreditsGrid({ userId, credits, usage, isSuspended, onRefresh }: 
                         <span className="text-muted-foreground">Current balance</span>
                         <span className="font-semibold">{credits.balance ?? 0}</span>
                     </div>
-                    <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Lifetime credits</span>
-                        <span className="font-semibold">{credits.lifetime ?? 0}</span>
-                    </div>
                 </CardContent>
             </Card>
 

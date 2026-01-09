@@ -21,7 +21,7 @@ export function CreditsGrid({ userId, credits, usage, isSuspended, onRefresh }: 
 
     return (
         <div className="space-y-4">
-            <Button size="sm" onClick={() => setIsGranting(true)} disabled={isSuspended} className="w-full">
+            <Button onClick={() => setIsGranting(true)} disabled={isSuspended} className="w-full">
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Grant Credits
             </Button>

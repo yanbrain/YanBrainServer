@@ -60,7 +60,7 @@ export function AccountMenu({ trigger, items, summary, className }: AccountMenuP
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 mt-3 w-56 rounded-2xl border border-white/10 bg-black p-2 text-sm text-white shadow-xl outline outline-1 outline-white/10"
+          className="glass-panel absolute right-0 mt-3 w-[min(14rem,calc(100vw-2rem))] max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl p-2 text-sm text-white shadow-xl outline outline-1 outline-white/10"
         >
           {summary ? (
             <div className="px-3 py-2 text-center text-xs text-white/60">

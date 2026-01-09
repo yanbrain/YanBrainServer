@@ -12,7 +12,7 @@ module.exports = {
         background: 'hsl(0 0% 0%)',
         foreground: 'hsl(0 0% 100%)',
         primary: {
-          DEFAULT: '#2678dc',
+          DEFAULT: '#6d28d9',
           foreground: 'hsl(0 0% 100%)',
         },
         secondary: {
@@ -24,12 +24,12 @@ module.exports = {
           foreground: 'hsl(0 0% 60%)',
         },
         accent: {
-          DEFAULT: '#2678dc',
+          DEFAULT: '#6d28d9',
           foreground: 'hsl(0 0% 100%)',
         },
         border: 'hsl(0 0% 20%)',
         input: 'hsl(0 0% 20%)',
-        ring: '#2678dc',
+        ring: '#6d28d9',
         'yan-avatar': {
           primary: '#DC2678',
           secondary: '#78DC26',

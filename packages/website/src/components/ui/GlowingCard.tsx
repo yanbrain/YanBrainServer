@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 interface GlowingCardProps {
     children: React.ReactNode
     primaryColor: string  // Main product color for outline
-    secondaryColor?: string // Secondary color for glow (defaults to blue)
+    secondaryColor?: string // Secondary color for glow (defaults to purple)
     className?: string
     isPortrait?: boolean
     disableGlow?: boolean
@@ -15,7 +15,7 @@ interface GlowingCardProps {
 export function GlowingCard({
                                 children,
                                 primaryColor,
-                                secondaryColor = '#2678dc', // Default blue
+                                secondaryColor = '#6d28d9', // Default purple
                                 className,
                                 isPortrait = false,
                                 disableGlow = false

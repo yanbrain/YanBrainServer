@@ -37,6 +37,11 @@ type MeResponse = {
   }
 }
 
+const INPUT_CLASS_NAME =
+  'border-white/15 bg-white/5 text-white outline outline-1 outline-white/10 placeholder:text-white/50 focus-visible:border-white/30 focus-visible:ring-white/10'
+const OUTLINE_BUTTON_CLASS_NAME =
+  'border-white/20 bg-white/5 text-white outline outline-1 outline-white/15 hover:border-white/40 hover:bg-white/10'
+
 function formatDate(value?: string | null) {
   if (!value) return '—'
   const date = new Date(value)

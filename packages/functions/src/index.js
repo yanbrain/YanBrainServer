@@ -7,14 +7,12 @@ admin.initializeApp();
 
 const app = express();
 
-// Configure CORS - Production and development domains
+// Configure CORS
 const corsOptions = {
     origin: [
-        // Production domains
         'https://yanbrain.com',
         'https://www.yanbrain.com',
         'https://admin.yanbrain.com',
-        // Local development
         'http://localhost:3000',
         'http://localhost:3001',
     ],
@@ -43,6 +41,6 @@ app.use((err, req, res, next) => {
 
 exports.api = onRequest(app);
 
-// Auth trigger - auto-creates user doc and grants 5 credits to new users
-const {onAuthUserCreated} = require("./authTriggers");
-exports.onAuthUserCreated = onAuthUserCreated;
+// Firestore trigger - auto-grants 5 credits to new users
+const {onUserCreated} = require("./userTriggers");
+exports.onUserCreated = onUserCreated;

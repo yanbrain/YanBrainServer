@@ -68,44 +68,59 @@ async function getUsage(req, res) {
     });
 }
 
+/**
+ * Consume credits for a product
+ *
+ * IMPORTANT: The credit cost is determined server-side from CREDIT_COSTS.
+ * Clients should ONLY send productId - the server will look up the cost.
+ *
+ * Request body:
+ * {
+ *   "productId": "yanDraw" | "yanPhotobooth" | "yanAvatar"
+ * }
+ *
+ * Response:
+ * {
+ *   "success": true,
+ *   "userId": "abc123",
+ *   "productId": "yanDraw",
+ *   "creditsSpent": 1
+ * }
+ */
 async function consume(req, res) {
     const db = admin.firestore();
     const userId = req.user?.uid;
-    const {productId, credits} = req.body;
+    const {productId} = req.body;
 
     try {
         if (!userId) return sendError(res, 401, "Unauthorized");
         validate(req.body, ["productId"]);
 
+        // Validate product ID
         if (!PRODUCT_IDS.includes(productId)) {
             return sendError(res, 400, `Invalid product: ${productId}`);
         }
 
-        const expectedCredits = CREDIT_COSTS[productId];
-        let creditsNum = expectedCredits;
+        // Server determines credit cost - this is the single source of truth
+        const creditsToConsume = CREDIT_COSTS[productId];
 
-        if (credits !== undefined) {
-            const parsedCredits = parseInt(credits);
-            if (isNaN(parsedCredits) || parsedCredits <= 0) {
-                return sendError(res, 400, "Credits must be a positive number");
-            }
-            if (parsedCredits !== expectedCredits) {
-                return sendError(res, 400, "Credits do not match product cost");
-            }
-            creditsNum = parsedCredits;
+        // Validate that we have a valid cost defined
+        if (!creditsToConsume || creditsToConsume <= 0) {
+            logger.error(`Invalid credit cost for product ${productId}: ${creditsToConsume}`);
+            return sendError(res, 500, "Product credit cost not configured");
         }
 
         const userRef = db.collection("users").doc(userId);
-        const ledgerRef = db.collection("credit_ledger").doc();
         const periodKey = formatDateKey();
         const usageRef = db.collection("usage").doc(`${userId}_${periodKey}`);
         const now = admin.firestore.Timestamp.now();
-        const increment = admin.firestore.FieldValue.increment(creditsNum);
+        const increment = admin.firestore.FieldValue.increment(creditsToConsume);
 
         await db.runTransaction(async (transaction) => {
             const userDoc = await transaction.get(userRef);
             const userData = userDoc.exists ? userDoc.data() : {};
 
+            // Create user document if it doesn't exist
             if (!userDoc.exists) {
                 transaction.set(userRef, {
                     email: req.user?.email || "unknown",
@@ -118,29 +133,25 @@ async function consume(req, res) {
                 });
             }
 
+            // Check if account is suspended
             if (userData?.isSuspended) {
                 throw new Error("Account is suspended");
             }
 
+            // Check if user has enough credits
             const currentBalance = userData?.creditsBalance || 0;
-            if (currentBalance < creditsNum) {
+            if (currentBalance < creditsToConsume) {
                 throw new Error("Insufficient credits");
             }
 
+            // Deduct credits from user balance
             transaction.update(userRef, {
-                creditsBalance: currentBalance - creditsNum,
+                creditsBalance: currentBalance - creditsToConsume,
                 creditsUpdatedAt: now,
                 updatedAt: now,
             });
 
-            transaction.set(ledgerRef, {
-                userId,
-                amount: -creditsNum,
-                productId,
-                reason: "GENERATION",
-                timestamp: now,
-            });
-
+            // Track usage for analytics
             transaction.set(
                 usageRef,
                 {
@@ -154,17 +165,19 @@ async function consume(req, res) {
             );
         });
 
+        // Create transaction record after successful consumption
         await db.collection("transactions").add({
             userId,
             type: "CREDITS_SPENT",
-            productIds: [productId],
-            creditsSpent: creditsNum,
+            amount: creditsToConsume,
+            productId,
             timestamp: now,
             performedBy: "user",
             metadata: {source: "generation"},
         });
 
-        return sendSuccess(res, {userId, productId, creditsSpent: creditsNum});
+        logger.info(`User ${userId} consumed ${creditsToConsume} credits for ${productId}`);
+        return sendSuccess(res, {userId, productId, creditsSpent: creditsToConsume});
     } catch (error) {
         logger.error("consumeCredits error:", error);
         const message = error.message || "Failed to consume credits";
@@ -186,14 +199,13 @@ async function grant(req, res) {
         }
 
         const userRef = db.collection("users").doc(userId);
-        const ledgerRef = db.collection("credit_ledger").doc();
         const now = admin.firestore.Timestamp.now();
-        const increment = admin.firestore.FieldValue.increment(creditsNum);
 
         await db.runTransaction(async (transaction) => {
             const userDoc = await transaction.get(userRef);
             const userData = userDoc.exists ? userDoc.data() : {};
             const currentBalance = userData?.creditsBalance || 0;
+
             if (!userDoc.exists) {
                 transaction.set(userRef, {
                     email: "unknown",
@@ -211,20 +223,14 @@ async function grant(req, res) {
                 creditsUpdatedAt: now,
                 updatedAt: now,
             });
-
-            transaction.set(ledgerRef, {
-                userId,
-                amount: creditsNum,
-                reason,
-                timestamp: now,
-                performedBy: "admin",
-            });
         });
 
+        // Create transaction record after successful grant
         await db.collection("transactions").add({
             userId,
             type: creditsNum > 0 ? "CREDITS_GRANTED" : "CREDITS_DEDUCTED",
-            creditsGranted: creditsNum,
+            amount: creditsNum,
+            reason,
             timestamp: now,
             performedBy: "admin",
             metadata: {reason},
@@ -234,8 +240,14 @@ async function grant(req, res) {
         return sendSuccess(res, {userId, credits: creditsNum});
     } catch (error) {
         logger.error("grantCredits error:", error);
-        return sendError(res, 500, error.message || "Failed to grant credits");
+        const message = error.message || "Failed to grant credits";
+        return sendError(res, 500, message);
     }
 }
 
-module.exports = {getBalance, getUsage, consume, grant};
+module.exports = {
+    getBalance,
+    getUsage,
+    consume,
+    grant,
+};

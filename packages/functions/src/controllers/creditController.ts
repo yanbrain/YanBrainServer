@@ -6,75 +6,75 @@ import {AuthRequest} from "../middleware/auth";
 import {Response} from "express";
 
 function formatDateKey(date = new Date()): string {
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  return `${year}-${month}`;
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    return `${year}-${month}`;
 }
 
 interface UsagePeriod {
-  id: string;
-  period: string;
-  totals: Record<string, number>;
-  totalCredits: number;
+    id: string;
+    period: string;
+    totals: Record<string, number>;
+    totalCredits: number;
 }
 
 function normalizeUsagePeriod(doc: admin.firestore.QueryDocumentSnapshot): UsagePeriod {
-  const data = doc.data();
-  return {
-    id: doc.id,
-    period: data.period,
-    totals: data.totals || {},
-    totalCredits: data.totalCredits || 0,
-  };
+    const data = doc.data();
+    return {
+        id: doc.id,
+        period: data.period,
+        totals: data.totals || {},
+        totalCredits: data.totalCredits || 0,
+    };
 }
 
 export async function getBalance(req: AuthRequest, res: Response): Promise<void> {
-  const db = admin.firestore();
-  const userId = req.user?.uid;
+    const db = admin.firestore();
+    const userId = req.user?.uid;
 
-  if (!userId) return sendError(res, 401, "Unauthorized");
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
-  const userDoc = await db.collection("users").doc(userId).get();
-  const userData = userDoc.exists ? userDoc.data() : {};
+    const userDoc = await db.collection("users").doc(userId).get();
+    const userData = userDoc.exists ? userDoc.data() : {};
 
-  return sendSuccess(res, {
-    userId,
-    creditsBalance: userData?.creditsBalance || 0,
-    creditsUpdatedAt: userData?.creditsUpdatedAt || null,
-  });
+    return sendSuccess(res, {
+        userId,
+        creditsBalance: userData?.creditsBalance || 0,
+        creditsUpdatedAt: userData?.creditsUpdatedAt || null,
+    });
 }
 
 export async function getUsage(req: AuthRequest, res: Response): Promise<void> {
-  const db = admin.firestore();
-  const userId = req.user?.uid;
-  const limit = Math.min(parseInt(req.query.limit as string) || 6, 12);
+    const db = admin.firestore();
+    const userId = req.user?.uid;
+    const limit = Math.min(parseInt(req.query.limit as string) || 6, 12);
 
-  if (!userId) return sendError(res, 401, "Unauthorized");
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
-  const usageSnap = await db
-    .collection("usage")
-    .where("userId", "==", userId)
-    .orderBy("period", "desc")
-    .limit(limit)
-    .get();
+    const usageSnap = await db
+        .collection("usage")
+        .where("userId", "==", userId)
+        .orderBy("period", "desc")
+        .limit(limit)
+        .get();
 
-  const usagePeriods = usageSnap.docs.map(normalizeUsagePeriod).reverse();
+    const usagePeriods = usageSnap.docs.map(normalizeUsagePeriod).reverse();
 
-  const totalsByProduct = usagePeriods.reduce((acc: Record<string, number>, entry) => {
-    Object.entries(entry.totals || {}).forEach(([productId, amount]) => {
-      acc[productId] = (acc[productId] || 0) + Number(amount || 0);
+    const totalsByProduct = usagePeriods.reduce((acc: Record<string, number>, entry) => {
+        Object.entries(entry.totals || {}).forEach(([productId, amount]) => {
+            acc[productId] = (acc[productId] || 0) + Number(amount || 0);
+        });
+        return acc;
+    }, {});
+
+    const totalCredits = usagePeriods.reduce((sum, entry) => sum + Number(entry.totalCredits || 0), 0);
+
+    return sendSuccess(res, {
+        userId,
+        totalsByProduct,
+        totalCredits,
+        usagePeriods,
     });
-    return acc;
-  }, {});
-
-  const totalCredits = usagePeriods.reduce((sum, entry) => sum + Number(entry.totalCredits || 0), 0);
-
-  return sendSuccess(res, {
-    userId,
-    totalsByProduct,
-    totalCredits,
-    usagePeriods,
-  });
 }
 
 /**
@@ -97,159 +97,266 @@ export async function getUsage(req: AuthRequest, res: Response): Promise<void> {
  * }
  */
 export async function consume(req: AuthRequest, res: Response): Promise<void> {
-  const db = admin.firestore();
-  const userId = req.user?.uid;
-  const {productId} = req.body as {productId: string};
+    const db = admin.firestore();
+    const userId = req.user?.uid;
+    const {productId} = req.body as {productId: string};
 
-  try {
-    if (!userId) return sendError(res, 401, "Unauthorized");
-    validate(req.body, ["productId"]);
+    try {
+        if (!userId) return sendError(res, 401, "Unauthorized");
+        validate(req.body, ["productId"]);
 
-    // Validate product ID
-    if (!PRODUCT_IDS.includes(productId as ProductId)) {
-      return sendError(res, 400, `Invalid product: ${productId}`);
-    }
+        // Validate product ID
+        if (!PRODUCT_IDS.includes(productId as ProductId)) {
+            return sendError(res, 400, `Invalid product: ${productId}`);
+        }
 
-    // Server determines credit cost - this is the single source of truth
-    const creditsToConsume = CREDIT_COSTS[productId as ProductId];
+        // Server determines credit cost - this is the single source of truth
+        const creditsToConsume = CREDIT_COSTS[productId as ProductId];
 
-    // Validate that we have a valid cost defined
-    if (!creditsToConsume || creditsToConsume <= 0) {
-      logger.error(`Invalid credit cost for product ${productId}: ${creditsToConsume}`);
-      return sendError(res, 500, "Product credit cost not configured");
-    }
+        // Validate that we have a valid cost defined
+        if (!creditsToConsume || creditsToConsume <= 0) {
+            logger.error(`Invalid credit cost for product ${productId}: ${creditsToConsume}`);
+            return sendError(res, 500, "Product credit cost not configured");
+        }
 
-    const userRef = db.collection("users").doc(userId);
-    const periodKey = formatDateKey();
-    const usageRef = db.collection("usage").doc(`${userId}_${periodKey}`);
-    const now = admin.firestore.Timestamp.now();
-    const increment = admin.firestore.FieldValue.increment(creditsToConsume);
+        const userRef = db.collection("users").doc(userId);
+        const periodKey = formatDateKey();
+        const usageRef = db.collection("usage").doc(`${userId}_${periodKey}`);
+        const now = admin.firestore.Timestamp.now();
+        const increment = admin.firestore.FieldValue.increment(creditsToConsume);
 
-    await db.runTransaction(async (transaction) => {
-      const userDoc = await transaction.get(userRef);
-      const userData = userDoc.exists ? userDoc.data() : {};
+        await db.runTransaction(async (transaction) => {
+            const userDoc = await transaction.get(userRef);
+            const userData = userDoc.exists ? userDoc.data() : {};
 
-      // Create user document if it doesn't exist
-      if (!userDoc.exists) {
-        transaction.set(userRef, {
-          email: req.user?.email || "unknown",
-          createdAt: now,
-          updatedAt: now,
-          isActive: true,
-          isSuspended: false,
-          creditsBalance: 0,
-          creditsUpdatedAt: now,
+            // Create user document if it doesn't exist
+            if (!userDoc.exists) {
+                transaction.set(userRef, {
+                    email: req.user?.email || "unknown",
+                    createdAt: now,
+                    updatedAt: now,
+                    isActive: true,
+                    isSuspended: false,
+                    creditsBalance: 0,
+                    creditsUpdatedAt: now,
+                });
+            }
+
+            // Check if account is suspended
+            if (userData?.isSuspended) {
+                throw new Error("Account is suspended");
+            }
+
+            // Check if user has enough credits
+            const currentBalance = userData?.creditsBalance || 0;
+            if (currentBalance < creditsToConsume) {
+                throw new Error("Insufficient credits");
+            }
+
+            // Deduct credits from user balance
+            transaction.update(userRef, {
+                creditsBalance: currentBalance - creditsToConsume,
+                creditsUpdatedAt: now,
+                updatedAt: now,
+            });
+
+            // Track usage for analytics
+            transaction.set(
+                usageRef,
+                {
+                    userId,
+                    period: periodKey,
+                    totals: {[productId]: increment},
+                    totalCredits: increment,
+                    updatedAt: now,
+                },
+                {merge: true}
+            );
         });
-      }
 
-      // Check if account is suspended
-      if (userData?.isSuspended) {
-        throw new Error("Account is suspended");
-      }
+        // Create transaction record after successful consumption
+        await db.collection("transactions").add({
+            userId,
+            type: "CREDITS_SPENT",
+            amount: creditsToConsume,
+            productId,
+            timestamp: now,
+            performedBy: "user",
+            metadata: {source: "generation"},
+        });
 
-      // Check if user has enough credits
-      const currentBalance = userData?.creditsBalance || 0;
-      if (currentBalance < creditsToConsume) {
-        throw new Error("Insufficient credits");
-      }
+        logger.info(`User ${userId} consumed ${creditsToConsume} credits for ${productId}`);
+        return sendSuccess(res, {userId, productId, creditsSpent: creditsToConsume});
+    } catch (error) {
+        logger.error("consumeCredits error:", error);
+        const message = (error as Error).message || "Failed to consume credits";
+        return sendError(res, message === "Insufficient credits" ? 400 : 500, message);
+    }
+}
 
-      // Deduct credits from user balance
-      transaction.update(userRef, {
-        creditsBalance: currentBalance - creditsToConsume,
-        creditsUpdatedAt: now,
-        updatedAt: now,
-      });
+/**
+ * Consume credits by explicit cost (for YanBrainAPIClient).
+ *
+ * SECURITY:
+ * - This must be protected by requireInternalService middleware at the route layer.
+ * - User is still identified by Firebase ID token (req.user.uid).
+ *
+ * Request body:
+ * {
+ *   "cost": number
+ * }
+ */
+export async function consumeCost(req: AuthRequest, res: Response): Promise<void> {
+    const db = admin.firestore();
+    const userId = req.user?.uid;
+    const {cost} = req.body as {cost: number};
 
-      // Track usage for analytics
-      transaction.set(
-        usageRef,
-        {
-          userId,
-          period: periodKey,
-          totals: {[productId]: increment},
-          totalCredits: increment,
-          updatedAt: now,
-        },
-        {merge: true}
-      );
-    });
+    try {
+        if (!userId) return sendError(res, 401, "Unauthorized");
+        validate(req.body, ["cost"]);
 
-    // Create transaction record after successful consumption
-    await db.collection("transactions").add({
-      userId,
-      type: "CREDITS_SPENT",
-      amount: creditsToConsume,
-      productId,
-      timestamp: now,
-      performedBy: "user",
-      metadata: {source: "generation"},
-    });
+        const creditsToConsume = Number(cost);
 
-    logger.info(`User ${userId} consumed ${creditsToConsume} credits for ${productId}`);
-    return sendSuccess(res, {userId, productId, creditsSpent: creditsToConsume});
-  } catch (error) {
-    logger.error("consumeCredits error:", error);
-    const message = (error as Error).message || "Failed to consume credits";
-    return sendError(res, message === "Insufficient credits" ? 400 : 500, message);
-  }
+        if (!Number.isFinite(creditsToConsume) || creditsToConsume <= 0) {
+            return sendError(res, 400, "Invalid cost");
+        }
+
+        // Basic sanity limit to prevent accidental huge deductions
+        if (creditsToConsume > 100000) {
+            return sendError(res, 400, "Cost too large");
+        }
+
+        const userRef = db.collection("users").doc(userId);
+        const periodKey = formatDateKey();
+        const usageRef = db.collection("usage").doc(`${userId}_${periodKey}`);
+        const now = admin.firestore.Timestamp.now();
+        const increment = admin.firestore.FieldValue.increment(creditsToConsume);
+
+        await db.runTransaction(async (transaction) => {
+            const userDoc = await transaction.get(userRef);
+            const userData = userDoc.exists ? userDoc.data() : {};
+
+            // Create user document if it doesn't exist
+            if (!userDoc.exists) {
+                transaction.set(userRef, {
+                    email: req.user?.email || "unknown",
+                    createdAt: now,
+                    updatedAt: now,
+                    isActive: true,
+                    isSuspended: false,
+                    creditsBalance: 0,
+                    creditsUpdatedAt: now,
+                });
+            }
+
+            // Check if account is suspended
+            if (userData?.isSuspended) {
+                throw new Error("Account is suspended");
+            }
+
+            // Check if user has enough credits
+            const currentBalance = userData?.creditsBalance || 0;
+            if (currentBalance < creditsToConsume) {
+                throw new Error("Insufficient credits");
+            }
+
+            // Deduct credits from user balance
+            transaction.update(userRef, {
+                creditsBalance: currentBalance - creditsToConsume,
+                creditsUpdatedAt: now,
+                updatedAt: now,
+            });
+
+            // Track usage under a generic bucket for APIClient
+            transaction.set(
+                usageRef,
+                {
+                    userId,
+                    period: periodKey,
+                    totals: {apiClient: increment},
+                    totalCredits: increment,
+                    updatedAt: now,
+                },
+                {merge: true}
+            );
+        });
+
+        // Create transaction record after successful consumption
+        await db.collection("transactions").add({
+            userId,
+            type: "CREDITS_SPENT",
+            amount: creditsToConsume,
+            productId: "apiClient",
+            timestamp: now,
+            performedBy: "api-client",
+            metadata: {source: "YanBrainAPIClient"},
+        });
+
+        logger.info(`User ${userId} consumed ${creditsToConsume} credits via APIClient`);
+        return sendSuccess(res, {userId, creditsSpent: creditsToConsume});
+    } catch (error) {
+        logger.error("consumeCost error:", error);
+        const message = (error as Error).message || "Failed to consume credits";
+        return sendError(res, message === "Insufficient credits" ? 400 : 500, message);
+    }
 }
 
 export async function grant(req: AuthRequest, res: Response): Promise<void> {
-  const db = admin.firestore();
-  const {userId, credits} = req.body;
-  const reason = "ADMIN_GRANT";
+    const db = admin.firestore();
+    const {userId, credits} = req.body;
+    const reason = "ADMIN_GRANT";
 
-  try {
-    validate(req.body, ["userId", "credits"]);
+    try {
+        validate(req.body, ["userId", "credits"]);
 
-    const creditsNum = parseInt(credits);
-    if (isNaN(creditsNum) || creditsNum === 0) {
-      return sendError(res, 400, "Credits must be a non-zero number");
-    }
+        const creditsNum = parseInt(credits);
+        if (isNaN(creditsNum) || creditsNum === 0) {
+            return sendError(res, 400, "Credits must be a non-zero number");
+        }
 
-    const userRef = db.collection("users").doc(userId);
-    const now = admin.firestore.Timestamp.now();
+        const userRef = db.collection("users").doc(userId);
+        const now = admin.firestore.Timestamp.now();
 
-    await db.runTransaction(async (transaction) => {
-      const userDoc = await transaction.get(userRef);
-      const userData = userDoc.exists ? userDoc.data() : {};
-      const currentBalance = userData?.creditsBalance || 0;
+        await db.runTransaction(async (transaction) => {
+            const userDoc = await transaction.get(userRef);
+            const userData = userDoc.exists ? userDoc.data() : {};
+            const currentBalance = userData?.creditsBalance || 0;
 
-      if (!userDoc.exists) {
-        transaction.set(userRef, {
-          email: "unknown",
-          createdAt: now,
-          updatedAt: now,
-          isActive: true,
-          isSuspended: false,
-          creditsBalance: 0,
-          creditsUpdatedAt: now,
+            if (!userDoc.exists) {
+                transaction.set(userRef, {
+                    email: "unknown",
+                    createdAt: now,
+                    updatedAt: now,
+                    isActive: true,
+                    isSuspended: false,
+                    creditsBalance: 0,
+                    creditsUpdatedAt: now,
+                });
+            }
+
+            transaction.update(userRef, {
+                creditsBalance: currentBalance + creditsNum,
+                creditsUpdatedAt: now,
+                updatedAt: now,
+            });
         });
-      }
 
-      transaction.update(userRef, {
-        creditsBalance: currentBalance + creditsNum,
-        creditsUpdatedAt: now,
-        updatedAt: now,
-      });
-    });
+        // Create transaction record after successful grant
+        await db.collection("transactions").add({
+            userId,
+            type: creditsNum > 0 ? "CREDITS_GRANTED" : "CREDITS_DEDUCTED",
+            amount: creditsNum,
+            reason,
+            timestamp: now,
+            performedBy: "admin",
+            metadata: {reason},
+        });
 
-    // Create transaction record after successful grant
-    await db.collection("transactions").add({
-      userId,
-      type: creditsNum > 0 ? "CREDITS_GRANTED" : "CREDITS_DEDUCTED",
-      amount: creditsNum,
-      reason,
-      timestamp: now,
-      performedBy: "admin",
-      metadata: {reason},
-    });
-
-    logger.info(`Admin adjusted credits: ${userId} ${creditsNum}`);
-    return sendSuccess(res, {userId, credits: creditsNum});
-  } catch (error) {
-    logger.error("grantCredits error:", error);
-    const message = (error as Error).message || "Failed to grant credits";
-    return sendError(res, 500, message);
-  }
+        logger.info(`Admin adjusted credits: ${userId} ${creditsNum}`);
+        return sendSuccess(res, {userId, credits: creditsNum});
+    } catch (error) {
+        logger.error("grantCredits error:", error);
+        const message = (error as Error).message || "Failed to grant credits";
+        return sendError(res, 500, message);
+    }
 }
